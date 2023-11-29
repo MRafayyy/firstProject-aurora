@@ -10,6 +10,8 @@ import {
     Button
 } from 'react-native';
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Keychain from 'react-native-keychain';
 
 export default function Screen_Login({ navigation, route }) {
 
@@ -29,12 +31,13 @@ export default function Screen_Login({ navigation, route }) {
     const GoToRegistrationPage = () => {
         navigation.navigate('Screen_Registration')
     }
-    const Login = async () => {
+    // useEffect(() => {
+        const Login = async () => {
+            
+            let url = 'http://192.168.0.103:3000/login'
+            try {
 
-        let url = 'http://192.168.0.103:3000/login'
-        try {
-
-            const LoginData = {
+                const LoginData = {
                 userId: UsernameText,
                 password: PasswordText
             }
@@ -46,22 +49,59 @@ export default function Screen_Login({ navigation, route }) {
 
                 body: JSON.stringify(LoginData)
             })
-
+            
             response = await response.json();
+            
+            if (response.success === true) {
 
-            if (response === true) {
+                try {
+                    const username = 'hey'
+                    const password  = response.token;
+                    console.log(response.token)
+                    // await AsyncStorage.setItem('Token', response.token)
+                    await Keychain.setGenericPassword(username,password)
+                } catch (error) {
+                    console.error(error)
+                }
+
                 navigation.navigate('Screen_Home')
             }
-            console.log(response);
+            // console.log(response);
         } catch (error) {
             console.log(error)
         }
     }
-
+    
     useEffect(() => {
+    
+    
+    async function Logged(){
+    try {
+      let url = 'http://192.168.0.103:3000/verifyToken'
+      const credentials = await Keychain.getGenericPassword();
+      let response = await fetch(url, {
+          method: 'POST',
+          headers: {
+              'Content-Type': "application/json"
+          },
+          body: JSON.stringify(credentials)
+      })
+      response = await response.json();
+      if (response.success === true) {
+         navigation.navigate('Screen_Home')
 
+}
+else if (response.success === false) {
+   
+      }
 
-Login();
+  } catch (error) {
+      console.log(error)
+  }
+}
+Logged();
+
+        // Login();
     }, [])
 
 

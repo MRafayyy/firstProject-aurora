@@ -130,20 +130,22 @@ const styles = StyleSheet.create({
         marginBottom: '13%',
         fontWeight: '900',
         fontStyle: 'normal',
-        color: 'gray'
+        color: 'gray',
+        // fontFamily: 'Cabin-Regular',
     },
     body: {
         flex: 1,
         backgroundColor: 'white',
         alignItems: 'center',
-        justifyContent: 'start'
+        justifyContent: 'start',
     },
     text: {
         margin: 10,
         fontSize: 20,
-        fontWeight: '600',
+        // fontWeight: '600',
         color: 'white',
-        textAlign: 'left'
+        textAlign: 'left',
+        fontFamily: 'Cabin-Bold',
     },
     btntext: {
         margin: '4%',

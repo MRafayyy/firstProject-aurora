@@ -6,9 +6,11 @@
  */
 // import 'react-native-gesture-handler'; --no needed only npm se krna tha
 import React from 'react';
-
+import { useEffect, useState } from 'react';
 // import { Icon } from 'react-native-vector-icons/Icon';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // import MashButton from './CustomButton';
 // import type { PropsWithChildren } from 'react';
@@ -25,7 +27,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 // import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
-
+import * as Keychain from 'react-native-keychain';
 
 // type SectionProps = PropsWithChildren<{
 //   title: string;
@@ -52,24 +54,58 @@ const Tab = createBottomTabNavigator();
 // const Drawer  = createDrawerNavigator();
 
 
-import Screen_A from './Screen_A'
-import Screen_B from './Screen_B';
-import Screen_Login from './Screen_Login';
-import Screen_NadraVerification from './Screen_NadraVerification';
-import Screen_Registration from './Screen_Registration';
-import Screen_Home from './Screen_Home';
-import Screen_Splash from './Screen_Splash';
+import Screen_A from './screens/Screen_A'
+import Screen_B from './screens/Screen_B';
+import Screen_Login from './screens/Screen_Login';
+import Screen_NadraVerification from './screens/Screen_NadraVerification';
+import Screen_Registration from './screens/Screen_Registration';
+import Screen_Home from './screens/Screen_Home';
+import Screen_Splash from './screens/Screen_Splash';
+import Screen_Home2 from './screens/Screen_Home2';
 
 
 
 
 function App() {
 
+const [isLoggedIn, setisLoggedIn] = useState(false)
+
+  useEffect(() => {
+  async function Logged(){
+//     try {
+//       let url = 'http://192.168.0.103:3000/verifyToken'
+//       const credentials = await Keychain.getGenericPassword();
+//       let response = await fetch(url, {
+//           method: 'POST',
+//           headers: {
+//               'Content-Type': "application/json"
+//           },
+//           body: JSON.stringify(credentials)
+//       })
+//       response = await response.json();
+//       if (response.success === true) {
+//            setisLoggedIn(true)
+
+// }
+// else if (response.success === false) {
+//         setisLoggedIn(false)
+   
+//       }
+
+//   } catch (error) {
+//       console.log(error)
+//   }
+}
+Logged();
+  }, [])
+  
+
 
   return (
     <>
  <NavigationContainer>
-<Tab.Navigator initialRouteName='Screen_Splash' 
+{/* <Tab.Navigator initialRouteName={isLoggedIn? 'Screen_Home': 'Screen_Login'}  */}
+<Tab.Navigator initialRouteName='Screen_Splash'
 screenOptions={({route})=>(
   {
     tabBarIcon: ({focused,size, color})=>{
@@ -104,6 +140,12 @@ screenOptions={({route})=>(
         size=focused?23: 19;
         color=focused? 'red':'cyan';
       }
+      else if(route.name==='Screen_Home2'){
+        iconName = 'wrench';
+        size=focused?23: 19;
+        color=focused? 'red':'cyan';
+      }
+
       return(
        <FontAwesome5 
        name={iconName}
@@ -184,6 +226,18 @@ options={{
 <Tab.Screen
 name='Screen_Splash'
 component={Screen_Splash}
+options={{
+  // header: ()=>null
+  // tabBarActiveTintColor: 'black'
+  tabBarButton: ()=>null,
+  tabBarStyle: {display:'none'}
+}}
+/>
+
+
+<Tab.Screen
+name='Screen_Home2'
+component={Screen_Home2}
 options={{
   // header: ()=>null
   // tabBarActiveTintColor: 'black'
