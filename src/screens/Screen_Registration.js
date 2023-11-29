@@ -134,7 +134,7 @@ export default function Screen_Registration({ navigation, route }) {
     
     useEffect(() => {
         if (UsernameError_msg.length === 0 && PasswordError_msg.length === 0 && CPasswordError_msg.length === 0) {
-            let url = 'http://192.168.0.103:3000/register'
+            let url = 'http://10.100.2.238:3000/register'
           
             const SendRegistrationInfo = async () => {
                 try {

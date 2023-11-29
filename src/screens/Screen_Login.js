@@ -10,7 +10,7 @@ import {
     Button
 } from 'react-native';
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Keychain from 'react-native-keychain';
 
 export default function Screen_Login({ navigation, route }) {
@@ -34,7 +34,8 @@ export default function Screen_Login({ navigation, route }) {
     // useEffect(() => {
         const Login = async () => {
             
-            let url = 'http://192.168.0.103:3000/login'
+            // let url = 'http://192.168.0.103:3000/login'
+            let url = 'http://10.100.2.238:3000/login'
             try {
 
                 const LoginData = {
@@ -77,7 +78,7 @@ export default function Screen_Login({ navigation, route }) {
     
     async function Logged(){
     try {
-      let url = 'http://192.168.0.103:3000/verifyToken'
+      let url = 'http://10.100.2.238:3000/verifyToken'
       const credentials = await Keychain.getGenericPassword();
       let response = await fetch(url, {
           method: 'POST',

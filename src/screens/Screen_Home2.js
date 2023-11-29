@@ -1,8 +1,8 @@
-import React, { useState, useEffect, PropsWithChildren } from "react";
+import React, { useState, useEffect, useRef, PropsWithChildren } from "react";
 
 import GlobalStyle from "../utils/GlobalStyle";
 
-import LinearGradient from 'react-native-linear-gradient';
+// import LinearGradient from 'react-native-linear-gradient';
 import {
     StyleSheet,
     Text,
@@ -11,60 +11,92 @@ import {
     TextInput
 } from 'react-native';
 import * as Keychain from 'react-native-keychain';
-
+import { Camera } from "react-native-vision-camera";
+import { ActivityIndicator } from "react-native-paper";
 
 export default function Screen_Home({ navigation, route }) {
 
-    const onPressHandler = () => {
-        navigation.navigate('Screen_B');
-    }
 
-    useEffect(() => {
-        async function check(){
-        // try {
-        //     let url = 'http://192.168.0.103:3000/verifyToken'
-        //     const credentials = await Keychain.getGenericPassword();
-        //     let response  = await fetch(url,{
-        //         method: 'POST',
-        //         headers:{
-        //             'Content-Type' : "application/json"
-        //         },
-        //         body: JSON.stringify(credentials)
-        //     })
+    const [ImageData, setImageData] = useState('');
+    const [takePhotoClicked, settakePhotoClicked] = useState(false);
 
-        //     if(response.success === true){
-        //         console.error("hurrah"+ response)
-        //     }
-        //     else if(response.success === false){
-        //         navigation.navigate('Screen_Login')
-        //         console.error("oh oh")
-        //     }
-        //     // console.log("credential are :"+credentials.username)
-        //     // console.log("credential are :"+credentials.password)
-            
-        // } catch (error) {
-        //     console.log(error)
-        // }
-    }
-        check();
-    }, [])
-    
-    
-    const Logout = async()=>{
+
+
+    const Logout = async () => {
         await Keychain.resetGenericPassword();
         navigation.navigate('Screen_Login');
 
+
+    }
+
+    const GoToHomePage = () => {
+
+        navigation.navigate('Screen_Home');
+    }
+
+    const camera = useRef(null)
+    const devices = Camera.getAvailableCameraDevices()
+    const device = devices.find((d) => d.position === 'back')
+    // const device = useCameraDevice('back');
+    // const device = useCameraDevices
+    // const device = devices.back;
+    useEffect(() => {
+        checkPermission();
+    }, [])
+
+    const checkPermission = async () => {
+        const cameraPermission = await Camera.getCameraPermissionStatus()
+        const microphonePermission = await Camera.getMicrophonePermissionStatus()
+        console.log(cameraPermission)
+
+        const newCameraPermission = await Camera.requestCameraPermission()
+        const newMicrophonePermission = await Camera.requestMicrophonePermission()
+
+    }
+
+    const takePicture = async()=>{
+
+        if(camera!= null){
+
+            const photo = await camera.current.takePhoto({
+            // flash: 'on' // 'auto' | 'off'
+        })
+        setImageData(photo.path);
+        console.log(photo.path)
+    }
     }
 
 
+    if (device == null) return <ActivityIndicator />
     return (
         <>
-<View style={styles.body}>
-    <Text style={[styles.text, GlobalStyle.CustomFont]}>Wlcome to the screen after home screen</Text>
-    <Pressable onPress={Logout} style={{backgroundColor: 'orange'}}>
-        <Text style={styles.text}>Logout</Text>
-    </Pressable>
-</View>
+            {/* <View style={styles.body}>
+                <Text style={[styles.text, GlobalStyle.CustomFont]}>Wlcome to the screen after home screen</Text>
+                <Pressable onPress={Logout} style={{ backgroundColor: 'orange' }}>
+                    <Text style={styles.text}>Logout</Text>
+                </Pressable>
+                <Pressable onPress={GoToHomePage} style={{ backgroundColor: 'orange' }}>
+                    <Text style={styles.text}>Go to Home Page</Text>
+                </Pressable>
+            </View> */}
+            <View style={{ flex: 1 }}>
+                {takePhotoClicked?(<View style={{flex:1}}>
+                <Camera
+                style={StyleSheet.absoluteFill}
+                device={device}
+                isActive={true}
+                ref={camera}
+                photo={true}
+                />
+                <Pressable onPress={takePicture} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'red', borderRadius: 30, bottom: 50, alignSelf: 'center' }}></Pressable>
+                </View>):(
+                    <View style={{flex:1, justifyContent: 'center', alignItems:'center'}}>
+                        <Pressable style={{width:'90%', height: 50,borderWidth: 1, alignSelf:'center'}}>Click Photo</Pressable>
+                    </View>
+                )}
+
+       
+            </View>
         </>
     )
 }

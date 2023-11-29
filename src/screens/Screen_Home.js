@@ -2,7 +2,7 @@ import React, { useState, PropsWithChildren } from "react";
 
 import GlobalStyle from "../utils/GlobalStyle";
 
-import LinearGradient from 'react-native-linear-gradient';
+// import LinearGradient from 'react-native-linear-gradient';
 import {
     StyleSheet,
     Text,
@@ -27,7 +27,7 @@ export default function Screen_Home({ navigation, route }) {
 
     const NextScreen = async () => {
         try {
-            let url = 'http://192.168.0.103:3000/verifyToken'
+            let url = 'http://10.100.2.238:3000/verifyToken'
             const credentials = await Keychain.getGenericPassword();
             let response = await fetch(url, {
                 method: 'POST',
