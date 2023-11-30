@@ -8,11 +8,13 @@ import {
     Text,
     View,
     Pressable,
-    TextInput
+    TextInput,
+    Image
 } from 'react-native';
 import * as Keychain from 'react-native-keychain';
 import { Camera } from "react-native-vision-camera";
 import { ActivityIndicator } from "react-native-paper";
+// import { Image } from "react-native-paper/lib/typescript/components/Avatar/Avatar";
 
 export default function Screen_Home({ navigation, route }) {
 
@@ -62,6 +64,7 @@ export default function Screen_Home({ navigation, route }) {
             // flash: 'on' // 'auto' | 'off'
         })
         setImageData(photo.path);
+        settakePhotoClicked(false)
         console.log(photo.path)
     }
     }
@@ -91,7 +94,8 @@ export default function Screen_Home({ navigation, route }) {
                 <Pressable onPress={takePicture} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'red', borderRadius: 30, bottom: 50, alignSelf: 'center' }}></Pressable>
                 </View>):(
                     <View style={{flex:1, justifyContent: 'center', alignItems:'center'}}>
-                        <Pressable style={{width:'90%', height: 50,borderWidth: 1, alignSelf:'center'}}>Click Photo</Pressable>
+                        {ImageData!=='' && <Image source={{uri: 'file://'+ImageData}} style={{width: '90%',height:'70%'}}/>}
+                        <Pressable onPress={()=>settakePhotoClicked(true)} style={{width:'90%', height: 50,borderWidth: 1, alignSelf:'center', justifyContent: 'center'}}><Text>Click Photo </Text></Pressable>
                     </View>
                 )}
 
