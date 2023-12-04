@@ -54,7 +54,7 @@ const Tab = createBottomTabNavigator();
 // const Drawer  = createDrawerNavigator();
 
 
-import Screen_A from './screens/Screen_A'
+// import Screen_A from './screens/Screen_A'
 import Screen_B from './screens/Screen_B';
 import Screen_Login from './screens/Screen_Login';
 import Screen_NadraVerification from './screens/Screen_NadraVerification';

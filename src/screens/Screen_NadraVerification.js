@@ -9,7 +9,7 @@ import {
     TextInput,
     Button
 } from 'react-native';
-
+import ip from './IPaddress';
 
 
   export default function Screen_NadraVerification({ navigation, route }){
@@ -41,7 +41,7 @@ const hmm = userId;
     }
   
     const Verify =async()=>{
-        let url = 'http://10.100.2.238:3000/VerifyNadraInfo'
+        let url = `http://${ip}:3000/VerifyNadraInfo`
         try {
 
             const NadraData = {

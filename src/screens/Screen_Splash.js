@@ -1,6 +1,6 @@
 import React, { useState, PropsWithChildren } from "react";
 
-import LinearGradient from 'react-native-linear-gradient';
+// import LinearGradient from 'react-native-linear-gradient';
 import {
     StyleSheet,
     Text,

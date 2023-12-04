@@ -10,7 +10,7 @@ import {
     Pressable,
     TextInput
 } from 'react-native';
-
+import ip from './IPaddress'
 import * as Keychain from 'react-native-keychain';
 
 export default function Screen_Home({ navigation, route }) {
@@ -27,7 +27,7 @@ export default function Screen_Home({ navigation, route }) {
 
     const NextScreen = async () => {
         try {
-            let url = 'http://10.100.2.238:3000/verifyToken'
+            let url = `http://${ip}:3000/verifyToken`
             const credentials = await Keychain.getGenericPassword();
             let response = await fetch(url, {
                 method: 'POST',

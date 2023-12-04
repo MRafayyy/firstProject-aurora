@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, PropsWithChildren } from "react";
 
-import GlobalStyle from "../utils/GlobalStyle";
+// import GlobalStyle from "../utils/GlobalStyle";
 
 // import LinearGradient from 'react-native-linear-gradient';
 import {
@@ -8,7 +8,7 @@ import {
     Text,
     View,
     Pressable,
-    TextInput,
+    // TextInput,
     Image
 } from 'react-native';
 import * as Keychain from 'react-native-keychain';
@@ -56,17 +56,36 @@ export default function Screen_Home({ navigation, route }) {
 
     }
 
-    const takePicture = async()=>{
+    const takePicture = async () => {
 
-        if(camera!= null){
+        if (camera != null) {
 
             const photo = await camera.current.takePhoto({
-            // flash: 'on' // 'auto' | 'off'
-        })
-        setImageData(photo.path);
-        settakePhotoClicked(false)
-        console.log(photo.path)
+                // flash: 'on' // 'auto' | 'off'
+            })
+            setImageData(photo.path);
+            settakePhotoClicked(false)
+            console.log(photo.path)
+        }
     }
+
+    const startRecording = () => {
+
+
+
+        camera.current.startRecording({
+            onRecordingFinished: (video) => console.log(video),
+            onRecordingError: (error) => console.error(error),
+            videoCodec: 'h264',
+            videoBitRate: 4000000,
+            videoStabilizationMode: 'cinematic',
+            resolution: { width: 1280, height: 720 },
+            
+        })
+    }
+    const stopRecording = async () => {
+
+        await camera.current.stopRecording()
     }
 
 
@@ -83,23 +102,31 @@ export default function Screen_Home({ navigation, route }) {
                 </Pressable>
             </View> */}
             <View style={{ flex: 1 }}>
-                {takePhotoClicked?(<View style={{flex:1}}>
-                <Camera
-                style={StyleSheet.absoluteFill}
-                device={device}
-                isActive={true}
-                ref={camera}
-                photo={true}
-                />
-                <Pressable onPress={takePicture} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'red', borderRadius: 30, bottom: 50, alignSelf: 'center' }}></Pressable>
-                </View>):(
-                    <View style={{flex:1, justifyContent: 'center', alignItems:'center'}}>
-                        {ImageData!=='' && <Image source={{uri: 'file://'+ImageData}} style={{width: '90%',height:'70%'}}/>}
-                        <Pressable onPress={()=>settakePhotoClicked(true)} style={{width:'90%', height: 50,borderWidth: 1, alignSelf:'center', justifyContent: 'center'}}><Text>Click Photo </Text></Pressable>
+                {takePhotoClicked ? (<View style={{ flex: 1 }}>
+                    <Camera
+                    onInitialized={()=>console.log("initialized cam")}
+                        style={StyleSheet.absoluteFill}
+                        device={device}
+                        isActive={true}
+                        ref={camera}
+                        photo={true}
+                        video={true}
+                        audio={true}
+                        // videoStabilizationMode='cinematic'
+                        fps={30}
+
+                    />
+                    <Pressable onPress={takePicture} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'red', borderRadius: 30, bottom: 50, alignSelf: 'center' }}></Pressable>
+                    <Pressable onPress={startRecording} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'blue', borderRadius: 30, bottom: 50, alignSelf: 'flex-start' }}></Pressable>
+                    <Pressable onPress={stopRecording} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'yellow', borderRadius: 30, bottom: 50, alignSelf: 'flex-end' }}></Pressable>
+                </View>) : (
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        {ImageData !== '' && <Image source={{ uri: 'file://' + ImageData }} style={{ width: '90%', height: '70%' }} />}
+                        <Pressable onPress={() => settakePhotoClicked(true)} style={{ width: '90%', height: 50, borderWidth: 1, alignSelf: 'center', justifyContent: 'center' }}><Text>Click Photo </Text></Pressable>
                     </View>
                 )}
 
-       
+
             </View>
         </>
     )
