@@ -26,10 +26,11 @@ export default function Screen_Login({ navigation, route }) {
     }
     const onHandlePasswordChange = (value) => {
         setPasswordText(value);
-
-
     }
 
+    const goToForgotPasswordScreen = ()=>{
+        navigation.navigate('Screen_ForgotPassword')
+    }
     const GoToRegistrationPage = () => {
         navigation.navigate('Screen_Registration')
     }
@@ -126,6 +127,7 @@ Logged();
                 <View style={styles.PasswordInputBoxView}>
                     {/* <Text style={styles.text}>Password</Text> */}
                     <TextInput onChangeText={(value) => onHandlePasswordChange(value)} style={[styles.PasswordInputBox, { color: 'black' }]} editable placeholder='Password' placeholderTextColor={'black'} ></TextInput>
+                <Pressable onPress={goToForgotPasswordScreen} style={{marginTop:10}}><Text style={[styles.text,{textAlign: 'right'}]}>Forgot password?</Text></Pressable>
                 </View>
 
                 {/* <View>
@@ -139,6 +141,7 @@ Logged();
                         <Text style={[styles.btntext, { textAlign: 'center' }]}> Login</Text>
                     </LinearGradient>
                 </Pressable>
+
 
                 <View style={styles.bottomText}>
                     <Text style={[{ color: 'black' }]}>Don't have an account?</Text>
@@ -176,10 +179,11 @@ const styles = StyleSheet.create({
         justifyContent: 'start'
     },
     text: {
+        
         margin: 0,
-        fontSize: 20,
-        fontWeight: '600',
-        color: 'white',
+        // fontSize: 15,
+        fontWeight: '500',
+        color: 'black',
         textAlign: 'left'
     },
     linkbeforetext: {

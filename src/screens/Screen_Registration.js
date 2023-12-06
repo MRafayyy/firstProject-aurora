@@ -14,7 +14,7 @@ import ip from './IPaddress';
 export default function Screen_Registration({ navigation, route }) {
 
 
-
+    let regex_email = /^[^\s@]+(?:@[^\s@]+(?:\.[^\s@]+)*)?$/
     let regex_specialchar = /(?=.*?[.#?!@$%^&*-])/
     let regex_numbers = /(?=.*?[0-9])/
     let regex_CapAlphabet = /(?=.*?[A-Z])/
@@ -23,19 +23,26 @@ export default function Screen_Registration({ navigation, route }) {
     const GoToLoginPage = () => {
         navigation.navigate('Screen_Login')
     }
+
+    const [EmailText, setEmailText] = useState('');
     const [UsernameText, setUsernameText] = useState('');
     const [PasswordText, setPasswordText] = useState('');
     const [CPasswordText, setCPasswordText] = useState('');
 
+    const [EmailError_msg, setEmailError_msg] = useState(['']);
     const [UsernameError_msg, setUsernameError_msg] = useState(['']);
     const [PasswordError_msg, setPasswordError_msg] = useState(['']);
     const [CPasswordError_msg, setCPasswordError_msg] = useState(['']);
 
 
+    const onHandleEmailChange = (value) => {
+        setEmailText(value);
+    }
+  
     const onHandleUsernameChange = (value) => {
         setUsernameText(value);
-
     }
+
     const onHandlePasswordChange = (value) => {
         setPasswordText(value);
 
@@ -61,6 +68,19 @@ export default function Screen_Registration({ navigation, route }) {
             else {
                 setUsernameError_msg([]);
 
+            }
+        }
+
+        if(EmailText.trim().length === 0){
+            setEmailError_msg(['Email cannot be empty'])
+        }
+        else if(EmailText.trim().length >0){
+
+            if(!EmailText.match(regex_email)){
+                setEmailError_msg(['Invalid email format'])
+            }
+            else{
+                setEmailError_msg([]);
             }
         }
 
@@ -133,7 +153,7 @@ export default function Screen_Registration({ navigation, route }) {
     // }
     
     useEffect(() => {
-        if (UsernameError_msg.length === 0 && PasswordError_msg.length === 0 && CPasswordError_msg.length === 0) {
+        if (EmailError_msg.length === 0 && UsernameError_msg.length === 0 && PasswordError_msg.length === 0 && CPasswordError_msg.length === 0) {
             let url = `http://${ip}:3000/register`
           
             const SendRegistrationInfo = async () => {
@@ -141,6 +161,7 @@ export default function Screen_Registration({ navigation, route }) {
 
                     const registrationData = {
                         userId: UsernameText,
+                        email: EmailText,
                         password: PasswordText
                     }
                     let response = await fetch(url, {
@@ -162,7 +183,7 @@ export default function Screen_Registration({ navigation, route }) {
             }
             SendRegistrationInfo();
         }
-    }, [UsernameError_msg, PasswordError_msg, CPasswordError_msg]);
+    }, [EmailError_msg, UsernameError_msg, PasswordError_msg, CPasswordError_msg]);
 
 
 
@@ -173,6 +194,8 @@ export default function Screen_Registration({ navigation, route }) {
 
                 <Text style={styles.welcome_text}>Aurora</Text>
 
+                
+                
                 <View style={styles.UsernameInputBoxView}>
                     {/* onChangeText={(value) => setText(value)} */}
                     <TextInput onChangeText={(value) => onHandleUsernameChange(value)} style={[styles.UsernameInputBox, { color: 'black' }]} editable placeholder='UserId' placeholderTextColor={'black'} ></TextInput>
@@ -182,6 +205,14 @@ export default function Screen_Registration({ navigation, route }) {
                     ))}
                 </View>
 
+                <View style={styles.UsernameInputBoxView}>
+                    {/* onChangeText={(value) => setText(value)} */}
+                    <TextInput onChangeText={(value) => onHandleEmailChange(value)} style={[styles.UsernameInputBox, { color: 'black' }]} editable placeholder='Email' placeholderTextColor={'black'} ></TextInput>
+                    {/* <Text style={{ color: 'red'}}>{UsernameError_msg}</Text> */}
+                    {EmailError_msg.map((value, index) => (
+                        <Text style={{ color: 'red', marginTop: 0 }} key={index}>{value}</Text>
+                    ))}
+                </View>
 
                 <View style={[styles.PasswordInputBoxView]}>
 

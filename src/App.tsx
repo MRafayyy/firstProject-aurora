@@ -62,6 +62,7 @@ import Screen_Registration from './screens/Screen_Registration';
 import Screen_Home from './screens/Screen_Home';
 import Screen_Splash from './screens/Screen_Splash';
 import Screen_Home2 from './screens/Screen_Home2';
+import Screen_ForgotPassword from './screens/Screen_ForgotPassword';
 
 
 
@@ -145,6 +146,11 @@ screenOptions={({route})=>(
         size=focused?23: 19;
         color=focused? 'red':'cyan';
       }
+      else if(route.name==='Screen_ForgotPassword'){
+        iconName = 'car';
+        size=focused?23: 19;
+        color=focused? 'red':'cyan';
+      }
 
       return(
        <FontAwesome5 
@@ -179,7 +185,7 @@ options={{
 }}
 /> */}
 
-<Tab.Screen
+{/* <Tab.Screen
 name='Screen_B'
 component={Screen_B}
 options={{
@@ -187,7 +193,7 @@ options={{
   // tabBarIcon: ()=>null,
   tabBarButton: ()=>null,
 }}
-/>
+/> */}
 
 <Tab.Screen
 name='Screen_Registration'
@@ -195,6 +201,7 @@ component={Screen_Registration}
 options={{
   // header: ()=>null
   // tabBarButton: ()=>null
+  // tabBarStyle: {display:'none'}
 }}
 />
 <Tab.Screen
@@ -238,6 +245,18 @@ options={{
 <Tab.Screen
 name='Screen_Home2'
 component={Screen_Home2}
+options={{
+  // header: ()=>null
+  // tabBarActiveTintColor: 'black'
+  tabBarButton: ()=>null,
+  tabBarStyle: {display:'none'}
+}}
+/>
+
+
+<Tab.Screen
+name='Screen_ForgotPassword'
+component={Screen_ForgotPassword}
 options={{
   // header: ()=>null
   // tabBarActiveTintColor: 'black'
