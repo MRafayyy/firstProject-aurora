@@ -7,22 +7,28 @@ import { StyleSheet, View, Text, TextInput, Pressable, Alert } from 'react-nativ
 export default function Screen_ForgotPassword({ navigation, route }) {
 
 
-    const [UserId, setUserId] = useState('')
+    // const [UserId, setUserId] = useState('')
+    const [Email, setEmail] = useState('')
 
     const onHandleUserIdChange = (value)=>{
         setUserId(value)
     }
+    const onHandleEmailChange = (value)=>{
+        setEmail(value)
+    }
 
-    
+    const backToLogin = ()=>{
+        navigation.navigate('Screen_Login')
+    }
     // useEffect(()=>{
         
         const forgotPassword = async()=>{
         let url = `http://${ip}:3000/forgotpassword`
-        if(UserId.length===0){
+        if(Email.length===0){
             return
         }
         // else 
-        let userId = UserId;
+        let email = Email;
         try {
 
             let response = await fetch(url,{
@@ -30,17 +36,18 @@ export default function Screen_ForgotPassword({ navigation, route }) {
                 headers: {
                     'Content-Type' : 'application/json'
                 },
-                body: JSON.stringify({userId})
+                body: JSON.stringify({email})
             })
             response = await response.json();
             
             if(response.success === true){
                 // navigation.navigate('Screen_EnterPasswordResetCode')
                 console.log("mail sent ig")
+                Alert.alert("Success","Credentials have been sent to your email address")
             }
             else if(response.success===false){
                 // console.log("invalid user")
-                Alert.alert("Invalid user","User does not exist")
+                Alert.alert("Invalid email","email does not exist")
             }
             
         } catch (error) {
@@ -57,13 +64,21 @@ export default function Screen_ForgotPassword({ navigation, route }) {
 
                 <View style={styles.UsernameInputBoxView}>
                  
-                    <TextInput onChangeText={(value) => onHandleUserIdChange(value)} style={[styles.UsernameInputBox, { color: 'black' }]} editable placeholder='Enter your userId' placeholderTextColor={'black'} ></TextInput>
+                    <TextInput onChangeText={(value) => onHandleEmailChange(value)} style={[styles.UsernameInputBox, { color: 'black' }]} editable placeholder='Enter your email' placeholderTextColor={'black'} ></TextInput>
                 </View>
+
                 <Pressable onPress={forgotPassword}  style={({ pressed }) => [pressed ? { opacity: 0.8 } : {}, styles.loginBtn, { borderRadius: 100 }]}>
                     <LinearGradient style={{borderRadius: 200}} useAngle={true} angle={45} angleCenter={{ x: 0.5, y: 0.5 }} colors={['rgb(5, 214, 217)', 'rgb(249, 7, 252)']} >
                         <Text style={[styles.btntext, { textAlign: 'center' }]}> Submit</Text>
                     </LinearGradient>
                 </Pressable>
+                
+                <Pressable onPress={backToLogin}  style={({ pressed }) => [pressed ? { opacity: 0.8 } : {}, styles.loginBtn, { borderRadius: 100, marginBottom: '40%' }]}>
+                    <LinearGradient style={{borderRadius: 200}} useAngle={true} angle={45} angleCenter={{ x: 0.5, y: 0.5 }} colors={['rgb(5, 214, 217)', 'rgb(249, 7, 252)']} >
+                        <Text style={[styles.btntext, { textAlign: 'center' }]}> Back to login</Text>
+                    </LinearGradient>
+                </Pressable>
+
             </View>
         </>
     )
@@ -106,20 +121,23 @@ const styles = StyleSheet.create({
         textAlign: 'left'
     },
     loginBtn: {
-        flex: 1,
+        // flex: 1,
+        marginBottom: '0%',
         width: 300,
-        height: 100,
+        height: 70,
         color: 'white',
         // borderRadius: 200,
         borderTopEndRadius: 100,
         borderBottomLeftRadius: 100,
+        // borderWidth:3,
+        // borderColor: 'red',
 
         // justifyContent: 'center',
         // alignItems: 'center'
         marginTop: 0,
     },
     UsernameInputBoxView: {
-        marginBottom: '0%',
+        marginBottom: '5%',
         flex: 0.5,
 
     },
