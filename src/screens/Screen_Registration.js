@@ -154,7 +154,7 @@ export default function Screen_Registration({ navigation, route }) {
     
     useEffect(() => {
         if (EmailError_msg.length === 0 && UsernameError_msg.length === 0 && PasswordError_msg.length === 0 && CPasswordError_msg.length === 0) {
-            let url = `http://${ip}:3000/register`
+            let url = `${ip}/register`
           
             const SendRegistrationInfo = async () => {
                 try {

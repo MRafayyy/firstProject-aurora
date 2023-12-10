@@ -23,7 +23,7 @@ export default function Screen_ForgotPassword({ navigation, route }) {
     // useEffect(()=>{
         
         const forgotPassword = async()=>{
-        let url = `http://${ip}:3000/forgotpassword`
+        let url = `${ip}/forgotpassword`
         if(Email.length===0){
             return
         }

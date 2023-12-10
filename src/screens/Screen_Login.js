@@ -38,7 +38,7 @@ export default function Screen_Login({ navigation, route }) {
         const Login = async () => {
             
             // let url = 'http://192.168.0.103:3000/login'
-            let url = `http://${ip}:3000/login`
+            let url = `${ip}/login`
             try {
 
                 const LoginData = {
@@ -81,7 +81,7 @@ export default function Screen_Login({ navigation, route }) {
     
     async function Logged(){
     try {
-      let url = `http://${ip}:3000/verifyToken`
+      let url = `${ip}/verifyToken`
       const credentials = await Keychain.getGenericPassword();
       let response = await fetch(url, {
           method: 'POST',

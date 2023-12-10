@@ -41,7 +41,7 @@ const hmm = userId;
     }
   
     const Verify =async()=>{
-        let url = `http://${ip}:3000/VerifyNadraInfo`
+        let url = `${ip}/VerifyNadraInfo`
         try {
 
             const NadraData = {

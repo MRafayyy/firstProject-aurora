@@ -27,7 +27,7 @@ export default function Screen_Home({ navigation, route }) {
 
     const NextScreen = async () => {
         try {
-            let url = `http://${ip}:3000/verifyToken`
+            let url = `${ip}/verifyToken`
             const credentials = await Keychain.getGenericPassword();
             let response = await fetch(url, {
                 method: 'POST',
