@@ -46,9 +46,9 @@ const hmm = userId;
 
             const NadraData = {
 
-                name: nameText,
-                fathers_name: Fathers_nameText,
-                cnic: parseInt(cnicText),
+                name: nameText.trim(),
+                fathers_name: Fathers_nameText.trim(),
+                cnic: parseInt(cnicText.trim()),
                 gender: "female",
                 userId: hmm.userId
             }
