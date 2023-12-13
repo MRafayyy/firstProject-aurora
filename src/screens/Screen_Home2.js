@@ -11,8 +11,9 @@ import {
     // TextInput,
     Image
 } from 'react-native';
+import Video from 'react-native-video'
 import * as Keychain from 'react-native-keychain';
-import { Camera } from "react-native-vision-camera";
+import { Camera, useCameraDevice, useCameraFormat } from "react-native-vision-camera";
 import { ActivityIndicator } from "react-native-paper";
 // import { Image } from "react-native-paper/lib/typescript/components/Avatar/Avatar";
 
@@ -21,6 +22,8 @@ export default function Screen_Home({ navigation, route }) {
 
     const [ImageData, setImageData] = useState('');
     const [takePhotoClicked, settakePhotoClicked] = useState(false);
+    const [VideoData, setVideoData] = useState('');
+    const [takeVideoClicked, settakeVideoClicked] = useState(false);
 
 
 
@@ -37,8 +40,19 @@ export default function Screen_Home({ navigation, route }) {
     }
 
     const camera = useRef(null)
-    const devices = Camera.getAvailableCameraDevices()
-    const device = devices.find((d) => d.position === 'back')
+    // const devices = Camera.getAvailableCameraDevices()
+    // const device = devices.find((d) => d.position === 'back')
+
+    const device = useCameraDevice('back')
+    const format = useCameraFormat(device, [
+        { videoResolution: { width: 1280, height: 720 },
+        // { videoResolution: { width: 3048, height: 2160 },
+         pixelFormat: 'native' }, // if i dont specify vidresol then Error retrieving camcorder profile params
+        { fps: 30 }
+        ])
+
+
+    // width: 3048, height: 2160
     // const device = useCameraDevice('back');
     // const device = useCameraDevices
     // const device = devices.back;
@@ -61,7 +75,7 @@ export default function Screen_Home({ navigation, route }) {
         if (camera != null) {
 
             const photo = await camera.current.takePhoto({
-                // flash: 'on' // 'auto' | 'off'
+                
             })
             setImageData(photo.path);
             settakePhotoClicked(false)
@@ -71,21 +85,28 @@ export default function Screen_Home({ navigation, route }) {
 
     const startRecording = () => {
 
+        console.log("start recording clicked")
+          camera.current.startRecording({
+            onRecordingFinished: (video) => {console.log(video); setVideoData(video.path)},
+            onRecordingError: (error) => console.error(error)
+          });
+       
 
-
-        camera.current.startRecording({
-            onRecordingFinished: (video) => console.log(video),
-            onRecordingError: (error) => console.error(error),
-            videoCodec: 'h264',
-            videoBitRate: 4000000,
-            videoStabilizationMode: 'cinematic',
-            resolution: { width: 1280, height: 720 },
+        // camera.current.startRecording({
+        //     flash: 'on',
+        //     onRecordingFinished: (video) => console.log(video),
+        //     onRecordingError: (error) => console.error(error),
             
-        })
+        // })
     }
     const stopRecording = async () => {
-
-        await camera.current.stopRecording()
+try {
+    
+    settakePhotoClicked(false)
+    await camera.current.stopRecording()
+} catch (error) {
+    console.log(error)
+}
     }
 
 
@@ -101,8 +122,8 @@ export default function Screen_Home({ navigation, route }) {
                     <Text style={styles.text}>Go to Home Page</Text>
                 </Pressable>
             </View> */}
-            <View style={{ flex: 1 }}>
-                {takePhotoClicked ? (<View style={{ flex: 1 }}>
+            <View style={{ flex: 1, justifyContent: 'center'}}>
+                {takePhotoClicked ? (<View style={{ flex: 1}}>
                     <Camera
                     onInitialized={()=>console.log("initialized cam")}
                         style={StyleSheet.absoluteFill}
@@ -112,17 +133,18 @@ export default function Screen_Home({ navigation, route }) {
                         photo={true}
                         video={true}
                         audio={true}
+                        format={format}
                         // videoStabilizationMode='cinematic'
-                        fps={30}
-
                     />
+
                     <Pressable onPress={takePicture} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'red', borderRadius: 30, bottom: 50, alignSelf: 'center' }}></Pressable>
                     <Pressable onPress={startRecording} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'blue', borderRadius: 30, bottom: 50, alignSelf: 'flex-start' }}></Pressable>
                     <Pressable onPress={stopRecording} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'yellow', borderRadius: 30, bottom: 50, alignSelf: 'flex-end' }}></Pressable>
                 </View>) : (
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        {ImageData !== '' && <Image source={{ uri: 'file://' + ImageData }} style={{ width: '90%', height: '70%' }} />}
-                        <Pressable onPress={() => settakePhotoClicked(true)} style={{ width: '90%', height: 50, borderWidth: 1, alignSelf: 'center', justifyContent: 'center' }}><Text>Click Photo </Text></Pressable>
+                    <View style={{ flex: 1,justifyContent: 'center', alignItems: 'center'}}>
+                        {ImageData !== '' && <Image source={{ uri: 'file://' + ImageData }} style={{width: '90%', height: '10%' }} />}
+                        {VideoData !== '' && <Video resizeMode={'cover'} source={{ uri: 'file://' + VideoData }} style={{ borderWidth: 0, borderColor:'red', width: "100%", height: "90%" }} />}
+                        <Pressable onPress={() => settakePhotoClicked(true)} style={{ width: '90%', height: 50, borderWidth: 1, alignSelf: 'center', justifyContent: 'center' }}><Text style={{color: 'black'}}>Click Photo </Text></Pressable>
                     </View>
                 )}
 

@@ -8,7 +8,6 @@ import {
     Text,
     View,
     Pressable,
-    TextInput
 } from 'react-native';
 import ip from './IPaddress'
 import * as Keychain from 'react-native-keychain';
