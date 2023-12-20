@@ -65,9 +65,15 @@ import Screen_Home2 from './screens/Screen_Home2';
 import Screen_ForgotPassword from './screens/Screen_ForgotPassword';
 
 
+// import PushNotification from 'react-native-push-notification';
+
 
 
 function App() {
+  
+  
+
+
 
 const [isLoggedIn, setisLoggedIn] = useState(false)
 

@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import ip from './IPaddress'
 import * as Keychain from 'react-native-keychain';
+import PushNotification from "react-native-push-notification";
 
 export default function Screen_Home({ navigation, route }) {
 
@@ -21,6 +22,23 @@ export default function Screen_Home({ navigation, route }) {
     const Logout = async () => {
         await Keychain.resetGenericPassword();
         navigation.navigate('Screen_Login');
+    }
+
+    const handleNotification = ()=>{
+
+        // PushNotification.cancelAllNotifications();
+        console.log("notif clicked")
+PushNotification.localNotification({
+    channelId : "test-channel",
+    channelName: "Test Channel",
+    title: "You clicked on test notif button",
+    message: "Message",
+    bigText: "Yuhu is name of the famous chinese dish",
+    foreground: true,
+    showWhen: true,
+    color: 'red'
+
+})
     }
 
 
@@ -60,6 +78,9 @@ export default function Screen_Home({ navigation, route }) {
                 </Pressable>
                 <Pressable onPress={NextScreen} style={{ backgroundColor: 'orange' }}>
                     <Text style={styles.text}>Next Screen</Text>
+                </Pressable>
+                <Pressable onPress={handleNotification} style={{ backgroundColor: 'orange' }}>
+                    <Text style={(styles.text, {marginTop: 30})}>Testing notif</Text>
                 </Pressable>
             </View>
         </>

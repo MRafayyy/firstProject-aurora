@@ -7,8 +7,12 @@ import {
     View,
     Pressable,
     TextInput,
-    Button
+    Button,
+    PermissionsAndroid,
+  Platform,
 } from 'react-native';
+
+import PushNotification from "react-native-push-notification";
 
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Keychain from 'react-native-keychain';
@@ -35,6 +39,30 @@ export default function Screen_Login({ navigation, route }) {
         navigation.navigate('Screen_Registration')
     }
     // useEffect(() => {
+
+const createChannels = ()=>{
+    PushNotification.createChannel({
+        channelId: "test-channel",
+        channelName: "Test Channel"    
+},
+(created)=> console.log("channel created")
+)
+}
+
+const NotificationPermission = () => { //this func is for requesting notification permission from user
+    const checkApplicationPermission = async () => {
+      if (Platform.OS === 'android') {
+        try {
+          await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+          );
+        } catch (error) {
+        }
+      }
+    };
+    checkApplicationPermission();
+} 
+
         const Login = async () => {
             
             // let url = 'http://192.168.0.103:3000/login'
@@ -77,8 +105,9 @@ export default function Screen_Login({ navigation, route }) {
     }
     
     useEffect(() => {
-    
-    
+    NotificationPermission();
+    createChannels();
+
     async function Logged(){
     try {
       let url = `${ip}/verifyToken`
