@@ -24,22 +24,33 @@ export default function Screen_Home({ navigation, route }) {
         navigation.navigate('Screen_Login');
     }
 
-    const handleNotification = ()=>{
+    const handleNotification = () => {
 
-        // PushNotification.cancelAllNotifications();
+        // PushNotification.cancelAllLocalNotifications(); //previous notifs will be cancelled
+
         console.log("notif clicked")
-PushNotification.localNotification({
-    channelId : "test-channel",
-    channelName: "Test Channel",
-    title: "You clicked on test notif button",
-    message: "Message",
-    bigText: "Yuhu is name of the famous chinese dish",
-    foreground: true,
-    showWhen: true,
-    color: 'red'
 
-})
+        PushNotification.localNotification({
+            channelId: "test-channel",
+            channelName: "Test Channel",
+            title: "You clicked on test notif button",
+            message: "Message",
+            bigText: "Yuhu is name of the famous chinese dish",
+            foreground: true,
+            showWhen: true,
+            color: 'red'
+        })
+
+        PushNotification.localNotificationSchedule({
+            channelId: "test-channel",
+            channelName: "Test Channel",
+            title: "delayed one",
+            message: "you have been here for 10 secs",
+            date: new Date(Date.now() + (10 * 1000)),
+            allowWhileIdle: true,
+        })
     }
+
 
 
     const NextScreen = async () => {
@@ -80,13 +91,13 @@ PushNotification.localNotification({
                     <Text style={styles.text}>Next Screen</Text>
                 </Pressable>
                 <Pressable onPress={handleNotification} style={{ backgroundColor: 'orange' }}>
-                    <Text style={(styles.text, {marginTop: 30})}>Testing notif</Text>
+                    <Text style={(styles.text, { marginTop: 30 })}>Testing notif</Text>
                 </Pressable>
             </View>
         </>
     )
-}
 
+}
 
 
 
