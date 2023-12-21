@@ -7,7 +7,9 @@ import App from './src/App';
 import {name as appName} from './app.json';
 
 import PushNotification from "react-native-push-notification";
+import messaging from '@react-native-firebase/messaging';
 // import { PushNotification } from 'react-native';
+
 
 PushNotification.configure({
   
@@ -25,4 +27,14 @@ console.log("NOTIFICATION:", notification);
   requestPermissions: Platform.OS === 'ios'
 })
 
+
+
+// Register background handler
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+  console.log('Message handled in the background!', remoteMessage);
+});
+
+messaging().getInitialNotification(async remoteMessage => {
+  console.log('Message handled in kill mode!', remoteMessage);
+})
 AppRegistry.registerComponent(appName, () => App);

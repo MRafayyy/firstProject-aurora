@@ -8,9 +8,13 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+<!-- added below 3 permissions for local notifs -->
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+<!-- added below 2 permissions for scheduling notifs -->
+<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+<uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <application
       android:name=".MainApplication"

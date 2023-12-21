@@ -12,6 +12,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import messaging from '@react-native-firebase/messaging'
 // import MashButton from './CustomButton';
 // import type { PropsWithChildren } from 'react';
 import {
@@ -19,6 +20,7 @@ import {
   Text,
   View,
   Pressable,
+  Alert
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 // import { createStackNavigator } from '@react-navigation/stack';
@@ -104,8 +106,27 @@ const [isLoggedIn, setisLoggedIn] = useState(false)
 //   }
 }
 Logged();
+
+getDeviceToken();
   }, [])
   
+  const getDeviceToken =async() =>{
+
+    await messaging().registerDeviceForRemoteMessages();
+    const token = await messaging().getToken();
+    console.log(token)
+    // save the token to the db
+    let serverKey = 'AAAADz1-KfI:APA91bGJ-sKa3F15DexhEXHxHp_XWl4dEoC6HChxD6cJF42ad9RzvTj0K0KfxwCLLeAA54nWSGHwxN8ZYd2EIbBHztsXGu57ZG7jt-QKT8peIQYvyhMEWj03oX1kO2I0AYR8KVbs09gO'
+    let dvT = 'c8KHnyMrRTyXNXB9tVglFM:APA91bGVoYH4vYpKUsETdY_RxbAMZ3vXe2u4wLWhDFrya87IyuTyyStgiaypiOCfZgO5HLuMSpnIvZ4LL7gcFzWfk5_zZbT-hodd-D6RMvtkJPKaSIytPKowKcI5HgO3viZWtHFNBlOX'
+  }
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    return unsubscribe;
+  }, []);
 
 
   return (
