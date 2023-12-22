@@ -69,17 +69,20 @@ export default function Screen_Login({ navigation, route }) {
 
     const Login = async () => {
 
-        await messaging().registerDeviceForRemoteMessages();
-        const FcmDeviceToken = await messaging().getToken();
-        // FcmDeviceToken = token
-        // let url = 'http://192.168.0.103:3000/login'
-        let url = `${ip}/login`
+       
         try {
-            console.log("here..................")
+            
+            await messaging().registerDeviceForRemoteMessages();
+            const FcmDeviceToken = await messaging().getToken();
+            // FcmDeviceToken = token
+            // let url = 'http://192.168.0.103:3000/login'
+   
+        let url = `${ip}/login`
+       console.log(FcmDeviceToken)
             const LoginData = {
                 userId: UsernameText,
                 password: PasswordText,
-                // FcmDeviceToken: FcmDeviceToken
+                FcmDeviceToken: FcmDeviceToken
             }
             let response = await fetch(url, {
                 method: 'POST',
@@ -90,7 +93,7 @@ export default function Screen_Login({ navigation, route }) {
                 body: JSON.stringify(LoginData)
             })
 
-            console.log(response.text())
+           
             response = await response.json();
             if (response.success === true) {
 
@@ -109,7 +112,7 @@ export default function Screen_Login({ navigation, route }) {
             }
             // console.log(response);
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }
     }
     
@@ -143,7 +146,7 @@ export default function Screen_Login({ navigation, route }) {
                     },
                     body: JSON.stringify(credentials)
                 })
-           console.log(response.text())
+        //    console.log(response.text())
                 response = await response.json();
                 
                 if (response.success === true) {
@@ -155,7 +158,7 @@ export default function Screen_Login({ navigation, route }) {
                 }
 
             } catch (error) {
-                console.info(error)
+                // console.info(error)
             }
         }
         Logged();
