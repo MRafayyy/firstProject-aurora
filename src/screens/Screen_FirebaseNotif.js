@@ -34,8 +34,8 @@ export default function Screen_FirebaseNotif({ navigation, route }) {
         setMessageText(value);
     }
 
-    const goToForgotPasswordScreen = () => {
-        navigation.navigate('Screen_ForgotPassword')
+    const GoToHomePage = () => {
+        navigation.navigate('Screen_Home')
     }
     
     // useEffect(() => {
@@ -170,6 +170,11 @@ export default function Screen_FirebaseNotif({ navigation, route }) {
                 <Pressable onPress={sendFCMNotifs} style={({ pressed }) => [pressed ? { opacity: 0.8 } : {}, styles.loginBtn, { borderRadius: 100 }]}>
                     <LinearGradient style={styles.LG} useAngle={true} angle={45} angleCenter={{ x: 0.5, y: 0.5 }} colors={['rgb(5, 214, 217)', 'rgb(249, 7, 252)']} >
                         <Text  style={[styles.btntext, { textAlign: 'center' }]}> Send</Text>
+                    </LinearGradient>
+                </Pressable>
+                <Pressable onPress={GoToHomePage} style={({ pressed }) => [pressed ? { opacity: 0.8 } : {}, styles.loginBtn, { borderRadius: 100 }]}>
+                    <LinearGradient style={styles.LG} useAngle={true} angle={45} angleCenter={{ x: 0.5, y: 0.5 }} colors={['rgb(5, 214, 217)', 'rgb(249, 7, 252)']} >
+                        <Text  style={[styles.btntext, { textAlign: 'center' }]}> Go back to Home page</Text>
                     </LinearGradient>
                 </Pressable>
 

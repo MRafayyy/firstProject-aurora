@@ -148,6 +148,9 @@ try {
                 <Pressable onPress={FirebaseNotif_Screen} style={{ backgroundColor: 'red',  marginTop: 30  }}>
                     <Text style={(styles.text, {margin: 10 })}>Go to firebase notifs screen</Text>
                 </Pressable>
+                {/* <Pressable onPress={sendFCMNotifs} style={{ backgroundColor: 'red',  marginTop: 30  }}>
+                    <Text style={(styles.text, {margin: 10 })}>Go to firebase notifs screen</Text>
+                </Pressable> */}
             </View>
         </>
     )
