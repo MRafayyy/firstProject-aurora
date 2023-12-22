@@ -66,7 +66,7 @@ import Screen_Splash from './screens/Screen_Splash';
 import Screen_Home2 from './screens/Screen_Home2';
 import Screen_ForgotPassword from './screens/Screen_ForgotPassword';
 import Screen_FirebaseNotif from './screens/Screen_FirebaseNotif';
-
+import PushNotification from "react-native-push-notification";
 
 // import PushNotification from 'react-native-push-notification';
 
@@ -123,7 +123,19 @@ getDeviceToken();
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      PushNotification.localNotification({
+        ticker: "My Notification Ticker",
+        largeIconUrl: "https://www.example.tld/picture.jpg",
+        channelId: "test-channel",
+        channelName: "Test Channel",
+        title: remoteMessage.notification?.title,
+        message: remoteMessage.notification?.body,
+        // bigText: "Yuhu is name of the famous chinese dish",
+        foreground: true,
+        showWhen: true,
+        color: 'red'
+    })
+      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
     });
 
     return unsubscribe;

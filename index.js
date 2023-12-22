@@ -31,6 +31,16 @@ console.log("NOTIFICATION:", notification);
 
 // Register background handler
 messaging().setBackgroundMessageHandler(async remoteMessage => {
+//   PushNotification.localNotification({
+//     channelId: "test-channel",
+//     channelName: "Test Channel",
+//     title: JSON.stringify(remoteMessage.notification.title),
+//     message: JSON.stringify(remoteMessage.notification.body),
+//     // bigText: "Yuhu is name of the famous chinese dish",
+//     // foreground: true,
+//     showWhen: true,
+//     color: 'red'
+// })
   console.log('Message handled in the background!', remoteMessage);
 });
 
