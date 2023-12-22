@@ -25,8 +25,8 @@ try {
             'Content-Type': 'application/json'
         }
     })
-    response = response.json();
-    console.log(response)
+    // response = response.json();
+    // console.log(response)
 } catch (error) {
     
 }
