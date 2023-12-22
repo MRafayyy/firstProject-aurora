@@ -20,10 +20,11 @@ export default function Screen_Home({ navigation, route }) {
 try {
     let url = `${ip}/sendFCM`
     let response = await fetch(url,{
-        method: 'GET',
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json'
-        }
+        },
+        // body: JSON.stringify
     })
     // response = response.json();
     // console.log(response)
@@ -98,6 +99,11 @@ try {
     }
 
 
+    const FirebaseNotif_Screen = async()=>{
+        navigation.navigate('Screen_FirebaseNotif')
+    }
+
+
 
     const NextScreen = async () => {
         try {
@@ -131,16 +137,16 @@ try {
             <View style={styles.body}>
                 <Text style={[styles.text, GlobalStyle.CustomFont]}>Welcome to home screen</Text>
                 <Pressable onPress={Logout} style={{ backgroundColor: 'orange' }}>
-                    <Text style={styles.text}>Logout</Text>
+                    <Text style={(styles.text, {margin: 10 })}>Logout</Text>
                 </Pressable>
-                <Pressable onPress={NextScreen} style={{ backgroundColor: 'orange' }}>
-                    <Text style={styles.text}>Next Screen</Text>
+                <Pressable onPress={NextScreen} style={{ backgroundColor: 'orange', marginTop: 30  }}>
+                    <Text style={(styles.text, {margin: 10 })}>Next Screen</Text>
                 </Pressable>
-                <Pressable onPress={handleNotification} style={{ backgroundColor: 'orange' }}>
-                    <Text style={(styles.text, { marginTop: 30 })}>Testing notif</Text>
+                <Pressable onPress={handleNotification} style={{ backgroundColor: 'red', marginTop: 30  }}>
+                    <Text style={(styles.text, { margin: 10 })}>Testing notif</Text>
                 </Pressable>
-                <Pressable onPress={sendFCMNotifs} style={{ backgroundColor: 'orange' }}>
-                    <Text style={(styles.text, { marginTop: 30 })}>send firebase notifs</Text>
+                <Pressable onPress={FirebaseNotif_Screen} style={{ backgroundColor: 'red',  marginTop: 30  }}>
+                    <Text style={(styles.text, {margin: 10 })}>Go to firebase notifs screen</Text>
                 </Pressable>
             </View>
         </>

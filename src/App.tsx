@@ -65,6 +65,7 @@ import Screen_Home from './screens/Screen_Home';
 import Screen_Splash from './screens/Screen_Splash';
 import Screen_Home2 from './screens/Screen_Home2';
 import Screen_ForgotPassword from './screens/Screen_ForgotPassword';
+import Screen_FirebaseNotif from './screens/Screen_FirebaseNotif';
 
 
 // import PushNotification from 'react-native-push-notification';
@@ -148,11 +149,11 @@ screenOptions={({route})=>(
         size=focused?23: 19;
         color=focused? 'red':'cyan';
       }
-      else if(route.name==='Screen_B'){
-        iconName = 'user';
-        size=focused?23: 15;
-        color=focused? 'red':'cyan';
-      }
+      // else if(route.name==='Screen_B'){
+      //   iconName = 'user';
+      //   size=focused?23: 15;
+      //   color=focused? 'red':'cyan';
+      // }
       else if(route.name==='Screen_NadraVerification'){
         iconName = 'sign-in-alt';
         size=focused?23: 19;
@@ -174,6 +175,11 @@ screenOptions={({route})=>(
         color=focused? 'red':'cyan';
       }
       else if(route.name==='Screen_ForgotPassword'){
+        iconName = 'car';
+        size=focused?23: 19;
+        color=focused? 'red':'cyan';
+      }
+      else if(route.name==='Screen_FirebaseNotif'){
         iconName = 'car';
         size=focused?23: 19;
         color=focused? 'red':'cyan';
@@ -284,6 +290,17 @@ options={{
 <Tab.Screen
 name='Screen_ForgotPassword'
 component={Screen_ForgotPassword}
+options={{
+  // header: ()=>null
+  // tabBarActiveTintColor: 'black'
+  tabBarButton: ()=>null,
+  tabBarStyle: {display:'none'}
+}}
+/>
+
+<Tab.Screen
+name='Screen_FirebaseNotif'
+component={Screen_FirebaseNotif}
 options={{
   // header: ()=>null
   // tabBarActiveTintColor: 'black'
