@@ -134,42 +134,42 @@ useEffect(()=>{
 
 useEffect(() => {
   
-  const handleInitialNotification = async () => {
-    const initialNotification = await messaging().getInitialNotification();
+  // const handleInitialNotification = async () => {
+  //   const initialNotification = await messaging().getInitialNotification();
 
-    if (initialNotification) {
-      PushNotification.localNotification({
-        channelId: "test-channel",
-        channelName: "Test Channel",
-        title: initialNotification.data?.title,
-        message: initialNotification.data?.body,
-        foreground: true,
-        showWhen: true,
-        color: 'red',
-        // date: new Date(Date.now()),
-        // allowWhileIdle: true,
-      });
-      console.log('Message handled in kill mode!', initialNotification);
-    }
-  };
+  //   // if (initialNotification) {
+  //   //   PushNotification.localNotification({
+  //   //     channelId: "test-channel",
+  //   //     channelName: "Test Channel",
+  //   //     title: initialNotification.data?.title,
+  //   //     message: initialNotification.data?.body,
+  //   //     foreground: true,
+  //   //     showWhen: true,
+  //   //     color: 'red',
+  //   //     // date: new Date(Date.now()),
+  //   //     // allowWhileIdle: true,
+  //   //   });
+  //     console.log('Message handled in kill mode!', initialNotification);
+  //   }
+  // };
 
-  handleInitialNotification();
+  // handleInitialNotification();
 
 
     messaging().setBackgroundMessageHandler(async remoteMessage => {
-        PushNotification.localNotification(
+      //   PushNotification.localNotification(
           
-          {
-          channelId: "test-channel",
-          channelName: "Test Channel",
-          title: remoteMessage.data?.title,
-          message: remoteMessage.data?.body,
-          // bigText: "Yuhu is name of the famous chinese dish",
-          // foreground: true,
-          showWhen: true,
-          color: 'red',
+      //     {
+      //     channelId: "test-channel",
+      //     channelName: "Test Channel",
+      //     title: remoteMessage.data?.title,
+      //     message: remoteMessage.data?.body,
+      //     // bigText: "Yuhu is name of the famous chinese dish",
+      //     // foreground: true,
+      //     showWhen: true,
+      //     color: 'red',
          
-      })
+      // })
         console.log('Messagess handled in the background!', remoteMessage);
       });
 

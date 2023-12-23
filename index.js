@@ -47,23 +47,24 @@ console.log("NOTIFICATION:", notification);
 // });
 
 
-// messaging().getInitialNotification(async remoteMessage => {
+messaging().getInitialNotification(async remoteMessage => {
 
 
-// //     PushNotification.localNotificationSchedule(
+//     PushNotification.localNotificationSchedule(
     
-// //     {
-// //     channelId: "test-channel",
-// //     channelName: "Test Channel",
-// //     title: remoteMessage.data.title,
-// //     message: remoteMessage.data.body,
-// //     // bigText: "Yuhu is name of the famous chinese dish",
-// //     foreground: true,
-// //     showWhen: true,
-// //     color: 'red',
-// //     date: new Date(Date.now()),
-// //     allowWhileIdle: true,
-// // })
-//   console.log('Message handled in kill mode!', remoteMessage);
+//     {
+//     channelId: "test-channel",
+//     channelName: "Test Channel",
+//     title: remoteMessage.data.title,
+//     message: remoteMessage.data.body,
+//     // bigText: "Yuhu is name of the famous chinese dish",
+//     foreground: true,
+//     showWhen: true,
+//     color: 'red',
+//     date: new Date(Date.now()),
+//     allowWhileIdle: true,
 // })
+  console.log('Message handled in kill mode!', remoteMessage);
+})
+
 AppRegistry.registerComponent(appName, () => App);
