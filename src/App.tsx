@@ -134,19 +134,26 @@ useEffect(()=>{
 
 useEffect(() => {
   
-  // messaging().getInitialNotification(async remoteMessage => {
-  //   PushNotification.localNotification({
-  //   channelId: "test-channel",
-  //   channelName: "Test Channel",
-  //   title: remoteMessage.notification.title,
-  //   message: remoteMessage.notification.body,
-  //   // bigText: "Yuhu is name of the famous chinese dish",
-  //   // foreground: true,
-  //   showWhen: true,
-  //   color: 'red'
-  // })
-  // console.log('Message handled in kill mode!', remoteMessage);
-  // })
+  const handleInitialNotification = async () => {
+    const initialNotification = await messaging().getInitialNotification();
+
+    if (initialNotification) {
+      PushNotification.localNotification({
+        channelId: "test-channel",
+        channelName: "Test Channel",
+        title: initialNotification.data?.title,
+        message: initialNotification.data?.body,
+        foreground: true,
+        showWhen: true,
+        color: 'red',
+        // date: new Date(Date.now()),
+        // allowWhileIdle: true,
+      });
+      console.log('Message handled in kill mode!', initialNotification);
+    }
+  };
+
+  handleInitialNotification();
 
 
     messaging().setBackgroundMessageHandler(async remoteMessage => {
@@ -160,7 +167,8 @@ useEffect(() => {
           // bigText: "Yuhu is name of the famous chinese dish",
           // foreground: true,
           showWhen: true,
-          color: 'red'
+          color: 'red',
+         
       })
         console.log('Messagess handled in the background!', remoteMessage);
       });
@@ -192,6 +200,7 @@ useEffect(() => {
 
     return unsubscribe;
   }, []);
+
 
 
   return (
