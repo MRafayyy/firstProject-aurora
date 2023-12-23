@@ -30,41 +30,50 @@ console.log("NOTIFICATION:", notification);
 
 
 // Register background handler
-// messaging().setBackgroundMessageHandler(async remoteMessage => {
-// //   PushNotification.localNotification(
+
+
+
+// messaging().getInitialNotification(async remoteMessage => {
+
+
+// //     PushNotification.localNotificationSchedule(
     
 // //     {
 // //     channelId: "test-channel",
 // //     channelName: "Test Channel",
-// //     title: remoteMessage.notification.title,
-// //     message: remoteMessage.notification.body,
+// //     title: remoteMessage.data.title,
+// //     message: remoteMessage.data.body,
 // //     // bigText: "Yuhu is name of the famous chinese dish",
-// //     // foreground: true,
+// //     foreground: true,
 // //     showWhen: true,
-// //     color: 'red'
+// //     color: 'red',
+// //     date: new Date(Date.now()),
+// //     allowWhileIdle: true,
 // // })
-//   console.log('Messagess handled in the background!', remoteMessage);
-// });
+//   console.log('Message handled in kill mode!', remoteMessage);
+// })
 
 
 messaging().getInitialNotification(async remoteMessage => {
-
-
-//     PushNotification.localNotificationSchedule(
-    
-//     {
-//     channelId: "test-channel",
-//     channelName: "Test Channel",
-//     title: remoteMessage.data.title,
-//     message: remoteMessage.data.body,
-//     // bigText: "Yuhu is name of the famous chinese dish",
-//     foreground: true,
-//     showWhen: true,
-//     color: 'red',
-//     date: new Date(Date.now()),
-//     allowWhileIdle: true,
-// })
   console.log('Message handled in kill mode!', remoteMessage);
 })
+
+
+
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+//   PushNotification.localNotification({
+//     // largeIconUrl: "https://www.example.tld/picture.jpg",
+//     channelId: "test-channel",
+//     channelName: "Test Channel",
+//     // title: remoteMessage.notification?.title,
+//     title: remoteMessage.notification?.title,
+//     // message: remoteMessage.notification?.body,
+//     message: remoteMessage.notification?.body,
+//     // bigText: "Yuhu is name of the famous chinese dish",
+//     // foreground: true,
+//     showWhen: true,
+//     color: 'red'
+// })
+  });
 
 AppRegistry.registerComponent(appName, () => App);

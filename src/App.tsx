@@ -13,6 +13,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import messaging from '@react-native-firebase/messaging'
+// import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 // import messaging from '@react-native-firebase/messaging';
 // import MashButton from './CustomButton';
 // import type { PropsWithChildren } from 'react';
@@ -124,54 +125,25 @@ getDeviceToken();
 
 
 
-useEffect(()=>{
-
-
-
-  
-},[])
-
-
 useEffect(() => {
-  
-  // const handleInitialNotification = async () => {
-  //   const initialNotification = await messaging().getInitialNotification();
-
-  //   // if (initialNotification) {
-  //   //   PushNotification.localNotification({
-  //   //     channelId: "test-channel",
-  //   //     channelName: "Test Channel",
-  //   //     title: initialNotification.data?.title,
-  //   //     message: initialNotification.data?.body,
-  //   //     foreground: true,
-  //   //     showWhen: true,
-  //   //     color: 'red',
-  //   //     // date: new Date(Date.now()),
-  //   //     // allowWhileIdle: true,
-  //   //   });
-  //     console.log('Message handled in kill mode!', initialNotification);
-  //   }
-  // };
-
-  // handleInitialNotification();
 
 
-    messaging().setBackgroundMessageHandler(async remoteMessage => {
-      //   PushNotification.localNotification(
+    // messaging().setBackgroundMessageHandler(async remoteMessage => {
+    //   //   PushNotification.localNotification(
           
-      //     {
-      //     channelId: "test-channel",
-      //     channelName: "Test Channel",
-      //     title: remoteMessage.data?.title,
-      //     message: remoteMessage.data?.body,
-      //     // bigText: "Yuhu is name of the famous chinese dish",
-      //     // foreground: true,
-      //     showWhen: true,
-      //     color: 'red',
+    //   //     {
+    //   //     channelId: "test-channel",
+    //   //     channelName: "Test Channel",
+    //   //     title: remoteMessage.data?.title,
+    //   //     message: remoteMessage.data?.body,
+    //   //     // bigText: "Yuhu is name of the famous chinese dish",
+    //   //     // foreground: true,
+    //   //     showWhen: true,
+    //   //     color: 'red',
          
-      // })
-        console.log('Messagess handled in the background!', remoteMessage);
-      });
+    //   // })
+    //     console.log('Messagess handled in the background!', remoteMessage);
+    //   });
 
 
 
@@ -185,11 +157,11 @@ useEffect(() => {
         channelId: "test-channel",
         channelName: "Test Channel",
         // title: remoteMessage.notification?.title,
-        title: remoteMessage.data?.title,
+        title: remoteMessage.notification?.title,
         // message: remoteMessage.notification?.body,
-        message: remoteMessage.data?.body,
+        message: remoteMessage.notification?.body,
         // bigText: "Yuhu is name of the famous chinese dish",
-        foreground: true,
+        // foreground: true,
         showWhen: true,
         color: 'red'
     })
