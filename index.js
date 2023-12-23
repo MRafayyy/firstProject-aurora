@@ -30,21 +30,36 @@ console.log("NOTIFICATION:", notification);
 
 
 // Register background handler
-messaging().setBackgroundMessageHandler(async remoteMessage => {
-//   PushNotification.localNotification({
-//     channelId: "test-channel",
-//     channelName: "Test Channel",
-//     title: JSON.stringify(remoteMessage.notification.title),
-//     message: JSON.stringify(remoteMessage.notification.body),
-//     // bigText: "Yuhu is name of the famous chinese dish",
-//     // foreground: true,
-//     showWhen: true,
-//     color: 'red'
-// })
-  console.log('Message handled in the background!', remoteMessage);
-});
+// messaging().setBackgroundMessageHandler(async remoteMessage => {
+// //   PushNotification.localNotification(
+    
+// //     {
+// //     channelId: "test-channel",
+// //     channelName: "Test Channel",
+// //     title: remoteMessage.notification.title,
+// //     message: remoteMessage.notification.body,
+// //     // bigText: "Yuhu is name of the famous chinese dish",
+// //     // foreground: true,
+// //     showWhen: true,
+// //     color: 'red'
+// // })
+//   console.log('Messagess handled in the background!', remoteMessage);
+// });
 
 messaging().getInitialNotification(async remoteMessage => {
+
+    PushNotification.localNotification(
+    
+    {
+    channelId: "test-channel",
+    channelName: "Test Channel",
+    title: remoteMessage.data?.title,
+    message: remoteMessage.data?.body,
+    // bigText: "Yuhu is name of the famous chinese dish",
+    // foreground: true,
+    showWhen: true,
+    color: 'red'
+})
   console.log('Message handled in kill mode!', remoteMessage);
 })
 AppRegistry.registerComponent(appName, () => App);
