@@ -1,6 +1,6 @@
 import React, { useState, PropsWithChildren, useEffect } from "react";
 // import type { PropsWithChildren } from 'react';
-import LinearGradient from 'react-native-linear-gradient';
+// import LinearGradient from 'react-native-linear-gradient';
 import {
     StyleSheet,
     Text,
@@ -8,10 +8,38 @@ import {
     Pressable,
     TextInput,
     Button,
+    Image,
+    KeyboardAvoidingView,
+    Keyboard,
+    ScrollView,
+    Dimensions,
+    ActivityIndicator,
+    Alert,
+    BackHandler
 } from 'react-native';
+
+import {
+    responsiveHeight,
+    responsiveWidth,
+    responsiveFontSize
+  } from "react-native-responsive-dimensions";
+
 import ip from './IPaddress';
 
 export default function Screen_Registration({ navigation, route }) {
+
+
+    function handleBackButtonClick() {
+        navigation.goBack();
+        return true;
+      }
+      
+      useEffect(() => {
+        BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+        return () => {
+          BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+        };
+      }, []);
 
 
     let regex_email = /^[^\s@]+(?:@[^\s@]+(?:\.[^\s@]+)*)?$/
@@ -21,24 +49,39 @@ export default function Screen_Registration({ navigation, route }) {
     let regex_SmallAlphabet = /(?=.*?[a-z])/
 
     const GoToLoginPage = () => {
+        setEmailText();
+        setUsernameText();
+        setPasswordText();
+        setCPasswordText();
+
+        setUsernameError_msg([]);
+        setEmailError_msg([]);
+        setPasswordError_msg([])
+        setCPasswordError_msg([])
         navigation.navigate('Screen_Login')
     }
-
+    
     const [EmailText, setEmailText] = useState('');
     const [UsernameText, setUsernameText] = useState('');
+    // console.log(UsernameText.length)
     const [PasswordText, setPasswordText] = useState('');
     const [CPasswordText, setCPasswordText] = useState('');
-
+    
+    const [Loader, setLoader] = useState(false);
+    
     const [EmailError_msg, setEmailError_msg] = useState(['']);
     const [UsernameError_msg, setUsernameError_msg] = useState(['']);
     const [PasswordError_msg, setPasswordError_msg] = useState(['']);
     const [CPasswordError_msg, setCPasswordError_msg] = useState(['']);
 
-
+    const [isClicked, setisClicked] = useState(false)
+    
+    
     const onHandleEmailChange = (value) => {
         setEmailText(value);
+       
     }
-  
+    
     const onHandleUsernameChange = (value) => {
         setUsernameText(value);
     }
@@ -52,24 +95,94 @@ export default function Screen_Registration({ navigation, route }) {
         setCPasswordText(value);
     }
 
+
+
+
+
+    
+    
+    const Register = () => {
+        
+
+
+       setisClicked(true);
+
+    //    validateFields();
+        // useEffect(() => {
+            // if (UsernameText.length !== 0 && EmailText.length !== 0 && PasswordText.length !== 0 && CPasswordText.length !== 0) {
+        if (EmailError_msg.length === 0 && UsernameError_msg.length === 0 && PasswordError_msg.length === 0 && CPasswordError_msg.length === 0) {
+            let url = `${ip}/register`
+            setLoader(true)
+            
+            const SendRegistrationInfo = async () => {
+                try {
+
+                    const registrationData = {
+                        userId: UsernameText,
+                        email: EmailText,
+                        password: PasswordText
+                    }
+                    let response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": 'application/json'
+                        },
+                        
+                        body: JSON.stringify(registrationData)
+                    })
+                    // console.log(response)
+                    response = await response.json();
+                    console.log(response)
+
+                    if(response===true){
+                        navigation.navigate('Screen_NadraVerification',{userId: UsernameText});
+                        setLoader(false)
+                        
+                    }
+                    else{
+                        setUsernameError_msg(['User Id or email already exists'])
+                        setLoader(false)
+                    }
+                    // console.log(response);
+                } catch (error) {
+                    Alert.alert("Error", error)
+                    setLoader(false)
+                    console.log(error)
+                }
+            }
+
+            SendRegistrationInfo();
+        }
+    // }
+        
+    // }, [EmailError_msg, UsernameError_msg, PasswordError_msg, CPasswordError_msg]);
+    
+}
+useEffect(()=>{
+
     let arr = [];
 
-    const Register = () => {
+    const validateFields = () =>{
+        
         arr = [];
+        // setUsernameError_msg([]);
 
         if (UsernameText.trim().length === 0) {
             setUsernameError_msg(['UserId cannot be empty'])
         }
-        else {
-            if (UsernameText.length < 3 && UsernameText.trim().length !== 0) {
-                setUsernameError_msg(["demn length too short!"])
+        else
+        { 
+            if (UsernameText.trim().length < 3 && UsernameText.trim().length !== 0) {
+                setUsernameError_msg(["length too short!"])
 
             }
-            else {
+            else 
+            {
                 setUsernameError_msg([]);
 
             }
         }
+
 
         if(EmailText.trim().length === 0){
             setEmailError_msg(['Email cannot be empty'])
@@ -85,6 +198,7 @@ export default function Screen_Registration({ navigation, route }) {
         }
 
         setPasswordError_msg([])
+
         if (PasswordText.trim().length === 0) {
 
 
@@ -130,124 +244,74 @@ export default function Screen_Registration({ navigation, route }) {
             setCPasswordError_msg([])
         }
 
+        
     }
 
+if(isClicked===true){   
+    validateFields();
+}
 
-    // const SendRegistrationInfo = async () => {
-        //     try {
-
-
-    //         let response = await fetch(url, {
-    //             method: 'POST',
-    //             "Content-Type": 'application/json',
-    //             body: {
-    //                 userId: UsernameText,
-    //                 password: PasswordText
-    //             }
-    //         })
-    //         response = await response.json();
-    //         console.log(response);
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
-    
-    useEffect(() => {
-        if (EmailError_msg.length === 0 && UsernameError_msg.length === 0 && PasswordError_msg.length === 0 && CPasswordError_msg.length === 0) {
-            let url = `${ip}/register`
-          
-            const SendRegistrationInfo = async () => {
-                try {
-
-                    const registrationData = {
-                        userId: UsernameText,
-                        email: EmailText,
-                        password: PasswordText
-                    }
-                    let response = await fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            "Content-Type": 'application/json'
-                        },
-
-                        body: JSON.stringify(registrationData)
-                    })
-                    response = await response.json();
-                    if(response===true){
-                        navigation.navigate('Screen_NadraVerification',{userId: UsernameText});
-                    }
-                    console.log(response);
-                } catch (error) {
-                    console.log(error)
-                }
-            }
-            SendRegistrationInfo();
-        }
-    }, [EmailError_msg, UsernameError_msg, PasswordError_msg, CPasswordError_msg]);
-
-
+},[UsernameText, EmailText, PasswordText, CPasswordText, isClicked])
 
 
     return (
         <>
+
+
+        {/* <ScrollView  showsVerticalScrollIndicator={true} style={{flex:1}}> */}
+          <KeyboardAvoidingView enabled  behavior={Platform.OS === 'ios' ? 'padding' : 'null'} style={{flex:1}} >
             <View style={styles.body}>
 
-                <Text style={styles.welcome_text}>Aurora</Text>
+            <Image source={require('../../assets/images/730_generated.jpg')} style={[{width: responsiveWidth(100),height: responsiveHeight(40), resizeMode: 'cover'}] }/>
 
                 
                 
                 <View style={styles.UsernameInputBoxView}>
-                    {/* onChangeText={(value) => setText(value)} */}
-                    <TextInput onChangeText={(value) => onHandleUsernameChange(value)} style={[styles.UsernameInputBox, { color: 'black' }]} editable placeholder='UserId' placeholderTextColor={'black'} ></TextInput>
-                    {/* <Text style={{ color: 'red'}}>{UsernameError_msg}</Text> */}
+                    <TextInput onChangeText={(value) => onHandleUsernameChange(value)} style={[styles.UsernameInputBox, { color: 'black' }]} editable placeholder='User Id' placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
                     {UsernameError_msg.map((value, index) => (
-                        <Text style={{ color: 'red', marginTop: 0 }} key={index}>{value}</Text>
+                        <Text style={{ color: 'red', marginTop: 2, fontSize: responsiveFontSize(1.2) }} key={index}>{value}</Text>
                     ))}
                 </View>
+
 
                 <View style={styles.UsernameInputBoxView}>
-                    {/* onChangeText={(value) => setText(value)} */}
-                    <TextInput onChangeText={(value) => onHandleEmailChange(value)} style={[styles.UsernameInputBox, { color: 'black' }]} editable placeholder='Email' placeholderTextColor={'black'} ></TextInput>
-                    {/* <Text style={{ color: 'red'}}>{UsernameError_msg}</Text> */}
+                    <TextInput onChangeText={(value) => onHandleEmailChange(value)} style={[styles.UsernameInputBox, { color: 'black' }]} editable placeholder='Email' placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>                 
                     {EmailError_msg.map((value, index) => (
-                        <Text style={{ color: 'red', marginTop: 0 }} key={index}>{value}</Text>
-                    ))}
+                        <Text style={{ color: 'red', marginTop: 2, fontSize: responsiveFontSize(1.2) }} key={index}>{value}</Text>
+                        ))}
                 </View>
 
-                <View style={[styles.PasswordInputBoxView]}>
 
-                    <TextInput onChangeText={(value) => onHandlePasswordChange(value)} style={[styles.PasswordInputBox, { color: 'black' }]} editable placeholder='Password' placeholderTextColor={'black'} ></TextInput>
-                    {/* <Text style={{ color: 'red', marginTop: 7 }}>{PasswordError_msg}</Text> */}
+                <View style={[styles.PasswordInputBoxView]}>
+                    <TextInput onChangeText={(value) => onHandlePasswordChange(value)} style={[styles.PasswordInputBox, { color: 'black' }]} editable placeholder='Password' placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
                     {PasswordError_msg.map((value, index) => (
-                        <Text style={{ color: 'red', marginTop: 0 }} key={index}>{value}</Text>
+                        <Text style={{ color: 'red', marginTop: 2,  fontSize: responsiveFontSize(1.2) }} key={index}>{value}</Text>
                     ))}
                 </View>
 
 
                 <View style={[styles.PasswordInputBoxView]}>
-                    <TextInput onChangeText={(value) => onHandleCPasswordChange(value)} style={[styles.PasswordInputBox, { color: 'black' }]} editable placeholder='Confirm Password' placeholderTextColor={'black'} ></TextInput>
-                    {/* <Text style={{ color: 'red', marginTop: 0 }}>{CPasswordError_msg}</Text> */}
+                    <TextInput onChangeText={(value) => onHandleCPasswordChange(value)} style={[styles.PasswordInputBox, { color: 'black' }]} editable placeholder='Confirm Password' placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
                     {CPasswordError_msg.map((value, index) => (
-                        <Text style={{ color: 'red', marginTop: 0 }} key={index}>{value}</Text>
+                        <Text style={{ color: 'red', marginTop: 2,  fontSize: responsiveFontSize(1.2) }} key={index}>{value}</Text>
                     ))}
                 </View>
 
 
-                <Pressable onPress={Register} style={({ pressed }) => [pressed ? { opacity: 0.8 } : {}, styles.loginBtn, { borderRadius: 100 }]}>
-                    {/* <LinearGradient colors={['##05D6D9', '##F907FC', '#FFFFFF']}> */}
-                    <LinearGradient style={styles.LG} useAngle={true} angle={45} angleCenter={{ x: 0.5, y: 0.5 }} colors={['rgb(5, 214, 217)', 'rgb(249, 7, 252)']} >
-                        <Text style={[styles.btntext, { textAlign: 'center' }]}> Register</Text>
-                    </LinearGradient>
+                <Pressable onPress={Register} style={({ pressed }) => [pressed ? { opacity: 0.8 } : {}, styles.loginBtn, { borderRadius: 100 }]} disabled={Loader}>
+                {Loader ? <ActivityIndicator size='large' color="#fff" /> : <Text style={[styles.btntext, { textAlign: 'center' }]}> Register</Text>}
                 </Pressable>
 
-                <View style={styles.bottomText}>
-                    <Text style={[{ color: 'black' }]}>Already have an account?</Text>
-                    <Pressable onPress={GoToLoginPage} ><Text style={styles.linkColor}>Login</Text></Pressable>
 
+                <View style={styles.bottomText}>
+                    <Text style={[{ color: 'black', fontSize: responsiveFontSize(1.5) }]}>Already have an account?</Text>
+                    <Pressable onPress={GoToLoginPage} ><Text style={styles.linkColor}>Login</Text></Pressable>
                 </View>
 
 
             </View>
+</KeyboardAvoidingView>
+        {/* </ScrollView> */}
         </>
     )
 }
@@ -256,31 +320,16 @@ export default function Screen_Registration({ navigation, route }) {
 
 
 const styles = StyleSheet.create({
-    welcome_text: {
-        flex: 1.2,
-        fontSize: 70,
-        marginTop: '13%',
-        marginBottom: '13%',
-        fontWeight: '900',
-        fontStyle: 'normal',
-        color: 'gray'
-    },
     body: {
         flex: 1,
-        // width: '100%',
-        // height: '100vh',
         backgroundColor: 'white',
         alignItems: 'center',
-        justifyContent: 'start',
-        // borderWidth: 4,
-        // borderColor: 'red'
-        color: 'black',
+        justifyContent: 'center'
     },
+
     text: {
-        margin: 0,
-        fontSize: 20,
-        fontWeight: '600',
-        color: 'white',
+        fontSize: responsiveFontSize(1.5),
+        color: 'black',
         textAlign: 'left'
     },
     linkbeforetext: {
@@ -288,82 +337,74 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: '600',
         color: 'black',
-        textAlign: 'left',
+        textAlign: 'left'
     },
+
     btntext: {
-        margin: '4%',
-        // margin: 10,
-        fontSize: 20,
-        fontWeight: '600',
+        fontSize: responsiveFontSize(2),
+        fontWeight: '400',
         color: 'white',
         textAlign: 'left'
     },
-    UsernameInputBoxView: {
-        // marginBottom: '12%',
-        marginBottom: '17%',
-        flex: 0.7,
-        // borderColor: 'red',
-        // borderWidth: 1,
 
-    },
-    UsernameInputBox: {
-        width: 300,
-        height: 50,
-        fontSize: 20,
-        backgroundColor: 'white',
-        color: 'black',
-        marginBottom: 4,
-        borderColor: 'black',
-        borderTopWidth: 0,
-        borderRightWidth: 0,
-        borderLeftWidth: 0,
-        borderBottomWidth: 5,
+    UsernameInputBoxView: {
+        marginBottom: responsiveHeight(3),
+     
     },
     PasswordInputBoxView: {
-        marginBottom: '17%',
-        flex: 0.7,
-        // borderColor: 'red',
-        // borderWidth: 1,
+        marginBottom: responsiveHeight(3),
     },
-    PasswordInputBox: {
-        width: 300,
-        height: 50,
-        fontSize: 20,
+
+    UsernameInputBox: {
+        width: responsiveWidth(80),
+        height: responsiveHeight(6),
+        fontSize: responsiveFontSize(2),
         backgroundColor: 'white',
         color: 'black',
         borderColor: 'black',
         borderTopWidth: 0,
         borderRightWidth: 0,
         borderLeftWidth: 0,
-        borderBottomWidth: 5,
-        marginBottom: 4,
-        // marginBottom: 50,
+        borderBottomWidth: 3,
     },
-    loginBtn: {
-        flex: 1,
-        width: 300,
-        height: 100,
-        color: 'white',
-        // borderRadius: 200,
-        borderTopEndRadius: 100,
-        borderBottomLeftRadius: 100,
+    PasswordInputBox: {
+        width: responsiveWidth(80),
+        height: responsiveHeight(6),
+        fontSize: responsiveFontSize(2),
+        backgroundColor: 'white',
+        color: 'black',
+        borderColor: 'black',
+        // borderTopWidth: 1,
+        borderRightWidth: 0,
+        borderLeftWidth: 0,
+        borderBottomWidth: 3,
+        // marginBottom: responsiveHeight(1),
+    },
 
-        // justifyContent: 'center',
-        // alignItems: 'center'
-        marginTop: '7%',
-    },
-    LG: {
+    loginBtn: {
+        width: responsiveWidth(80),
+        height: responsiveHeight(6),
+        color: 'white',
+        backgroundColor: '#0662bf',
         borderRadius: 200,
-    },
-    bottomText: {
-        flex: 1,
-        marginTop: "0%",
+        justifyContent: 'center',
         alignItems: 'center',
+        marginTop: responsiveHeight(2),
+    },
+ 
+    bottomText: {
+        marginTop: responsiveHeight(2),
+        alignItems: 'center',
+        justifyContent: 'center',
         flexDirection: 'row',
         gap: 5,
+        alignSelf: '',
+        
     },
     linkColor: {
-        color: 'red'
+        color: 'red',
+        fontSize: responsiveFontSize(1.5),
+        textAlign: 'center'
     }
 
 });

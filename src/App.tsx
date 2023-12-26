@@ -30,6 +30,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 // import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import * as Keychain from 'react-native-keychain';
 
@@ -63,12 +64,13 @@ import Screen_B from './screens/Screen_B';
 import Screen_Login from './screens/Screen_Login';
 import Screen_NadraVerification from './screens/Screen_NadraVerification';
 import Screen_Registration from './screens/Screen_Registration';
-import Screen_Home from './screens/Screen_Home';
+import { default as Home } from './screens/Screen_Home';
 import Screen_Splash from './screens/Screen_Splash';
 import Screen_Home2 from './screens/Screen_Home2';
 import Screen_ForgotPassword from './screens/Screen_ForgotPassword';
 import Screen_FirebaseNotif from './screens/Screen_FirebaseNotif';
 import PushNotification from "react-native-push-notification";
+import Screen_Decider from './screens/Screen_Decider';
 
 // import PushNotification from 'react-native-push-notification';
 
@@ -84,29 +86,6 @@ const [isLoggedIn, setisLoggedIn] = useState(false)
 
   useEffect(() => {
   async function Logged(){
-//     try {
-//       let url = 'http://192.168.0.103:3000/verifyToken'
-//       const credentials = await Keychain.getGenericPassword();
-//       let response = await fetch(url, {
-//           method: 'POST',
-//           headers: {
-//               'Content-Type': "application/json"
-//           },
-//           body: JSON.stringify(credentials)
-//       })
-//       response = await response.json();
-//       if (response.success === true) {
-//            setisLoggedIn(true)
-
-// }
-// else if (response.success === false) {
-//         setisLoggedIn(false)
-   
-//       }
-
-//   } catch (error) {
-//       console.log(error)
-//   }
 }
 Logged();
 
@@ -117,8 +96,6 @@ getDeviceToken();
 
     await messaging().registerDeviceForRemoteMessages();
     const token = await messaging().getToken();
-    console.log(token)
-    // save the token to the db
     let serverKey = 'AAAADz1-KfI:APA91bGJ-sKa3F15DexhEXHxHp_XWl4dEoC6HChxD6cJF42ad9RzvTj0K0KfxwCLLeAA54nWSGHwxN8ZYd2EIbBHztsXGu57ZG7jt-QKT8peIQYvyhMEWj03oX1kO2I0AYR8KVbs09gO'
     let dvT = 'c8KHnyMrRTyXNXB9tVglFM:APA91bGVoYH4vYpKUsETdY_RxbAMZ3vXe2u4wLWhDFrya87IyuTyyStgiaypiOCfZgO5HLuMSpnIvZ4LL7gcFzWfk5_zZbT-hodd-D6RMvtkJPKaSIytPKowKcI5HgO3viZWtHFNBlOX'
   }
@@ -128,32 +105,9 @@ getDeviceToken();
 useEffect(() => {
 
 
-    // messaging().setBackgroundMessageHandler(async remoteMessage => {
-    //   //   PushNotification.localNotification(
-          
-    //   //     {
-    //   //     channelId: "test-channel",
-    //   //     channelName: "Test Channel",
-    //   //     title: remoteMessage.data?.title,
-    //   //     message: remoteMessage.data?.body,
-    //   //     // bigText: "Yuhu is name of the famous chinese dish",
-    //   //     // foreground: true,
-    //   //     showWhen: true,
-    //   //     color: 'red',
-         
-    //   // })
-    //     console.log('Messagess handled in the background!', remoteMessage);
-    //   });
-
-
-
-
-
-
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       PushNotification.localNotification({
         ticker: "My Notification Ticker",
-        // largeIconUrl: "https://www.example.tld/picture.jpg",
         channelId: "test-channel",
         channelName: "Test Channel",
         // title: remoteMessage.notification?.title,
@@ -165,10 +119,7 @@ useEffect(() => {
         showWhen: true,
         color: 'red'
     })
-      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
     });
-
-
 
     return unsubscribe;
   }, []);
@@ -178,78 +129,77 @@ useEffect(() => {
   return (
     <>
  <NavigationContainer>
-{/* <Tab.Navigator initialRouteName={isLoggedIn? 'Screen_Home': 'Screen_Login'}  */}
 <Tab.Navigator initialRouteName='Screen_Splash'
 screenOptions={({route})=>(
   {
     tabBarIcon: ({focused,size, color})=>{
+
       let iconName='';
-      // if(route.name==='Screen_A'){
-      //  iconName = 'x-ray';
-      //  size=focused?19: 15;
-      //  color=focused? 'red':'cyan';
-      // }
-      if(route.name==='Screen_Registration'){
-        iconName = 'registered';
-        size=focused?23: 19;
-        color=focused? 'red':'cyan';
-      }
-      // else if(route.name==='Screen_B'){
-      //   iconName = 'user';
-      //   size=focused?23: 15;
-      //   color=focused? 'red':'cyan';
-      // }
-      else if(route.name==='Screen_NadraVerification'){
-        iconName = 'sign-in-alt';
-        size=focused?23: 19;
-        color=focused? 'red':'cyan';
-      }
-      else if(route.name==='Screen_Login'){
-        iconName = 'user';
-        size=focused?23: 19;
-        color=focused? 'red':'cyan';
-      }
-      else if(route.name==='Screen_Home'){
-        iconName = 'home';
-        size=focused?23: 19;
-        color=focused? 'red':'cyan';
+ 
+      if(route.name==='Home'){
+        iconName = 'home-outline';
+        size=focused?19: 19;
+        color=focused? 'blue':'gray';
       }
       else if(route.name==='Screen_Home2'){
-        iconName = 'wrench';
-        size=focused?23: 19;
-        color=focused? 'red':'cyan';
+        iconName = 'alert-sharp';
+        size=focused?19: 19;
+        color=focused? 'blue':'gray';
       }
       else if(route.name==='Screen_ForgotPassword'){
         iconName = 'car';
-        size=focused?23: 19;
-        color=focused? 'red':'cyan';
+        size=focused?19: 19;
+        color=focused? 'blue':'gray';
       }
       else if(route.name==='Screen_FirebaseNotif'){
         iconName = 'car';
-        size=focused?23: 19;
-        color=focused? 'red':'cyan';
+        size=focused?19: 19;
+        color=focused? 'blue':'gray';
       }
 
       return(
-       <FontAwesome5 
-       name={iconName}
-       size={size} 
-       color={color}
-      />
+      //  <FontAwesome5 
+      //  name={iconName}
+      //  size={size} 
+      //  color={color}
+      // />
+      <Ionicons name={iconName} size={size} color={color} />
       );
     },
-    tabBarActiveTintColor: 'pink',
-    tabBarInactiveTintColor: 'black',
-    tabBarActiveBackgroundColor: 'black',
-    tabBarInactiveBackgroundColor: 'black',
-    tabBarShowLabel: false,
-    tabBarLabelStyle:{fontSize: 19},
-    header: ()=>null,
+    // tabBarActiveTintColor: 'pink',
+    // tabBarInactiveTintColor: 'black',
+    tabBarActiveBackgroundColor: 'white',
+    tabBarInactiveBackgroundColor: 'white',
+    tabBarShowLabel: true,
+    tabBarLabelStyle:{fontSize: 10},
+    // header: ()=>null,
     
   }
   )}
 >
 {/* // screenOptions={{header: ()=> null}} */}
+
+
+  <Tab.Screen
+  name='Screen_Splash'
+  component={Screen_Splash}
+  options={{
+    // tabBarActiveTintColor: 'black'
+    header: ()=>null,
+    tabBarButton: ()=>null,
+    tabBarStyle: {display:'none'}
+  }}
+  />
+  
+  <Tab.Screen
+  name='Screen_Decider'
+  component={Screen_Decider}
+  options={{
+    header: ()=>null,
+    tabBarButton: ()=>null,
+    tabBarStyle: {display:'none'}
+  }}
+  />
 
 {/* <Tab.Screen
 name='Screen_A'
@@ -263,62 +213,55 @@ options={{
 }}
 /> */}
 
-{/* <Tab.Screen
-name='Screen_B'
-component={Screen_B}
-options={{
-  // header: ()=>null
-  // tabBarIcon: ()=>null,
-  tabBarButton: ()=>null,
-}}
-/> */}
-
 <Tab.Screen
 name='Screen_Registration'
 component={Screen_Registration}
 options={{
-  // header: ()=>null
-  // tabBarButton: ()=>null
-  // tabBarStyle: {display:'none'}
+  header: ()=>null,
+  tabBarButton: ()=>null,
+  tabBarStyle: {display:'none'}
 }}
 />
 <Tab.Screen
 name='Screen_NadraVerification'
 component={Screen_NadraVerification}
 options={{
-  // header: ()=>null
+  header: ()=>null,
+  tabBarButton: ()=>null,
+  tabBarStyle: {display:'none'}
 }}
 />
 <Tab.Screen
 name='Screen_Login'
 component={Screen_Login}
 options={{
-  // header: ()=>null
-  // tabBarButton: ()=>null,
-}}
-/>
-
-<Tab.Screen
-name='Screen_Home'
-component={Screen_Home}
-options={{
-  // header: ()=>null
-  // tabBarActiveTintColor: 'black'
-  // tabBarButton: ()=>null
-}}
-/>
-
-<Tab.Screen
-name='Screen_Splash'
-component={Screen_Splash}
-options={{
-  // header: ()=>null
-  // tabBarActiveTintColor: 'black'
+  header: ()=>null,
   tabBarButton: ()=>null,
   tabBarStyle: {display:'none'}
 }}
 />
 
+<Tab.Screen
+name='Home'
+component={Home}
+options={{
+  header: ()=>null
+  // tabBarActiveTintColor: 'black'
+  // tabBarButton: ()=>null
+}}
+/>
+
+
+<Tab.Screen
+name='Screen_FirebaseNotif'
+component={Screen_FirebaseNotif}
+options={{
+  // header: ()=>null
+  // tabBarActiveTintColor: 'black'
+  // tabBarButton: ()=>null,
+  // tabBarStyle: {display:'none'}
+}}
+/>
 
 <Tab.Screen
 name='Screen_Home2'
@@ -326,8 +269,8 @@ component={Screen_Home2}
 options={{
   // header: ()=>null
   // tabBarActiveTintColor: 'black'
-  tabBarButton: ()=>null,
-  tabBarStyle: {display:'none'}
+  // tabBarButton: ()=>null,
+  // tabBarStyle: {display:'none'}
 }}
 />
 
@@ -343,16 +286,6 @@ options={{
 }}
 />
 
-<Tab.Screen
-name='Screen_FirebaseNotif'
-component={Screen_FirebaseNotif}
-options={{
-  // header: ()=>null
-  // tabBarActiveTintColor: 'black'
-  tabBarButton: ()=>null,
-  tabBarStyle: {display:'none'}
-}}
-/>
 
 </Tab.Navigator>
 

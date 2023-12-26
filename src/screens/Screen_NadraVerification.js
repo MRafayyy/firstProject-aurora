@@ -7,20 +7,36 @@ import {
     View,
     Pressable,
     TextInput,
-    Button
+    Button,
+    Image,
+    KeyboardAvoidingView,
+    Keyboard,
+    Alert,
+    ActivityIndicator
 } from 'react-native';
 import ip from './IPaddress';
 
+import {
+    responsiveHeight,
+    responsiveWidth,
+    responsiveFontSize
+} from "react-native-responsive-dimensions";
 
-  export default function Screen_NadraVerification({ navigation, route }){
 
-const userId = route.params;
-const hmm = userId;
-// console.log(userId);
+export default function Screen_NadraVerification({ navigation, route }) {
+
+    const userId = route.params;
+    const hmm = userId;
+    // console.log(userId);
+    const [Loader, setLoader] = useState(false);
 
     const [nameText, setnameText] = useState('');
     const [Fathers_nameText, setFathers_nameText] = useState('');
     const [cnicText, setcnicText] = useState('');
+
+    const [nameError_msg, setnameError_msg] = useState(['']);
+    const [Fathers_nameError_msg, setFathers_nameError_msg] = useState(['']);
+    const [cnicError_msg, setcnicError_msg] = useState(['']);
 
     const onHandleNameChange = (value) => {
         setnameText(value);
@@ -36,12 +52,47 @@ const hmm = userId;
     }
 
 
-    const onPressHandler = () => {
-        navigation.navigate('Screen_B');
-    }
-  
-    const Verify =async()=>{
+    let arr = [];
+
+    const Verify = async () => {
+
+        arr = [];
+
+        if (nameText.trim().length === 0 && Fathers_nameText.trim().length === 0 && cnicText.trim().length === 0) {
+            setnameError_msg(['name field cannot be empty'])
+            setFathers_nameError_msg(["father's name field cannot be empty"])
+            setcnicError_msg(['cnic field cannot be empty'])
+            return
+        }
+        else if (nameText.trim().length === 0) {
+            setnameError_msg(['name field cannot be empty'])
+            setFathers_nameError_msg([]);
+            setcnicError_msg([]);
+            return
+        }
+        else if (Fathers_nameText.trim().length === 0) {
+            setFathers_nameError_msg(["father's name field cannot be empty"])
+            setnameError_msg([]);
+            setcnicError_msg([]);
+            return
+        }
+        else if (cnicText.trim().length === 0) {
+            setcnicError_msg(['cnic field cannot be empty'])
+            setnameError_msg([]);
+            setFathers_nameError_msg([]);
+            return
+        }
+        else {
+            setFathers_nameError_msg([]);
+            setnameError_msg([]);
+            setcnicError_msg([]);
+        }
+
+
+
+
         let url = `${ip}/VerifyNadraInfo`
+        setLoader(true)
         try {
 
             const NadraData = {
@@ -52,7 +103,7 @@ const hmm = userId;
                 gender: "female",
                 userId: hmm.userId
             }
-            console.log(NadraData)
+            // console.log(NadraData)
             let response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -67,15 +118,21 @@ const hmm = userId;
             if (response === true) {
                 navigation.navigate('Screen_Login')
             }
+            else {
+                setLoader(false)
+                Alert.alert("Invalid data")
+            }
             console.log(response);
+
         } catch (error) {
+            setLoader(false)
             console.log(error)
         }
     }
 
-useEffect(() => {
-Verify();
-}, [])
+    // useEffect(() => {
+    //     Verify();
+    // }, [])
 
 
     // const [text, setText] = useState('');
@@ -83,38 +140,47 @@ Verify();
 
     return (
         <>
-            <View style={styles.body}>
+            <KeyboardAvoidingView enabled behavior={Platform.OS === 'ios' ? 'padding' : 'null'} style={{ flex: 1 }} >
 
-                <Text style={styles.welcome_text}>NADRA</Text>
+                <View style={styles.body}>
+                    <Image source={require('../../assets/images/nadraV.jpg')} style={[{ width: responsiveWidth(80), height: responsiveHeight(35), resizeMode: 'contain', marginBottom: responsiveHeight(2) }]} />
+                    {/* <Text style={styles.welcome_text}>NADRA</Text> */}
 
-                <View style={styles.UsernameInputBoxView}>
-                    <TextInput onChangeText={(value) => onHandleNameChange(value)} style={[styles.UsernameInputBox, { color: 'black' }]} editable placeholder='Name' placeholderTextColor={'black'} ></TextInput>
+                    <View style={styles.UsernameInputBoxView}>
+                        <TextInput onChangeText={(value) => onHandleNameChange(value)} style={[styles.UsernameInputBox, { color: 'black' }]} editable placeholder='Your name' placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
+                        {nameError_msg.map((value, index) => (
+                            <Text style={{ color: 'red', marginTop: 2, fontSize: responsiveFontSize(1.2) }} key={index}>{value}</Text>
+                        ))}
+                    </View>
+
+
+                    <View style={styles.UsernameInputBoxView}>
+                        <TextInput onChangeText={(value) => onHandleFathersNameChange(value)} style={[styles.UsernameInputBox, { color: 'black' }]} editable placeholder="Father's name" placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
+                        {Fathers_nameError_msg.map((value, index) => (
+                            <Text style={{ color: 'red', marginTop: 2, fontSize: responsiveFontSize(1.2) }} key={index}>{value}</Text>
+                        ))}
+                    </View>
+
+
+                    <View style={[styles.PasswordInputBoxView]}>
+                        <TextInput onChangeText={(value) => onHandleCnicChange(value)} style={[styles.PasswordInputBox, { color: 'black' }]} editable placeholder='CNIC' placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
+                        {cnicError_msg.map((value, index) => (
+                            <Text style={{ color: 'red', marginTop: 2, fontSize: responsiveFontSize(1.2) }} key={index}>{value}</Text>
+                        ))}
+                    </View>
+
+
+
+
+                    <Pressable onPress={Verify} style={({ pressed }) => [pressed ? { opacity: 0.8 } : {}, styles.loginBtn, { borderRadius: 100 }]} disabled={Loader}>
+                        {Loader ? <ActivityIndicator size='large' color="#fff" /> : <Text style={[styles.btntext, { textAlign: 'center' }]}> Verify</Text>}
+                    </Pressable>
+
+
+
+
                 </View>
-
-
-                <View style={styles.PasswordInputBoxView}>
-                    <TextInput onChangeText={(value) => onHandleFathersNameChange(value)} style={[styles.PasswordInputBox, { color: 'black' }]} editable placeholder="Father's name" placeholderTextColor={'black'} ></TextInput>
-                </View>
-                
-                
-                <View style={styles.PasswordInputBoxView}>
-                    <TextInput onChangeText={(value) => onHandleCnicChange(value)} style={[styles.PasswordInputBox, { color: 'black' }]} editable placeholder="CNIC" placeholderTextColor={'black'} ></TextInput>
-                </View>
-
-              
-
-
-                <Pressable onPress={Verify} style={({pressed})=>[pressed? {opacity: 0.8}: {},styles.loginBtn, { borderRadius: 100 }]}>
-                    {/* <LinearGradient colors={['##05D6D9', '##F907FC', '#FFFFFF']}> */}
-                    <LinearGradient style={styles.LG} useAngle={true} angle={45} angleCenter={{ x: 0.5, y: 0.5 }} colors={['rgb(5, 214, 217)', 'rgb(249, 7, 252)']} >
-                        <Text style={[styles.btntext, { textAlign: 'center' }]}> Verify</Text>
-                    </LinearGradient>
-                </Pressable>
-
-             
-
-
-            </View>
+            </KeyboardAvoidingView>
         </>
     )
 }
@@ -123,99 +189,91 @@ Verify();
 
 
 const styles = StyleSheet.create({
-    welcome_text: {
-        flex:0.7,
-        fontSize: 50,
-        marginTop: '13%',
-        marginBottom: '13%',
-        fontWeight: '900',
-        fontStyle: 'normal',
-        color: 'gray',
-        // fontFamily: 'Cabin-Regular',
-    },
     body: {
         flex: 1,
         backgroundColor: 'white',
         alignItems: 'center',
-        justifyContent: 'start',
+        justifyContent: 'center'
     },
+
     text: {
-        margin: 10,
-        fontSize: 20,
-        // fontWeight: '600',
-        color: 'white',
-        textAlign: 'left',
-        fontFamily: 'Cabin-Bold',
+        fontSize: responsiveFontSize(1.5),
+        color: 'black',
+        textAlign: 'left'
     },
-    btntext: {
-        margin: '4%',
-        // margin: 10,
+    linkbeforetext: {
+        margin: 0,
         fontSize: 20,
         fontWeight: '600',
+        color: 'black',
+        textAlign: 'left'
+    },
+
+    btntext: {
+        fontSize: responsiveFontSize(2),
+        fontWeight: '400',
         color: 'white',
         textAlign: 'left'
     },
+
     UsernameInputBoxView: {
-        marginBottom: '8%',
-        flex: 0.5,
+        marginBottom: responsiveHeight(3),
 
     },
     PasswordInputBoxView: {
-        marginBottom: '8%',
-        flex: 0.5,
+        marginBottom: responsiveHeight(3),
     },
+
     UsernameInputBox: {
-        width: 300,
-        height: 50,
-        fontSize: 20,
+        width: responsiveWidth(80),
+        height: responsiveHeight(6),
+        fontSize: responsiveFontSize(2),
         backgroundColor: 'white',
         color: 'black',
-   
         borderColor: 'black',
-        borderTopWidth: 0,
+        // borderTopWidth: 1,
         borderRightWidth: 0,
         borderLeftWidth: 0,
-        borderBottomWidth: 5,
+        borderBottomWidth: 3,
     },
     PasswordInputBox: {
-        width: 300,
-        height: 50,
-        fontSize: 20,
+        width: responsiveWidth(80),
+        height: responsiveHeight(6),
+        fontSize: responsiveFontSize(2),
         backgroundColor: 'white',
         color: 'black',
         borderColor: 'black',
-        borderTopWidth: 0,
+        // borderTopWidth: 1,
         borderRightWidth: 0,
         borderLeftWidth: 0,
-        borderBottomWidth: 5,
-      
+        borderBottomWidth: 3,
+        // marginBottom: responsiveHeight(1),
     },
-    loginBtn: {
-        flex:1.5,
-        width: 300,
-        height: 100,
-        color: 'white',
-        // borderRadius: 200,
-        borderTopEndRadius: 100,
-        borderBottomLeftRadius: 100,
 
-        // justifyContent: 'center',
-        // alignItems: 'center'
-        marginTop: '7%',
-    },
-    LG: {
+    loginBtn: {
+        width: responsiveWidth(80),
+        height: responsiveHeight(6),
+        color: 'white',
+        backgroundColor: '#0662bf',
         borderRadius: 200,
-    },
-    bottomText: {
-        flex:1,
-        marginTop: 130,
+        justifyContent: 'center',
         alignItems: 'center',
+        marginTop: responsiveHeight(2),
+    },
+
+    bottomText: {
+        marginTop: responsiveHeight(2),
+        alignItems: 'center',
+        justifyContent: 'center',
         flexDirection: 'row',
         gap: 5,
-        alignSelf: ''
+        alignSelf: '',
+
     },
     linkColor: {
-        color: 'red'
+        color: 'red',
+        fontSize: responsiveFontSize(1.5),
+        textAlign: 'center'
     }
 
 });
