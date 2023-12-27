@@ -13,10 +13,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import messaging from '@react-native-firebase/messaging'
-// import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
-// import messaging from '@react-native-firebase/messaging';
-// import MashButton from './CustomButton';
-// import type { PropsWithChildren } from 'react';
+
 import {
   StyleSheet,
   Text,
@@ -34,25 +31,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import * as Keychain from 'react-native-keychain';
 
-// type SectionProps = PropsWithChildren<{
-//   title: string;
-// }>;
 
-
-// import { useNavigation } from '@react-navigation/native';
-// https://reactnavigation.org/docs/typescript/ --this link
-
-// type RootStackParamList = {
-//   Screen_A: undefined;
-//   Screen_B: undefined;
-// };
-
-// import { StackScreenProps } from '@react-navigation/stack';
-
-// type Props1 = StackScreenProps<RootStackParamList, 'Screen_A'>;
-// type Props2 = StackScreenProps<RootStackParamList, 'Screen_B'>;
-
-// const Stack  =  createStackNavigator<RootStackParamList>(); 
 
 const Tab = createBottomTabNavigator();
 // const Tab = createMaterialBottomTabNavigator();
@@ -60,7 +39,7 @@ const Tab = createBottomTabNavigator();
 
 
 // import Screen_A from './screens/Screen_A'
-import Screen_B from './screens/Screen_B';
+// import Screen_B from './screens/Screen_B';
 import Screen_Login from './screens/Screen_Login';
 import Screen_NadraVerification from './screens/Screen_NadraVerification';
 import Screen_Registration from './screens/Screen_Registration';
@@ -71,6 +50,9 @@ import Screen_ForgotPassword from './screens/Screen_ForgotPassword';
 import Screen_FirebaseNotif from './screens/Screen_FirebaseNotif';
 import PushNotification from "react-native-push-notification";
 import Screen_Decider from './screens/Screen_Decider';
+import {default as Settings} from './screens/Screen_Settings'
+import {default as Contacts} from './screens/Screen_SearchContacts';
+
 
 // import PushNotification from 'react-native-push-notification';
 
@@ -138,23 +120,34 @@ screenOptions={({route})=>(
  
       if(route.name==='Home'){
         iconName = 'home-outline';
-        size=focused?19: 19;
-        color=focused? 'blue':'gray';
+        size=22
+        color=focused? '#007cff':'gray';
       }
       else if(route.name==='Screen_Home2'){
         iconName = 'alert-sharp';
-        size=focused?19: 19;
-        color=focused? 'blue':'gray';
+        size=22
+        color=focused? '#007cff':'gray';
       }
       else if(route.name==='Screen_ForgotPassword'){
         iconName = 'car';
-        size=focused?19: 19;
-        color=focused? 'blue':'gray';
+        size=22
+        color=focused? '#007cff':'gray';
       }
       else if(route.name==='Screen_FirebaseNotif'){
         iconName = 'car';
-        size=focused?19: 19;
-        color=focused? 'blue':'gray';
+        size=22
+        color=focused? '#007cff':'gray';
+      }
+      else if(route.name==='Settings'){
+        iconName = 'cog';
+        size=22
+        color=focused? '#007cff':'gray';
+      }
+   
+      else if(route.name==='Contacts'){
+        iconName = 'search';
+        size=22
+        color=focused? '#007cff':'gray';
       }
 
       return(
@@ -172,6 +165,7 @@ screenOptions={({route})=>(
     tabBarInactiveBackgroundColor: 'white',
     tabBarShowLabel: true,
     tabBarLabelStyle:{fontSize: 10},
+    
     // header: ()=>null,
     
   }
@@ -250,8 +244,6 @@ options={{
   // tabBarButton: ()=>null
 }}
 />
-
-
 <Tab.Screen
 name='Screen_FirebaseNotif'
 component={Screen_FirebaseNotif}
@@ -273,6 +265,30 @@ options={{
   // tabBarStyle: {display:'none'}
 }}
 />
+
+<Tab.Screen
+name='Contacts'
+component={Contacts}
+options={{
+  // header: ()=>null
+  // tabBarActiveTintColor: 'black'
+  // tabBarButton: ()=>null,
+  // tabBarStyle: {display:'none'}
+}}
+/>
+
+<Tab.Screen
+name='Settings'
+component={Settings}
+options={{
+  // header: ()=>null
+  // tabBarActiveTintColor: 'black'
+  // tabBarButton: ()=>null
+}}
+/>
+
+
+
 
 
 <Tab.Screen

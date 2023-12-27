@@ -11,6 +11,7 @@ import {
     PermissionsAndroid,
     Platform,
     Alert,
+    BackHandler
 } from 'react-native';
 
 import PushNotification from "react-native-push-notification";
@@ -22,6 +23,19 @@ import * as Keychain from 'react-native-keychain';
 import ip from './IPaddress';
 
 export default function Screen_FirebaseNotif({ navigation, route }) {
+
+
+    function handleBackButtonClick() {
+        navigation.navigate('Home');
+        return true;
+    }
+
+    useEffect(() => {
+        BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+        return () => {
+            BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+        };
+    }, []);
 
     const [TitleText, setTitleText] = useState('');
     const [MessageText, setMessageText] = useState('');

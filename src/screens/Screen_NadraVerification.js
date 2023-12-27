@@ -12,7 +12,8 @@ import {
     KeyboardAvoidingView,
     Keyboard,
     Alert,
-    ActivityIndicator
+    ActivityIndicator,
+    BackHandler
 } from 'react-native';
 import ip from './IPaddress';
 
@@ -24,6 +25,21 @@ import {
 
 
 export default function Screen_NadraVerification({ navigation, route }) {
+
+
+    function handleBackButtonClick() {
+        navigation.navigate('Screen_Registration');
+        return true;
+    }
+
+    useEffect(() => {
+        BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+        return () => {
+            BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+        };
+    }, []);
+
+
 
     const userId = route.params;
     const hmm = userId;

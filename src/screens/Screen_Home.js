@@ -1,4 +1,4 @@
-import React, { useState, PropsWithChildren } from "react";
+import React, { useState, PropsWithChildren, useEffect } from "react";
 
 import GlobalStyle from "../utils/GlobalStyle";
 
@@ -8,12 +8,37 @@ import {
     Text,
     View,
     Pressable,
+    BackHandler,
+    Alert
 } from 'react-native';
 import ip from './IPaddress'
 import * as Keychain from 'react-native-keychain';
 import PushNotification from "react-native-push-notification";
 
 export default function Screen_Home({ navigation, route }) {
+
+
+    function handleBackButtonClick() {
+        // Alert.alert('Hold on!', 'Are you sure you want to exit the app?', [
+        //     {
+        //       text: 'Cancel',
+        //       onPress: () => null,
+        //       style: 'cancel',
+        //     },
+        //     {text: 'YES', onPress: () => BackHandler.exitApp()},
+        //   ]);
+        BackHandler.exitApp();
+          return true;
+    }
+
+    useEffect(() => {
+        BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+        return () => {
+            BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+        };
+    }, []);
+
+
 
     const sendFCMNotifs = async () => {
 

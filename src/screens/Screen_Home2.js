@@ -9,7 +9,8 @@ import {
     View,
     Pressable,
     // TextInput,
-    Image
+    Image,
+    BackHandler
 } from 'react-native';
 import Video from 'react-native-video'
 import * as Keychain from 'react-native-keychain';
@@ -18,6 +19,19 @@ import { ActivityIndicator } from "react-native-paper";
 // import { Image } from "react-native-paper/lib/typescript/components/Avatar/Avatar";
 
 export default function Screen_Home({ navigation, route }) {
+
+
+    function handleBackButtonClick() {
+        navigation.navigate('Home');
+        return true;
+    }
+
+    useEffect(() => {
+        BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+        return () => {
+            BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+        };
+    }, []);
 
 
     const [ImageData, setImageData] = useState('');

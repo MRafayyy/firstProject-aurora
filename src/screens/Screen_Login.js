@@ -14,7 +14,9 @@ import {
     ScrollView,
     KeyboardAvoidingView,
     ActivityIndicator,
-    Keyboard
+    Keyboard,
+    BackHandler,
+    Alert
 } from 'react-native';
 
 import {
@@ -33,6 +35,20 @@ import ip from './IPaddress';
 // import { ScrollView } from "react-native-gesture-handler";
 
 export default function Screen_Login({ navigation, route }) {
+
+
+
+    function handleBackButtonClick() {
+        BackHandler.exitApp();
+        return true;
+    }
+
+    useEffect(() => {
+        BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+        return () => {
+            BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+        };
+    }, []);
 
     const [UsernameText, setUsernameText] = useState('');
     const [PasswordText, setPasswordText] = useState('');
@@ -123,7 +139,7 @@ export default function Screen_Login({ navigation, route }) {
             // let url = 'http://192.168.0.103:3000/login'
 
             let url = `${ip}/login`
-            console.log(FcmDeviceToken)
+            // console.log(FcmDeviceToken)
             const LoginData = {
                 userId: UsernameText.trim(),
                 password: PasswordText.trim(),
@@ -156,6 +172,11 @@ export default function Screen_Login({ navigation, route }) {
 
                 console.log("here...homeeeeeeee")
                 navigation.navigate('Home')
+                setLoader(false)
+            }
+
+            else if (response.success === false) {
+                Alert.alert("Invalid Error", response.reason, [{style: 'cancel'}])
                 setLoader(false)
             }
             // console.log(response);
@@ -206,7 +227,7 @@ export default function Screen_Login({ navigation, route }) {
     return (
         <>
             <KeyboardAvoidingView enabled behavior={Platform.OS === 'ios' ? 'padding' : 'null'} style={{ flex: 1 }} >
-        {/* <ScrollView> */}
+                {/* <ScrollView> */}
                 <View style={styles.body}>
 
                     <Image source={require('../../assets/images/login.jpg')} style={[{ width: responsiveWidth(100), height: responsiveHeight(40), resizeMode: 'cover', marginBottom: responsiveHeight(6) }]} />
