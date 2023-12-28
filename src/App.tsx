@@ -13,15 +13,20 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import messaging from '@react-native-firebase/messaging'
+import { TransitionSpecs } from '@react-navigation/stack';
+import { TransitionPresets } from '@react-navigation/stack';
+
 
 import {
   StyleSheet,
   Text,
   View,
   Pressable,
-  Alert
+  Alert,
+  useColorScheme,
+  Dimensions
 } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme, } from '@react-navigation/native';
 // import { createStackNavigator } from '@react-navigation/stack';
 // import {createBottomTabNavigator} from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -30,12 +35,15 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import * as Keychain from 'react-native-keychain';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navigation';
+import { Header, createStackNavigator } from '@react-navigation/stack';
 
-
-
-const Tab = createBottomTabNavigator();
-// const Tab = createMaterialBottomTabNavigator();
+const Stack = createStackNavigator()
+// const Tab = createBottomTabNavigator();
 // const Drawer  = createDrawerNavigator();
+// const Tab = createMaterialBottomTabNavigator();
+import { TabView, SceneMap } from 'react-native-tab-view';
 
 
 // import Screen_A from './screens/Screen_A'
@@ -43,7 +51,7 @@ const Tab = createBottomTabNavigator();
 import Screen_Login from './screens/Screen_Login';
 import Screen_NadraVerification from './screens/Screen_NadraVerification';
 import Screen_Registration from './screens/Screen_Registration';
-import { default as Home } from './screens/Screen_Home';
+// import { default as Home } from './screens/Screen_Home';
 import Screen_Splash from './screens/Screen_Splash';
 import Screen_Home2 from './screens/Screen_Home2';
 import Screen_ForgotPassword from './screens/Screen_ForgotPassword';
@@ -52,6 +60,8 @@ import PushNotification from "react-native-push-notification";
 import Screen_Decider from './screens/Screen_Decider';
 import {default as Settings} from './screens/Screen_Settings'
 import {default as Contacts} from './screens/Screen_SearchContacts';
+import HomeTabs from './HomeTabs';
+import { RevealFromBottomAndroid } from '@react-navigation/stack/lib/typescript/src/TransitionConfigs/TransitionPresets';
 
 
 // import PushNotification from 'react-native-push-notification';
@@ -59,10 +69,6 @@ import {default as Contacts} from './screens/Screen_SearchContacts';
 
 
 function App() {
-  
-  
-
-
 
 const [isLoggedIn, setisLoggedIn] = useState(false)
 
@@ -107,208 +113,42 @@ useEffect(() => {
   }, []);
 
 
+  const config = {
+    animation: 'spring',
+    config: {
+      stiffness: 1000,
+      damping: 500,
+      mass: 3,
+      overshootClamping: true,
+      restDisplacementThreshold: 0.01,
+      restSpeedThreshold: 0.01,
+    },
+  };
+
 
   return (
     <>
- <NavigationContainer>
-<Tab.Navigator initialRouteName='Screen_Splash'
-screenOptions={({route})=>(
-  {
-    tabBarIcon: ({focused,size, color})=>{
-
-      let iconName='';
- 
-      if(route.name==='Home'){
-        iconName = 'home-outline';
-        size=22
-        color=focused? '#007cff':'gray';
-      }
-      else if(route.name==='Screen_Home2'){
-        iconName = 'alert-sharp';
-        size=22
-        color=focused? '#007cff':'gray';
-      }
-      else if(route.name==='Screen_ForgotPassword'){
-        iconName = 'car';
-        size=22
-        color=focused? '#007cff':'gray';
-      }
-      else if(route.name==='Screen_FirebaseNotif'){
-        iconName = 'car';
-        size=22
-        color=focused? '#007cff':'gray';
-      }
-      else if(route.name==='Settings'){
-        iconName = 'cog';
-        size=22
-        color=focused? '#007cff':'gray';
-      }
-   
-      else if(route.name==='Contacts'){
-        iconName = 'search';
-        size=22
-        color=focused? '#007cff':'gray';
-      }
-
-      return(
-      //  <FontAwesome5 
-      //  name={iconName}
-      //  size={size} 
-      //  color={color}
-      // />
-      <Ionicons name={iconName} size={size} color={color} />
-      );
-    },
-    // tabBarActiveTintColor: 'pink',
-    // tabBarInactiveTintColor: 'black',
-    tabBarActiveBackgroundColor: 'white',
-    tabBarInactiveBackgroundColor: 'white',
-    tabBarShowLabel: true,
-    tabBarLabelStyle:{fontSize: 10},
-    
-    // header: ()=>null,
-    
-  }
-  )}
->
-{/* // screenOptions={{header: ()=> null}} */}
-
-
-  <Tab.Screen
-  name='Screen_Splash'
-  component={Screen_Splash}
-  options={{
-    // tabBarActiveTintColor: 'black'
-    header: ()=>null,
-    tabBarButton: ()=>null,
-    tabBarStyle: {display:'none'}
-  }}
-  />
-  
-  <Tab.Screen
-  name='Screen_Decider'
-  component={Screen_Decider}
-  options={{
-    header: ()=>null,
-    tabBarButton: ()=>null,
-    tabBarStyle: {display:'none'}
-  }}
-  />
-
-{/* <Tab.Screen
-name='Screen_A'
-component={Screen_A}
-options={{
-  // header: ()=>{
-    //   return null;
+         <NavigationContainer>
+        <Stack.Navigator initialRouteName='Screen_Splash' screenOptions={{header: ()=>null, animationEnabled: true, animationTypeForReplace: 'push', ...TransitionPresets.RevealFromBottomAndroid }}  >
+          <Stack.Screen name="Screen_Splash" component={Screen_Splash} />
+          <Stack.Screen name="Screen_Decider" component={Screen_Decider} />
+          <Stack.Screen name="Screen_Login" component={Screen_Login} options={{
+            //  ...TransitionPresets.RevealFromBottomAndroid
+    // transitionSpec: {
+    //   open: TransitionSpecs.BottomSheetSlideInSpec,
+    //   close: TransitionSpecs.ScaleFromCenterAndroidSpec,
     // },
-  // tabBarBadge: 1,
-  tabBarIcon: ()=>null,
-}}
-/> */}
-
-<Tab.Screen
-name='Screen_Registration'
-component={Screen_Registration}
-options={{
-  header: ()=>null,
-  tabBarButton: ()=>null,
-  tabBarStyle: {display:'none'}
-}}
-/>
-<Tab.Screen
-name='Screen_NadraVerification'
-component={Screen_NadraVerification}
-options={{
-  header: ()=>null,
-  tabBarButton: ()=>null,
-  tabBarStyle: {display:'none'}
-}}
-/>
-<Tab.Screen
-name='Screen_Login'
-component={Screen_Login}
-options={{
-  header: ()=>null,
-  tabBarButton: ()=>null,
-  tabBarStyle: {display:'none'}
-}}
-/>
-
-<Tab.Screen
-name='Home'
-component={Home}
-options={{
-  header: ()=>null
-  // tabBarActiveTintColor: 'black'
-  // tabBarButton: ()=>null
-}}
-/>
-<Tab.Screen
-name='Screen_FirebaseNotif'
-component={Screen_FirebaseNotif}
-options={{
-  // header: ()=>null
-  // tabBarActiveTintColor: 'black'
-  // tabBarButton: ()=>null,
-  // tabBarStyle: {display:'none'}
-}}
-/>
-
-<Tab.Screen
-name='Screen_Home2'
-component={Screen_Home2}
-options={{
-  // header: ()=>null
-  // tabBarActiveTintColor: 'black'
-  // tabBarButton: ()=>null,
-  // tabBarStyle: {display:'none'}
-}}
-/>
-
-<Tab.Screen
-name='Contacts'
-component={Contacts}
-options={{
-  // header: ()=>null
-  // tabBarActiveTintColor: 'black'
-  // tabBarButton: ()=>null,
-  // tabBarStyle: {display:'none'}
-}}
-/>
-
-<Tab.Screen
-name='Settings'
-component={Settings}
-options={{
-  // header: ()=>null
-  // tabBarActiveTintColor: 'black'
-  // tabBarButton: ()=>null
-}}
-/>
-
-
-
-
-
-<Tab.Screen
-name='Screen_ForgotPassword'
-component={Screen_ForgotPassword}
-options={{
-  // header: ()=>null
-  // tabBarActiveTintColor: 'black'
-  tabBarButton: ()=>null,
-  tabBarStyle: {display:'none'}
-}}
-/>
-
-
-</Tab.Navigator>
-
- </NavigationContainer>
-    </>
-  );
-}
+  }} />
+          <Stack.Screen name="Screen_NadraVerification" component={Screen_NadraVerification} />
+          <Stack.Screen name="Screen_Registration" component={Screen_Registration} options={{
+            // ...TransitionPresets.RevealFromBottomAndroid
+            }} />
+          <Stack.Screen name="Screen_ForgotPassword" component={Screen_ForgotPassword} options={{headerShown: true}} />
+          <Stack.Screen name="HomeTabs" component={HomeTabs} />
+        </Stack.Navigator>
+      </NavigationContainer>
+</>
+)}
 
 const styles = StyleSheet.create({
   body: {

@@ -4,12 +4,14 @@
 
 import {AppRegistry} from 'react-native';
 import App from './src/App';
+// import HomeTabs from './src/HomeTabs';
 import {name as appName} from './app.json';
 
 import PushNotification from "react-native-push-notification";
 import messaging from '@react-native-firebase/messaging';
+// import HomeTabs from './src/HomeTabs';
 // import { PushNotification } from 'react-native';
-
+// import { MD3LightTheme as DefaultTheme, PaperProvider  } from 'react-native-paper';
 
 PushNotification.configure({
   
@@ -75,5 +77,22 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
 //     color: 'red'
 // })
   });
+
+  // const theme = {
+  //   ...DefaultTheme,
+  //   colors: {
+  //     ...DefaultTheme.colors,
+  //     primary: 'tomato',
+  //     secondary: 'yellow',
+  //   },
+  // };
+
+
+  // const Main = () => (
+  //   <PaperProvider theme={theme}>
+  //     <App />
+  //   </PaperProvider>
+  // );
+  
 
 AppRegistry.registerComponent(appName, () => App);

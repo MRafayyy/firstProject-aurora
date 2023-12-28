@@ -41,7 +41,7 @@ export default function Screen_Decider({navigation}){
     //   })
 
     function handleBackButtonClick() {
-        navigation.goBack();
+        BackHandler.exitApp();
         return true;
       }
       

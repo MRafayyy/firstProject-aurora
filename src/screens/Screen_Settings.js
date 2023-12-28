@@ -7,7 +7,7 @@ export default function Screen_Settings({navigation}){
 
 
     function handleBackButtonClick() {
-        navigation.navigate('Home');
+        navigation.navigate('Screen_Home');
         return true;
     }
 

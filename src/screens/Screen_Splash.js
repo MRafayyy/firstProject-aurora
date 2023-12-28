@@ -6,12 +6,16 @@ import {
     Text,
     View,
     Pressable,
-    TextInput
+    TextInput,
+    BackHandler
 } from 'react-native';
 import GlobalStyle from "../utils/GlobalStyle";
 import * as Keychain from 'react-native-keychain';
 
 import ip from './IPaddress';
+import HomeTabs from "../HomeTabs";
+import { Screen } from "react-native-screens";
+import Screen_Home from "./Screen_Home";
 
 export default function Screen_Splash({ navigation, route }) {
 
@@ -24,6 +28,18 @@ export default function Screen_Splash({ navigation, route }) {
     //         // }
 
     // }, 4000)
+
+    function handleBackButtonClick() {
+        BackHandler.exitApp();
+        return true;
+      }
+      
+      useEffect(() => {
+        BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+        return () => {
+          BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+        };
+      }, []);
 
 
     useEffect(() => {
@@ -43,7 +59,7 @@ export default function Screen_Splash({ navigation, route }) {
                 response = await response.json();
                 
                 if (response.success === true) {
-                    navigation.navigate('Home')
+                    navigation.navigate(HomeTabs, { screen: Screen_Home})
                     
                 }
                 else if (response.success === false) {

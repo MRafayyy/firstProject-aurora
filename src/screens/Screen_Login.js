@@ -19,6 +19,11 @@ import {
     Alert
 } from 'react-native';
 
+import HomeTabs from "../HomeTabs";
+import Screen_Home from "./Screen_Home";
+
+import { useTheme } from '@react-navigation/native';
+
 import {
     responsiveHeight,
     responsiveWidth,
@@ -36,6 +41,7 @@ import ip from './IPaddress';
 
 export default function Screen_Login({ navigation, route }) {
 
+    const { colors } = useTheme();
 
 
     function handleBackButtonClick() {
@@ -104,7 +110,7 @@ export default function Screen_Login({ navigation, route }) {
 
     const Login = async () => {
 
-
+Keyboard.dismiss();
         arr = [];
 
         if (UsernameText.trim().length === 0 && PasswordText.trim().length === 0) {
@@ -171,7 +177,7 @@ export default function Screen_Login({ navigation, route }) {
                 }
 
                 console.log("here...homeeeeeeee")
-                navigation.navigate('Home')
+                navigation.navigate(HomeTabs, { screen: Screen_Home})
                 setLoader(false)
             }
 
@@ -183,6 +189,7 @@ export default function Screen_Login({ navigation, route }) {
         } catch (error) {
             setLoader(false)
             console.error(error)
+            Alert.alert("System Error", error, [{style: 'cancel'}])
         }
     }
 
@@ -206,7 +213,7 @@ export default function Screen_Login({ navigation, route }) {
                 response = await response.json();
 
                 if (response.success === true) {
-                    navigation.navigate('Home')
+                    navigation.navigate(HomeTabs, { screen: Screen_Home})
 
                 }
                 else if (response.success === false) {
@@ -281,7 +288,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'white',
         alignItems: 'center',
-        justifyContent: 'flex-start'
+        justifyContent: 'center'
     },
 
     text: {

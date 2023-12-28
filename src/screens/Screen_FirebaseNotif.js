@@ -26,7 +26,7 @@ export default function Screen_FirebaseNotif({ navigation, route }) {
 
 
     function handleBackButtonClick() {
-        navigation.navigate('Home');
+        navigation.navigate('Screen_Home');
         return true;
     }
 

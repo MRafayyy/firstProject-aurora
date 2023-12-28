@@ -22,7 +22,7 @@ export default function Screen_Home({ navigation, route }) {
 
 
     function handleBackButtonClick() {
-        navigation.navigate('Home');
+        navigation.navigate('Screen_Home');
         return true;
     }
 

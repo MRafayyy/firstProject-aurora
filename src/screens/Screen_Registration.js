@@ -108,7 +108,7 @@ export default function Screen_Registration({ navigation, route }) {
     const Register = () => {
 
 
-
+        Keyboard.dismiss();
         setisClicked(true);
 
         //    validateFields();

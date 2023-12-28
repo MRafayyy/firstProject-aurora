@@ -5,7 +5,7 @@ import {StyleSheet, BackHandler} from 'react-native'
 export default function Screen_SearchContacts({navigation}){
 
     function handleBackButtonClick() {
-        navigation.navigate('Home');
+        navigation.navigate('Screen_Home');
         return true;
     }
 
