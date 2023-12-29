@@ -9,7 +9,8 @@ import {
     View,
     Pressable,
     BackHandler,
-    Alert
+    Alert,
+    ScrollView
 } from 'react-native';
 import ip from './IPaddress'
 import * as Keychain from 'react-native-keychain';
@@ -18,13 +19,103 @@ import PushNotification from "react-native-push-notification";
 // import { addEventListener } from "@react-native-community/netinfo";
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { useConnectionStatus } from "../components/NoInternet";
+import * as Ably from 'ably';
 
 
 
-export default function Screen_Home({ navigation, route }) {
+export default function Screen_Home({ navigation, route}) {
 
-
+    const {userId} = route.params.userId;
     const isConnected = useConnectionStatus();
+    
+    // ---------------------------------------------------------------------
+
+const [userOnline, setuserOnline] = useState([])
+
+const ably_api_key = 'uJbUAQ.WtYOKg:hFNNjiNKqYkls6docSNQIVfusAl1c-hy7O6pMHu6Cac'
+// const {userId} = route.params;
+const userIds = '45'
+// const randomId = Math.random().toString(36).slice(-10); 
+const randomId = userIds 
+const realtime = new Ably.Realtime.Promise({
+  key: ably_api_key,
+  clientId: randomId, // Your ID in the presence set
+});
+
+
+useEffect(() => {
+
+  async function doPresence() {
+      // Connect to Ably
+    await realtime.connection.once("connected");
+    console.log("Connected to Ably!");
+    // Your code goes here
+  }
+  doPresence();
+     
+
+  async function demn(){
+
+    try {
+        
+        
+        // Attach to the "chatroom" channel
+        const channel = realtime.channels.get("chatroom");
+        await channel.attach();
+        
+        // Enter the presence set of the "chatroom" channel
+        await channel.presence.enter("hello");
+        
+    } catch (error) {
+
+        console.log("demn error"+error)
+    }
+  }
+  demn();
+
+const subscribing = async()=>{
+
+    try {
+        
+        
+        const channel = realtime.channels.get("chatroom");
+        // Subscribe to the presence set to receive updates
+        await channel.presence.subscribe((presenceMessage) => {
+    const { action, clientId } = presenceMessage;
+    console.log("Presence update:", action, "from:", clientId);
+
+
+     // Update the list of channel members when the presence set changes
+  channel.presence.get((err, members) => {
+    if (err) {
+      return console.error(`Error retrieving presence data: ${err}`);
+    }
+    // document.getElementById("presence-set").innerHTML = members
+    //   .map((member) => {
+    //     return `<li>${member.clientId}</li>`;
+    //   })
+    //   .join("");
+    console.log('----------------------------')
+    console.log(members)
+  });
+});
+} catch (error) {
+console.log("error in subscribing ....."+error)
+}
+  
+}
+subscribing()
+
+      return () => {
+        realtime.close();
+        console.log('Closed the connection to Ably.');
+      };
+    }, []); // Empty dependency array to run this effect only once
+
+
+
+
+// ---------------------------------------------------------------------
 
     function handleBackButtonClick() {
         // Alert.alert('Hold on!', 'Are you sure you want to exit the app?', [
@@ -66,33 +157,7 @@ export default function Screen_Home({ navigation, route }) {
         }
 
 
-        //     try {
-
-
-        //         // POST https://fcm.googleapis.com/v1/projects/myproject-b5ae1/messages:send HTTP/1.1
-        //         let url = 'https://fcm.googleapis.com/fcm/send'
-        //         let response = await fetch(url, {
-        //             method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             'Authorization': 'Bearer AAAADz1-KfI:APA91bGJ-sKa3F15DexhEXHxHp_XWl4dEoC6HChxD6cJF42ad9RzvTj0K0KfxwCLLeAA54nWSGHwxN8ZYd2EIbBHztsXGu57ZG7jt-QKT8peIQYvyhMEWj03oX1kO2I0AYR8KVbs09gO'
-        //         },
-        //         body: JSON.stringify({
-
-        //             "data": {},
-        //             "notification": {
-        //                 "body": "This is an FCM notification message!",
-        //                 "title": "FCM Message"
-        //             },
-        //             "to": "c8KHnyMrRTyXNXB9tVglFM:APA91bGVoYH4vYpKUsETdY_RxbAMZ3vXe2u4wLWhDFrya87IyuTyyStgiaypiOCfZgO5HLuMSpnIvZ4LL7gcFzWfk5_zZbT-hodd-D6RMvtkJPKaSIytPKowKcI5HgO3viZWtHFNBlOX",
-        //         }
-
-        //         )
-        //     })
-        //     response  = response.json()
-        // } catch (error) {
-        //     console.log(error)
-        // }
+     
     }
 
     const onPressHandler = () => {
@@ -167,6 +232,8 @@ export default function Screen_Home({ navigation, route }) {
 
     return (
         <>
+        <ScrollView>
+
             <View style={styles.body}>
                 <Text style={[styles.text, GlobalStyle.CustomFont]}>Welcome to home screen</Text>
                 <Pressable onPress={Logout} style={{ backgroundColor: 'orange' }}>
@@ -188,7 +255,9 @@ export default function Screen_Home({ navigation, route }) {
                 {/* <Pressable onPress={sendFCMNotifs} style={{ backgroundColor: 'red',  marginTop: 30  }}>
                     <Text style={(styles.text, {margin: 10 })}>Go to firebase notifs screen</Text>
                 </Pressable> */}
+
             </View>
+</ScrollView>
         </>
     )
 

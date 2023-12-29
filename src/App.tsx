@@ -63,12 +63,12 @@ import {default as Settings} from './screens/Screen_Settings'
 import {default as Contacts} from './screens/Screen_SearchContacts';
 import HomeTabs from './HomeTabs';
 import { RevealFromBottomAndroid } from '@react-navigation/stack/lib/typescript/src/TransitionConfigs/TransitionPresets';
-import {
-  Pusher,
-  PusherMember,
-  PusherChannel,
-  PusherEvent,
-} from '@pusher/pusher-websocket-react-native';
+// import {
+//   Pusher,
+//   PusherMember,
+//   PusherChannel,
+//   PusherEvent,
+// } from '@pusher/pusher-websocket-react-native';
 
 // import PushNotification from 'react-native-push-notification';
 
@@ -121,88 +121,72 @@ const [isConnectedtoSocket, setisConnectedtoSocket] = useState(false)
 
 
 
-const ably_api_key = 'uJbUAQ.WtYOKg:hFNNjiNKqYkls6docSNQIVfusAl1c-hy7O6pMHu6Cac'
 // const ably_api_key = 'uJbUAQ.WtYOKg:hFNNjiNKqYkls6docSNQIVfusAl1c-hy7O6pMHu6Cac'
-
-const client = new Ably.Realtime.Promise(ably_api_key)
-// const ably = new Realtime.Promise(apiKey);
-
-useEffect(() => {
-      // let rest = new Ably.Rest({ key: ably_api_key });
-
-      const connectToAbly = async () => {
-        await client.connection.once('connected');
-        console.log('Connected to Ably!');
-      };
-  
-      const subscribeToChannel = async () => {
-        const channel = client.channels.get('quickstartedd');
-  
-        await channel.subscribe('greeting', (message) => {
-          console.log('Received a greeting message in realtime: ' + message.data);
-        });
-
-
-        // channel.presence.get(function(err, membersPage) {
-        //   console.log(membersPage.items.length + ' presence members in first page');
-        //   if(membersPage.hasNext()) {
-        //     membersPage.next(function(err, nextPage) { ... });
-        //   }
-        // });
-
-      };
-  
-      const publishMessage = async () => {
-        const channel = client.channels.get('quickstartedd');
-  
-        await channel.publish('greeting', 'Hello from React Native!');
-
-         // Getting presence on a channel
-  const presenceMessage = await channel.presence.get();
-  console.log(presenceMessage);
-      };
-
-      const reqw = async()=>{
-
-//         fetch(`https://rest.ably.io/channels/quickstartedd/presence`, {
-//           method: 'GET',
-//           headers: {
-//             'Authorization': `Basic ${ably_api_key}` // Using Basic authentication
-//           }
-//         })
-// .then(response => {
-//   if (!response.ok) {
-//     throw new Error('Network response was not ok');
-//   }
-//   return response.json();
-// })
-// .then(presenceData => {
-//   // Handle the presence data here
-//   console.log('Presence Data:', presenceData);
-// })
-// .catch(error => {
-//   console.error('There was a problem with the fetch operation:', error);
+// const randomId = Math.random().toString(36).slice(-10); 
+// const realtime = new Ably.Realtime.Promise({
+//   key: ably_api_key,
+//   clientId: randomId, // Your ID in the presence set
 // });
 
-  // // Getting presence on a channel
-  // const presenceMessage = await channel.presence.get();
-  // console.log(presenceMessage);
-}
+
+// useEffect(() => {
+
+//   async function doPresence() {
+//     // Connect to Ably
+//     await realtime.connection.once("connected");
+//     console.log("Connected to Ably!");
+//     // Your code goes here
+//   }
+//   doPresence();
+     
+
+//   async function demn(){
+
+//     // Attach to the "chatroom" channel
+//     const channel = realtime.channels.get("chatroom");
+//     await channel.attach();
+    
+//     // Enter the presence set of the "chatroom" channel
+//     await channel.presence.enter("hello");
+
+//   }
+//   demn();
+
+// const subscribing = async()=>{
+
+//   const channel = realtime.channels.get("chatroom");
+//   // Subscribe to the presence set to receive updates
+//   await channel.presence.subscribe((presenceMessage) => {
+//     const { action, clientId } = presenceMessage;
+//     console.log("Presence update:", action, "from:", clientId);
+
+
+//      // Update the list of channel members when the presence set changes
+//   channel.presence.get((err, members) => {
+//     if (err) {
+//       return console.error(`Error retrieving presence data: ${err}`);
+//     }
+//     // document.getElementById("presence-set").innerHTML = members
+//     //   .map((member) => {
+//     //     return `<li>${member.clientId}</li>`;
+//     //   })
+//     //   .join("");
+//     console.log('----------------------------')
+//     console.log(members)
+//   });
+//   });
   
+// }
+// subscribing()
 
-      connectToAbly();
-      subscribeToChannel();
-      publishMessage();
-      // reqw()
-  
+//       return () => {
+//         realtime.close();
+//         console.log('Closed the connection to Ably.');
+//       };
+//     }, []); // Empty dependency array to run this effect only once
 
-      
 
-      return () => {
-        client.close();
-        console.log('Closed the connection to Ably.');
-      };
-    }, []); // Empty dependency array to run this effect only once
+
 
 useEffect(()=>{
 

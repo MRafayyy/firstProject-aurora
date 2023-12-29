@@ -184,12 +184,12 @@ export default function Screen_Login({ navigation, route }) {
                 } catch (error) {
                     setLoader(false)
                     console.error(error)
-                    Alert.alert("Keychain Error", error, [{ style: 'cancel' }])
+                    Alert.alert("Keychain Error", error.message, [{ style: 'cancel' }])
                 }
 
                 console.log("here...homeeeeeeee")
 
-                navigation.navigate(HomeTabs, { screen: Screen_Home })
+                navigation.navigate(HomeTabs, { screen: Screen_Home, params : {userId: UsernameText.trim()} })
                 setUsernameText('');
                 setPasswordText('');
                 setUsernameError_msg([])
@@ -241,7 +241,7 @@ export default function Screen_Login({ navigation, route }) {
                 response = await response.json();
 
                 if (response.success === true) {
-                    navigation.navigate(HomeTabs, { screen: Screen_Home })
+                    navigation.navigate(HomeTabs, { screen: Screen_Home, userId: UsernameText  })
 
                 }
                 else if (response.success === false) {

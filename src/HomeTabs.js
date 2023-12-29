@@ -29,7 +29,9 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 
 const Tab = createMaterialTopTabNavigator();
 
-export default function HomeTabs({navigation}) {
+export default function HomeTabs({navigation, route}) {
+  const {userId} = route.params.userId;
+  console.log(userId)
     return (
 <>
  {/* <NavigationContainer> */}
@@ -205,6 +207,7 @@ options={{
 <Tab.Screen
 name='Screen_Home'
 component={Screen_Home}
+
 options={{
 // header: ()=>null,
   tabBarLabel: 'Home',

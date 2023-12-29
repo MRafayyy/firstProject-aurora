@@ -59,7 +59,7 @@ export default function Screen_Splash({ navigation, route }) {
                 response = await response.json();
                 
                 if (response.success === true) {
-                    navigation.navigate(HomeTabs, { screen: Screen_Home})
+                    navigation.navigate(HomeTabs, { screen: Screen_Home, params: { userId: credentials.username}})
                     
                 }
                 else if (response.success === false) {
