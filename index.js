@@ -9,6 +9,16 @@ import {name as appName} from './app.json';
 
 import PushNotification from "react-native-push-notification";
 import messaging from '@react-native-firebase/messaging';
+
+
+
+import {
+  Pusher,
+  PusherMember,
+  PusherChannel,
+  PusherEvent,
+} from '@pusher/pusher-websocket-react-native';
+
 // import HomeTabs from './src/HomeTabs';
 // import { PushNotification } from 'react-native';
 // import { MD3LightTheme as DefaultTheme, PaperProvider  } from 'react-native-paper';
@@ -95,4 +105,29 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
   // );
   
 
+//   const pusher = Pusher.getInstance();
+
+// const pu = async()=>{
+
+  
+//   try {
+    
+//     await pusher.init({
+//       apiKey: "5441fc042a55775fd4dc",
+//       cluster: "ap2"
+//     });
+    
+//     await pusher.connect();
+//     await pusher.subscribe({
+//       channelName: "my-channel", 
+//       onEvent: (event) => {
+//         console.log(`Event received: ${event}`);
+//       }
+//     });
+    
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
+// pu()  
 AppRegistry.registerComponent(appName, () => App);

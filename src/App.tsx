@@ -63,20 +63,179 @@ import {default as Settings} from './screens/Screen_Settings'
 import {default as Contacts} from './screens/Screen_SearchContacts';
 import HomeTabs from './HomeTabs';
 import { RevealFromBottomAndroid } from '@react-navigation/stack/lib/typescript/src/TransitionConfigs/TransitionPresets';
-
+import {
+  Pusher,
+  PusherMember,
+  PusherChannel,
+  PusherEvent,
+} from '@pusher/pusher-websocket-react-native';
 
 // import PushNotification from 'react-native-push-notification';
 
 // import NoInternet from './components/NoInternet';
 import {useConnectionStatus} from './components/NoInternet'
 
-import SocketIOClient from 'socket.io-client'
-import { io } from 'socket.io-client';
+// import SocketIOClient from 'socket.io-client'
+// import { io } from 'socket.io-client';
 import ip from './screens/IPaddress';
-
+// import * as Ably from 'ably';
+import * as Ably from 'ably';
+// import { Realtime } from 'ably';
 function App() {
 
 const [isConnectedtoSocket, setisConnectedtoSocket] = useState(false)
+
+
+// const pusher = Pusher.getInstance();
+// const pu = async()=>{
+  
+  
+//   try {
+    
+//     await pusher.init({
+//       apiKey: "5441fc042a55775fd4dc",
+//       cluster: "ap2"
+//     });
+    
+//     await pusher.connect();
+//     await pusher.subscribe({
+//       channelName: "my-channelrrrr", 
+//       onEvent: (event) => {
+//         console.log(`Event received: ${event}`);
+//       }
+//     });
+
+//     function onEvent(event: PusherEvent) {
+//       console.log("onEvent: $event");
+//     }
+
+
+
+    
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
+// pu()
+
+
+
+
+const ably_api_key = 'uJbUAQ.WtYOKg:hFNNjiNKqYkls6docSNQIVfusAl1c-hy7O6pMHu6Cac'
+// const ably_api_key = 'uJbUAQ.WtYOKg:hFNNjiNKqYkls6docSNQIVfusAl1c-hy7O6pMHu6Cac'
+
+const client = new Ably.Realtime.Promise(ably_api_key)
+// const ably = new Realtime.Promise(apiKey);
+
+useEffect(() => {
+      // let rest = new Ably.Rest({ key: ably_api_key });
+
+      const connectToAbly = async () => {
+        await client.connection.once('connected');
+        console.log('Connected to Ably!');
+      };
+  
+      const subscribeToChannel = async () => {
+        const channel = client.channels.get('quickstartedd');
+  
+        await channel.subscribe('greeting', (message) => {
+          console.log('Received a greeting message in realtime: ' + message.data);
+        });
+
+
+        // channel.presence.get(function(err, membersPage) {
+        //   console.log(membersPage.items.length + ' presence members in first page');
+        //   if(membersPage.hasNext()) {
+        //     membersPage.next(function(err, nextPage) { ... });
+        //   }
+        // });
+
+      };
+  
+      const publishMessage = async () => {
+        const channel = client.channels.get('quickstartedd');
+  
+        await channel.publish('greeting', 'Hello from React Native!');
+
+         // Getting presence on a channel
+  const presenceMessage = await channel.presence.get();
+  console.log(presenceMessage);
+      };
+
+      const reqw = async()=>{
+
+//         fetch(`https://rest.ably.io/channels/quickstartedd/presence`, {
+//           method: 'GET',
+//           headers: {
+//             'Authorization': `Basic ${ably_api_key}` // Using Basic authentication
+//           }
+//         })
+// .then(response => {
+//   if (!response.ok) {
+//     throw new Error('Network response was not ok');
+//   }
+//   return response.json();
+// })
+// .then(presenceData => {
+//   // Handle the presence data here
+//   console.log('Presence Data:', presenceData);
+// })
+// .catch(error => {
+//   console.error('There was a problem with the fetch operation:', error);
+// });
+
+  // // Getting presence on a channel
+  // const presenceMessage = await channel.presence.get();
+  // console.log(presenceMessage);
+}
+  
+
+      connectToAbly();
+      subscribeToChannel();
+      publishMessage();
+      // reqw()
+  
+
+      
+
+      return () => {
+        client.close();
+        console.log('Closed the connection to Ably.');
+      };
+    }, []); // Empty dependency array to run this effect only once
+
+useEffect(()=>{
+
+  // pusher.trigger("my-channel", "my-event", {
+  //   message: "hello w"
+  // })
+})
+
+
+// useEffect(async()=>{
+  
+  // const pusher = Pusher.getInstance();
+  
+  // try {
+    
+  //   await pusher.init({
+  //     apiKey: "5441fc042a55775fd4dc",
+  //     cluster: "ap2"
+  //   });
+    
+  //   await pusher.connect();
+  //   await pusher.subscribe({
+  //     channelName: "my-channel", 
+  //     onEvent: (event: PusherEvent) => {
+  //       console.log(`Event received: ${event}`);
+  //     }
+  //   });
+
+  // } catch (error) {
+    
+  // }
+  
+// })
 
 // useEffect(() => {
 //   const socket = SocketIOClient(`${ip}/userrr`,{
