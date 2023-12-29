@@ -25,9 +25,11 @@ import {
 } from "react-native-responsive-dimensions";
 
 import ip from './IPaddress';
+import { useConnectionStatus } from "../components/NoInternet";
 
 export default function Screen_Registration({ navigation, route }) {
 
+    const isConnected = useConnectionStatus();
 
     function handleBackButtonClick() {
         navigation.navigate('Screen_Login');
@@ -109,6 +111,7 @@ export default function Screen_Registration({ navigation, route }) {
 
 
         Keyboard.dismiss();
+        !isConnected? Alert.alert('No Internet', 'Please connect to the internet'):
         setisClicked(true);
 
         //    validateFields();

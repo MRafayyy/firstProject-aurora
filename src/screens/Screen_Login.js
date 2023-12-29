@@ -37,11 +37,12 @@ import messaging from '@react-native-firebase/messaging'
 import * as Keychain from 'react-native-keychain';
 
 import ip from './IPaddress';
+import { useConnectionStatus } from "../components/NoInternet";
 // import { ScrollView } from "react-native-gesture-handler";
 
 export default function Screen_Login({ navigation, route }) {
 
-    const { colors } = useTheme();
+    const isConnected = useConnectionStatus();
 
 
     function handleBackButtonClick() {
@@ -110,7 +111,9 @@ export default function Screen_Login({ navigation, route }) {
 
     const Login = async () => {
 
-Keyboard.dismiss();
+        !isConnected? Alert.alert('No Internet', 'Please connect to the internet'):
+
+        // Keyboard.dismiss();
         arr = [];
 
         if (UsernameText.trim().length === 0 && PasswordText.trim().length === 0) {
@@ -136,14 +139,16 @@ Keyboard.dismiss();
 
 
 
-        try {
 
+
+
+        try {
+            // try {
             setLoader(true)
             await messaging().registerDeviceForRemoteMessages();
             const FcmDeviceToken = await messaging().getToken();
             // FcmDeviceToken = token
             // let url = 'http://192.168.0.103:3000/login'
-
             let url = `${ip}/login`
             // console.log(FcmDeviceToken)
             const LoginData = {
@@ -159,9 +164,14 @@ Keyboard.dismiss();
 
                 body: JSON.stringify(LoginData)
             })
-
-
             response = await response.json();
+
+            // } catch (error) {
+            //     setLoader(false)
+            //     Alert.alert("Could not get device token Error", 'Error may be generated if you are not connected to the internet', [{ style: 'cancel' }])
+            // }
+
+
 
             if (response.success === true) {
                 setLoader(true)
@@ -174,22 +184,40 @@ Keyboard.dismiss();
                 } catch (error) {
                     setLoader(false)
                     console.error(error)
+                    Alert.alert("Keychain Error", error, [{ style: 'cancel' }])
                 }
 
                 console.log("here...homeeeeeeee")
-                navigation.navigate(HomeTabs, { screen: Screen_Home})
+
+                navigation.navigate(HomeTabs, { screen: Screen_Home })
+                setUsernameText('');
+                setPasswordText('');
+                setUsernameError_msg([])
+                setPasswordError_msg([])
                 setLoader(false)
             }
 
             else if (response.success === false) {
-                Alert.alert("Invalid Error", response.reason, [{style: 'cancel'}])
+                Alert.alert("Invalid Error", response.reason, [{ style: 'cancel' }])
                 setLoader(false)
             }
+
+            else if (response.success === "FCMTokenError") {
+
+                Alert.alert(response.success, response.reason, [{ style: 'cancel' }])
+                setLoader(false)
+            }
+            else if (response.success === "SomeError") {
+
+                Alert.alert(response.success, response.reason, [{ style: 'cancel' }])
+                setLoader(false)
+            }
+
             // console.log(response);
         } catch (error) {
+            Alert.alert("System Error", error, [{ style: 'cancel' }])
             setLoader(false)
             console.error(error)
-            Alert.alert("System Error", error, [{style: 'cancel'}])
         }
     }
 
@@ -213,7 +241,7 @@ Keyboard.dismiss();
                 response = await response.json();
 
                 if (response.success === true) {
-                    navigation.navigate(HomeTabs, { screen: Screen_Home})
+                    navigation.navigate(HomeTabs, { screen: Screen_Home })
 
                 }
                 else if (response.success === false) {
@@ -242,14 +270,14 @@ Keyboard.dismiss();
                     {/* <Text style={styles.welcome_text}>Welcome</Text> */}
 
                     <View style={styles.UsernameInputBoxView}>
-                        <TextInput onChangeText={(value) => onHandleUsernameChange(value)} style={[styles.UsernameInputBox, { color: 'black' }]} editable placeholder='User Id' placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
+                        <TextInput editable={!Loader} value={UsernameText} onChangeText={(value) => onHandleUsernameChange(value)} style={[styles.UsernameInputBox, { color: 'black' }]} placeholder='User Id' placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
                         {UsernameError_msg.map((value, index) => (
                             <Text style={{ color: 'red', marginTop: 2, fontSize: responsiveFontSize(1.2) }} key={index}>{value}</Text>
                         ))}
                     </View>
 
                     <View style={styles.PasswordInputBoxView}>
-                        <TextInput onChangeText={(value) => onHandlePasswordChange(value)} style={[styles.PasswordInputBox, { color: 'black' }]} editable placeholder='Password' placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
+                        <TextInput editable={!Loader} value={PasswordText} onChangeText={(value) => onHandlePasswordChange(value)} style={[styles.PasswordInputBox, { color: 'black' }]} placeholder='Password' placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
                         {PasswordError_msg.map((value, index) => (
                             <Text style={{ color: 'red', marginTop: 2, fontSize: responsiveFontSize(1.2) }} key={index}>{value}</Text>
                         ))}

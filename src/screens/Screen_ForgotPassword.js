@@ -9,9 +9,12 @@ import {
     responsiveFontSize
 } from "react-native-responsive-dimensions";
 
+import { useConnectionStatus } from "../components/NoInternet";
+
 
 export default function Screen_ForgotPassword({ navigation, route }) {
 
+    const isConnected = useConnectionStatus();
 
     const [EmailError_msg, setEmailError_msg] = useState(['']);
     const [Loader, setLoader] = useState(false);
@@ -32,6 +35,7 @@ export default function Screen_ForgotPassword({ navigation, route }) {
 
 
     const validateEmail = () => {
+        // !isConnected? Alert.alert('No Internet', 'Please connect to the internet'):
         setEmailError_msg([])
         if (Email.trim().length === 0) {
             setEmailError_msg(['Email field is empty'])
@@ -48,7 +52,7 @@ export default function Screen_ForgotPassword({ navigation, route }) {
     // }, [Email])
 
     const forgotPassword = async () => {
-
+        !isConnected? Alert.alert('No Internet', 'Please connect to the internet'):
         validateEmail();
 
         if (EmailError_msg.length === 0) {

@@ -9,7 +9,8 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 // import { Icon } from 'react-native-vector-icons/Icon';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-
+import NetInfo from "@react-native-community/netinfo";
+import { addEventListener } from "@react-native-community/netinfo";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import messaging from '@react-native-firebase/messaging'
@@ -66,19 +67,75 @@ import { RevealFromBottomAndroid } from '@react-navigation/stack/lib/typescript/
 
 // import PushNotification from 'react-native-push-notification';
 
+// import NoInternet from './components/NoInternet';
+import {useConnectionStatus} from './components/NoInternet'
 
+import SocketIOClient from 'socket.io-client'
+import { io } from 'socket.io-client';
+import ip from './screens/IPaddress';
 
 function App() {
 
+const [isConnectedtoSocket, setisConnectedtoSocket] = useState(false)
+
+// useEffect(() => {
+//   const socket = SocketIOClient(`${ip}/userrr`,{
+//     transports: ['websocket']
+//   })
+
+  
+
+//     // Connect to the server using Socket.IO
+//     // const socket = io(`${ip}/userrr`); // Replace with your server address
+
+//     // Event listeners
+//     socket.on('connect', () => {
+//       console.log('Connected to server');
+//       setisConnectedtoSocket(true)
+
+//     });
+
+//     socket.on('disconnect', () => {
+//       console.log('Disconnected from server');
+//     });
+
+//     // Emitting a custom event
+//     socket.emit('customEvent', 'Some data');
+
+//     // Handling incoming events
+//     socket.on('incomingEvent', (data) => {
+//       console.log('Received data:', data);
+//     });
+
+//     // Clean up when the component unmounts
+//     return () => {
+//       socket.disconnect();
+//     };
+//   }, []);
+
 const [isLoggedIn, setisLoggedIn] = useState(false)
 
-  useEffect(() => {
-  async function Logged(){
-}
-Logged();
+    // const [isConnected, setisConnected] = useState(false)
+    const isConnected = useConnectionStatus()
 
-getDeviceToken();
-  }, [])
+    // useEffect(() => {
+   
+    //     const unsubscribe = NetInfo.addEventListener((state) => {
+    //       // console.log(state);
+    //       console.log("Connection type", state.type);
+    //       console.log("Is connected?", state.isConnected);
+    //       setisConnected(state.isConnected)
+    //     });
+    //     return () => {
+    //       unsubscribe();
+    //     };
+
+    // }, [])
+
+
+  useEffect(()=>{
+    getDeviceToken()
+  },[])
   
   const getDeviceToken =async() =>{
 
@@ -128,6 +185,7 @@ useEffect(() => {
 
   return (
     <>
+    {isConnectedtoSocket? <Text>hey</Text>: 
          <NavigationContainer>
         <Stack.Navigator initialRouteName='Screen_Splash' screenOptions={{header: ()=>null, animationEnabled: true, animationTypeForReplace: 'push', ...TransitionPresets.RevealFromBottomAndroid }}  >
           <Stack.Screen name="Screen_Splash" component={Screen_Splash} />
@@ -147,7 +205,10 @@ useEffect(() => {
           <Stack.Screen name="HomeTabs" component={HomeTabs} />
         </Stack.Navigator>
       </NavigationContainer>
+
+          }
 </>
+           
 )}
 
 const styles = StyleSheet.create({
@@ -169,6 +230,7 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+
 
 
 

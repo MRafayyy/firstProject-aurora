@@ -14,9 +14,17 @@ import {
 import ip from './IPaddress'
 import * as Keychain from 'react-native-keychain';
 import PushNotification from "react-native-push-notification";
+// import NetInfo from "@react-native-community/netinfo";
+// import { addEventListener } from "@react-native-community/netinfo";
+import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import { useConnectionStatus } from "../components/NoInternet";
+
+
 
 export default function Screen_Home({ navigation, route }) {
 
+
+    const isConnected = useConnectionStatus();
 
     function handleBackButtonClick() {
         // Alert.alert('Hold on!', 'Are you sure you want to exit the app?', [
@@ -28,7 +36,7 @@ export default function Screen_Home({ navigation, route }) {
         //     {text: 'YES', onPress: () => BackHandler.exitApp()},
         //   ]);
         BackHandler.exitApp();
-          return true;
+        return true;
     }
 
     useEffect(() => {
@@ -42,49 +50,49 @@ export default function Screen_Home({ navigation, route }) {
 
     const sendFCMNotifs = async () => {
 
-try {
-    let url = `${ip}/sendFCM`
-    let response = await fetch(url,{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        // body: JSON.stringify
-    })
-    // response = response.json();
-    // console.log(response)
-} catch (error) {
-    
-}
+        try {
+            let url = `${ip}/sendFCM`
+            let response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                // body: JSON.stringify
+            })
+            // response = response.json();
+            // console.log(response)
+        } catch (error) {
+
+        }
 
 
-    //     try {
-            
-           
-    //         // POST https://fcm.googleapis.com/v1/projects/myproject-b5ae1/messages:send HTTP/1.1
-    //         let url = 'https://fcm.googleapis.com/fcm/send'
-    //         let response = await fetch(url, {
-    //             method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Authorization': 'Bearer AAAADz1-KfI:APA91bGJ-sKa3F15DexhEXHxHp_XWl4dEoC6HChxD6cJF42ad9RzvTj0K0KfxwCLLeAA54nWSGHwxN8ZYd2EIbBHztsXGu57ZG7jt-QKT8peIQYvyhMEWj03oX1kO2I0AYR8KVbs09gO'
-    //         },
-    //         body: JSON.stringify({
-              
-    //             "data": {},
-    //             "notification": {
-    //                 "body": "This is an FCM notification message!",
-    //                 "title": "FCM Message"
-    //             },
-    //             "to": "c8KHnyMrRTyXNXB9tVglFM:APA91bGVoYH4vYpKUsETdY_RxbAMZ3vXe2u4wLWhDFrya87IyuTyyStgiaypiOCfZgO5HLuMSpnIvZ4LL7gcFzWfk5_zZbT-hodd-D6RMvtkJPKaSIytPKowKcI5HgO3viZWtHFNBlOX",
-    //         }
-            
-    //         )
-    //     })
-    //     response  = response.json()
-    // } catch (error) {
-    //     console.log(error)
-    // }
+        //     try {
+
+
+        //         // POST https://fcm.googleapis.com/v1/projects/myproject-b5ae1/messages:send HTTP/1.1
+        //         let url = 'https://fcm.googleapis.com/fcm/send'
+        //         let response = await fetch(url, {
+        //             method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'Authorization': 'Bearer AAAADz1-KfI:APA91bGJ-sKa3F15DexhEXHxHp_XWl4dEoC6HChxD6cJF42ad9RzvTj0K0KfxwCLLeAA54nWSGHwxN8ZYd2EIbBHztsXGu57ZG7jt-QKT8peIQYvyhMEWj03oX1kO2I0AYR8KVbs09gO'
+        //         },
+        //         body: JSON.stringify({
+
+        //             "data": {},
+        //             "notification": {
+        //                 "body": "This is an FCM notification message!",
+        //                 "title": "FCM Message"
+        //             },
+        //             "to": "c8KHnyMrRTyXNXB9tVglFM:APA91bGVoYH4vYpKUsETdY_RxbAMZ3vXe2u4wLWhDFrya87IyuTyyStgiaypiOCfZgO5HLuMSpnIvZ4LL7gcFzWfk5_zZbT-hodd-D6RMvtkJPKaSIytPKowKcI5HgO3viZWtHFNBlOX",
+        //         }
+
+        //         )
+        //     })
+        //     response  = response.json()
+        // } catch (error) {
+        //     console.log(error)
+        // }
     }
 
     const onPressHandler = () => {
@@ -124,7 +132,7 @@ try {
     }
 
 
-    const FirebaseNotif_Screen = async()=>{
+    const FirebaseNotif_Screen = async () => {
         navigation.navigate('Screen_FirebaseNotif')
     }
 
@@ -162,17 +170,21 @@ try {
             <View style={styles.body}>
                 <Text style={[styles.text, GlobalStyle.CustomFont]}>Welcome to home screen</Text>
                 <Pressable onPress={Logout} style={{ backgroundColor: 'orange' }}>
-                    <Text style={(styles.text, {margin: 10 })}>Logout</Text>
+                    <Text style={(styles.text, { margin: 10 })}>Logout</Text>
                 </Pressable>
-                <Pressable onPress={NextScreen} style={{ backgroundColor: 'orange', marginTop: 30  }}>
-                    <Text style={(styles.text, {margin: 10 })}>Next Screen</Text>
+                <Pressable onPress={NextScreen} style={{ backgroundColor: 'orange', marginTop: 30 }}>
+                    <Text style={(styles.text, { margin: 10 })}>Next Screen</Text>
                 </Pressable>
-                <Pressable onPress={handleNotification} style={{ backgroundColor: 'red', marginTop: 30  }}>
+                <Pressable onPress={handleNotification} style={{ backgroundColor: 'red', marginTop: 30 }}>
                     <Text style={(styles.text, { margin: 10 })}>Testing notif</Text>
                 </Pressable>
-                <Pressable onPress={FirebaseNotif_Screen} style={{ backgroundColor: 'red',  marginTop: 30  }}>
-                    <Text style={(styles.text, {margin: 10 })}>Go to firebase notifs screen</Text>
+                <Pressable onPress={FirebaseNotif_Screen} style={{ backgroundColor: 'red', marginTop: 30 }}>
+                    <Text style={(styles.text, { margin: 10 })}>Go to firebase notifs screen</Text>
                 </Pressable>
+
+                <View style={{ width: responsiveWidth(55), height: responsiveHeight(10), position: 'absolute', top: 100 , bottom: 50, justifyContent: 'center', alignItems: 'center', backgroundColor:  isConnected? 'green' : 'red' }}>
+                    <Text style={{ color: 'white' }}>{isConnected? 'You are connected to the internet' : 'No Internet'}</Text>
+                </View>
                 {/* <Pressable onPress={sendFCMNotifs} style={{ backgroundColor: 'red',  marginTop: 30  }}>
                     <Text style={(styles.text, {margin: 10 })}>Go to firebase notifs screen</Text>
                 </Pressable> */}

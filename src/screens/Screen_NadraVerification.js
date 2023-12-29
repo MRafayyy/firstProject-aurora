@@ -23,9 +23,12 @@ import {
     responsiveFontSize
 } from "react-native-responsive-dimensions";
 
+import { useConnectionStatus } from "../components/NoInternet";
+
 
 export default function Screen_NadraVerification({ navigation, route }) {
 
+    const isConnected = useConnectionStatus();
 
     function handleBackButtonClick() {
         navigation.navigate('Screen_Registration');
@@ -71,6 +74,8 @@ export default function Screen_NadraVerification({ navigation, route }) {
     let arr = [];
 
     const Verify = async () => {
+
+        !isConnected? Alert.alert('No Internet', 'Please connect to the internet'):
 
         arr = [];
 
