@@ -1,6 +1,8 @@
-import React, { useState, PropsWithChildren, useEffect } from "react";
+import React, { useState, PropsWithChildren, useEffect, useContext } from "react";
 // import type { PropsWithChildren } from 'react';
-
+// import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
+// import EncryptedStorage from 'react-native-encrypted-storage';
+import EncryptedStorage from 'react-native-encrypted-storage'
 import {
     StyleSheet,
     Text,
@@ -24,6 +26,8 @@ import Screen_Home from "./Screen_Home";
 
 import { useTheme } from '@react-navigation/native';
 
+
+
 import {
     responsiveHeight,
     responsiveWidth,
@@ -38,9 +42,17 @@ import * as Keychain from 'react-native-keychain';
 
 import ip from './IPaddress';
 import { useConnectionStatus } from "../components/NoInternet";
+import UserIdContext from "../UserIdContext";
 // import { ScrollView } from "react-native-gesture-handler";
 
+// const storage = new MMKVLoader().initialize();
 export default function Screen_Login({ navigation, route }) {
+
+    // console.log(route.params)
+    const { setUserId } = useContext(UserIdContext);
+
+
+    // const [user, setUser] = useMMKVStorage('user', storage, 'robert');
 
     const isConnected = useConnectionStatus();
 
@@ -111,10 +123,10 @@ export default function Screen_Login({ navigation, route }) {
 
     const Login = async () => {
 
-        !isConnected? Alert.alert('No Internet', 'Please connect to the internet'):
+        !isConnected ? Alert.alert('No Internet', 'Please connect to the internet') :
 
-        // Keyboard.dismiss();
-        arr = [];
+            // Keyboard.dismiss();
+            arr = [];
 
         if (UsernameText.trim().length === 0 && PasswordText.trim().length === 0) {
             setUsernameError_msg(['User Id field cannot be empty'])
@@ -150,7 +162,8 @@ export default function Screen_Login({ navigation, route }) {
             // FcmDeviceToken = token
             // let url = 'http://192.168.0.103:3000/login'
             let url = `${ip}/login`
-            // console.log(FcmDeviceToken)
+            console.log(FcmDeviceToken)
+
             const LoginData = {
                 userId: UsernameText.trim(),
                 password: PasswordText.trim(),
@@ -159,13 +172,15 @@ export default function Screen_Login({ navigation, route }) {
             let response = await fetch(url, {
                 method: 'POST',
                 headers: {
-                    "Content-Type": 'application/json'
+                    "Content-Type": "application/json"
                 },
 
                 body: JSON.stringify(LoginData)
             })
-            response = await response.json();
 
+            console.log("response before jsoning : " + response)
+            response = await response.json();
+            console.log("response after jsoning : " + response)
             // } catch (error) {
             //     setLoader(false)
             //     Alert.alert("Could not get device token Error", 'Error may be generated if you are not connected to the internet', [{ style: 'cancel' }])
@@ -176,20 +191,34 @@ export default function Screen_Login({ navigation, route }) {
             if (response.success === true) {
                 setLoader(true)
                 try {
-                    const username = 'hey'
-                    const password = response.token;
+                    const username = UsernameText.trim()
+                    const password = (response.token).toString();
                     console.info("token is:" + response.token)
                     // await AsyncStorage.setItem('Token', response.token)
                     await Keychain.setGenericPassword(username, password)
                 } catch (error) {
                     setLoader(false)
-                    console.error(error)
+                    console.info("ggggggggggggggggggggggggggaaaaaaaaaaaa" + error)
                     Alert.alert("Keychain Error", error.message, [{ style: 'cancel' }])
                 }
 
-                console.log("here...homeeeeeeee")
+                // console.log("here...homeeeeeeee")
+                // setUser(UsernameText.trim())
+                try {
+                    await EncryptedStorage.setItem(
+                        "user_session",
+                        JSON.stringify({
+                            clientId: UsernameText.trim()
+                        })
+                    );
 
-                navigation.navigate(HomeTabs, { screen: Screen_Home, params : {userId: UsernameText.trim()} })
+                    // Congrats! You've just stored your first value!
+                } catch (error) {
+                    console.log("Encryptes storage error: " + error)
+                    // There was an error on the native side
+                }
+                setUserId(UsernameText.trim());
+                navigation.navigate(HomeTabs, { screen: Screen_Home, params: { userId: UsernameText.trim() } })
                 setUsernameText('');
                 setPasswordText('');
                 setUsernameError_msg([])
@@ -215,9 +244,9 @@ export default function Screen_Login({ navigation, route }) {
 
             // console.log(response);
         } catch (error) {
-            Alert.alert("System Error", error, [{ style: 'cancel' }])
+            Alert.alert("System Error", error.message, [{ style: 'cancel' }])
             setLoader(false)
-            console.error(error)
+            console.info("gggggggggggggggggggggggggg" + error)
         }
     }
 
@@ -239,9 +268,10 @@ export default function Screen_Login({ navigation, route }) {
                 })
                 //    console.log(response.text())
                 response = await response.json();
-
+                
+                setUserId('yourUserIdValue');
                 if (response.success === true) {
-                    navigation.navigate(HomeTabs, { screen: Screen_Home, userId: UsernameText  })
+                    navigation.navigate(HomeTabs, { screen: Screen_Home, userId: UsernameText })
 
                 }
                 else if (response.success === false) {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ip from './IPaddress'
-import LinearGradient from 'react-native-linear-gradient';
+
 import { StyleSheet, View, Text, TextInput, Pressable, Alert, Image, Keyboard, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 
 import {

@@ -11,7 +11,6 @@ import { useEffect, useState } from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import NetInfo from "@react-native-community/netinfo";
 import { addEventListener } from "@react-native-community/netinfo";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import messaging from '@react-native-firebase/messaging'
 import { TransitionSpecs } from '@react-navigation/stack';
@@ -30,13 +29,12 @@ import {
 import { NavigationContainer, DefaultTheme, DarkTheme, } from '@react-navigation/native';
 // import { createStackNavigator } from '@react-navigation/stack';
 // import {createBottomTabNavigator} from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 // import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import * as Keychain from 'react-native-keychain';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navigation';
 import { Header, createStackNavigator } from '@react-navigation/stack';
 
@@ -47,8 +45,7 @@ const Stack = createStackNavigator()
 import { TabView, SceneMap } from 'react-native-tab-view';
 
 
-// import Screen_A from './screens/Screen_A'
-// import Screen_B from './screens/Screen_B';
+
 import Screen_Login from './screens/Screen_Login';
 import Screen_NadraVerification from './screens/Screen_NadraVerification';
 import Screen_Registration from './screens/Screen_Registration';
@@ -63,198 +60,22 @@ import {default as Settings} from './screens/Screen_Settings'
 import {default as Contacts} from './screens/Screen_SearchContacts';
 import HomeTabs from './HomeTabs';
 import { RevealFromBottomAndroid } from '@react-navigation/stack/lib/typescript/src/TransitionConfigs/TransitionPresets';
-// import {
-//   Pusher,
-//   PusherMember,
-//   PusherChannel,
-//   PusherEvent,
-// } from '@pusher/pusher-websocket-react-native';
+
 
 // import PushNotification from 'react-native-push-notification';
 
 // import NoInternet from './components/NoInternet';
 import {useConnectionStatus} from './components/NoInternet'
 
-// import SocketIOClient from 'socket.io-client'
-// import { io } from 'socket.io-client';
+import SocketIOClient from 'socket.io-client'
+import { io } from 'socket.io-client';
 import ip from './screens/IPaddress';
-// import * as Ably from 'ably';
-import * as Ably from 'ably';
-// import { Realtime } from 'ably';
+import { UserIdProvider } from './UserIdContext'
+
 function App() {
 
-const [isConnectedtoSocket, setisConnectedtoSocket] = useState(false)
 
 
-// const pusher = Pusher.getInstance();
-// const pu = async()=>{
-  
-  
-//   try {
-    
-//     await pusher.init({
-//       apiKey: "5441fc042a55775fd4dc",
-//       cluster: "ap2"
-//     });
-    
-//     await pusher.connect();
-//     await pusher.subscribe({
-//       channelName: "my-channelrrrr", 
-//       onEvent: (event) => {
-//         console.log(`Event received: ${event}`);
-//       }
-//     });
-
-//     function onEvent(event: PusherEvent) {
-//       console.log("onEvent: $event");
-//     }
-
-
-
-    
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
-// pu()
-
-
-
-
-// const ably_api_key = 'uJbUAQ.WtYOKg:hFNNjiNKqYkls6docSNQIVfusAl1c-hy7O6pMHu6Cac'
-// const randomId = Math.random().toString(36).slice(-10); 
-// const realtime = new Ably.Realtime.Promise({
-//   key: ably_api_key,
-//   clientId: randomId, // Your ID in the presence set
-// });
-
-
-// useEffect(() => {
-
-//   async function doPresence() {
-//     // Connect to Ably
-//     await realtime.connection.once("connected");
-//     console.log("Connected to Ably!");
-//     // Your code goes here
-//   }
-//   doPresence();
-     
-
-//   async function demn(){
-
-//     // Attach to the "chatroom" channel
-//     const channel = realtime.channels.get("chatroom");
-//     await channel.attach();
-    
-//     // Enter the presence set of the "chatroom" channel
-//     await channel.presence.enter("hello");
-
-//   }
-//   demn();
-
-// const subscribing = async()=>{
-
-//   const channel = realtime.channels.get("chatroom");
-//   // Subscribe to the presence set to receive updates
-//   await channel.presence.subscribe((presenceMessage) => {
-//     const { action, clientId } = presenceMessage;
-//     console.log("Presence update:", action, "from:", clientId);
-
-
-//      // Update the list of channel members when the presence set changes
-//   channel.presence.get((err, members) => {
-//     if (err) {
-//       return console.error(`Error retrieving presence data: ${err}`);
-//     }
-//     // document.getElementById("presence-set").innerHTML = members
-//     //   .map((member) => {
-//     //     return `<li>${member.clientId}</li>`;
-//     //   })
-//     //   .join("");
-//     console.log('----------------------------')
-//     console.log(members)
-//   });
-//   });
-  
-// }
-// subscribing()
-
-//       return () => {
-//         realtime.close();
-//         console.log('Closed the connection to Ably.');
-//       };
-//     }, []); // Empty dependency array to run this effect only once
-
-
-
-
-useEffect(()=>{
-
-  // pusher.trigger("my-channel", "my-event", {
-  //   message: "hello w"
-  // })
-})
-
-
-// useEffect(async()=>{
-  
-  // const pusher = Pusher.getInstance();
-  
-  // try {
-    
-  //   await pusher.init({
-  //     apiKey: "5441fc042a55775fd4dc",
-  //     cluster: "ap2"
-  //   });
-    
-  //   await pusher.connect();
-  //   await pusher.subscribe({
-  //     channelName: "my-channel", 
-  //     onEvent: (event: PusherEvent) => {
-  //       console.log(`Event received: ${event}`);
-  //     }
-  //   });
-
-  // } catch (error) {
-    
-  // }
-  
-// })
-
-// useEffect(() => {
-//   const socket = SocketIOClient(`${ip}/userrr`,{
-//     transports: ['websocket']
-//   })
-
-  
-
-//     // Connect to the server using Socket.IO
-//     // const socket = io(`${ip}/userrr`); // Replace with your server address
-
-//     // Event listeners
-//     socket.on('connect', () => {
-//       console.log('Connected to server');
-//       setisConnectedtoSocket(true)
-
-//     });
-
-//     socket.on('disconnect', () => {
-//       console.log('Disconnected from server');
-//     });
-
-//     // Emitting a custom event
-//     socket.emit('customEvent', 'Some data');
-
-//     // Handling incoming events
-//     socket.on('incomingEvent', (data) => {
-//       console.log('Received data:', data);
-//     });
-
-//     // Clean up when the component unmounts
-//     return () => {
-//       socket.disconnect();
-//     };
-//   }, []);
 
 const [isLoggedIn, setisLoggedIn] = useState(false)
 
@@ -328,28 +149,34 @@ useEffect(() => {
 
   return (
     <>
-    {isConnectedtoSocket? <Text>hey</Text>: 
+
+    {/* {isConnectedtoSocket? <Text>hey</Text>:  */}
+    <UserIdProvider>
+
          <NavigationContainer>
-        <Stack.Navigator initialRouteName='Screen_Splash' screenOptions={{header: ()=>null, animationEnabled: true, animationTypeForReplace: 'push', ...TransitionPresets.RevealFromBottomAndroid }}  >
-          <Stack.Screen name="Screen_Splash" component={Screen_Splash} />
-          <Stack.Screen name="Screen_Decider" component={Screen_Decider} />
-          <Stack.Screen name="Screen_Login" component={Screen_Login} options={{
+        <Stack.Navigator initialRouteName='Screen_Splash' screenOptions={{ animationEnabled: true, animationTypeForReplace: 'push', ...TransitionPresets.RevealFromBottomAndroid }}  >
+          <Stack.Screen name="Screen_Splash" component={Screen_Splash} options={{headerShown: false}}/>
+          <Stack.Screen name="Screen_Decider" component={Screen_Decider} options={{headerShown: false}} />
+          <Stack.Screen name="Screen_Login" component={Screen_Login} options={{ headerShown: false
             //  ...TransitionPresets.RevealFromBottomAndroid
     // transitionSpec: {
     //   open: TransitionSpecs.BottomSheetSlideInSpec,
     //   close: TransitionSpecs.ScaleFromCenterAndroidSpec,
     // },
   }} />
-          <Stack.Screen name="Screen_NadraVerification" component={Screen_NadraVerification} />
-          <Stack.Screen name="Screen_Registration" component={Screen_Registration} options={{
+          <Stack.Screen name="Screen_NadraVerification" component={Screen_NadraVerification} options={{headerShown: false}} />
+          <Stack.Screen name="Screen_Registration" component={Screen_Registration} options={{headerShown: false
             // ...TransitionPresets.RevealFromBottomAndroid
-            }} />
-          <Stack.Screen name="Screen_ForgotPassword" component={Screen_ForgotPassword} options={{headerShown: true}} />
-          <Stack.Screen name="HomeTabs" component={HomeTabs} />
+          }} />
+          <Stack.Screen name="Screen_ForgotPassword" component={Screen_ForgotPassword} options={{headerShown: false}} />
+          <Stack.Screen name="HomeTabs" component={HomeTabs} options={{
+            headerShown: false
+          }}/>
         </Stack.Navigator>
       </NavigationContainer>
+          </UserIdProvider>
 
-          }
+           {/* }  */}
 </>
            
 )}

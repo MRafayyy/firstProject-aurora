@@ -1,8 +1,7 @@
-import React, { useState, PropsWithChildren, useEffect } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 
 import GlobalStyle from "../utils/GlobalStyle";
 
-// import LinearGradient from 'react-native-linear-gradient';
 import {
     StyleSheet,
     Text,
@@ -10,112 +9,115 @@ import {
     Pressable,
     BackHandler,
     Alert,
-    ScrollView
+    ScrollView,
+    FlatList,
+    RefreshControl,
+    Refreshing,
+    onRefreshHandler
 } from 'react-native';
 import ip from './IPaddress'
 import * as Keychain from 'react-native-keychain';
 import PushNotification from "react-native-push-notification";
-// import NetInfo from "@react-native-community/netinfo";
-// import { addEventListener } from "@react-native-community/netinfo";
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { useConnectionStatus } from "../components/NoInternet";
-import * as Ably from 'ably';
+// import * as Ably from 'ably';
+import EncryptedStorage from 'react-native-encrypted-storage'
+import SocketIOClient from 'socket.io-client'
+import { io } from 'socket.io-client';
+
+import { useRoute } from '@react-navigation/native';
+// import {initializeSocket} from '../components/sockets'
+import UserIdContext from "../UserIdContext";
 
 
+// import { getSocket } from "../components/sockets";
 
-export default function Screen_Home({ navigation, route}) {
-
-    const {userId} = route.params.userId;
+export default function Screen_Home({ navigation, route }) {
+    // const route = useRoute();
+    // const { userId } = route.params;
+    // console.log("hey thereeeeeee"+route.params.userId)
     const isConnected = useConnectionStatus();
-    
-    // ---------------------------------------------------------------------
-
-const [userOnline, setuserOnline] = useState([])
-
-const ably_api_key = 'uJbUAQ.WtYOKg:hFNNjiNKqYkls6docSNQIVfusAl1c-hy7O6pMHu6Cac'
-// const {userId} = route.params;
-const userIds = '45'
-// const randomId = Math.random().toString(36).slice(-10); 
-const randomId = userIds 
-const realtime = new Ably.Realtime.Promise({
-  key: ably_api_key,
-  clientId: randomId, // Your ID in the presence set
-});
+    const [onlineUsersCount, setOnlineUsersCount] = useState(0);
+    const [presentMembers, setpresentMembers] = useState([])
 
 
-useEffect(() => {
 
-  async function doPresence() {
-      // Connect to Ably
-    await realtime.connection.once("connected");
-    console.log("Connected to Ably!");
-    // Your code goes here
-  }
-  doPresence();
-     
+ 
+    const {userId} = useContext(UserIdContext)
+    console.log(userId+"huraaa")
 
-  async function demn(){
+//    const socketI = io(`${ip}/userrr`,{
+//         auth: {Token: userId}
+//       }); 
 
-    try {
-        
-        
-        // Attach to the "chatroom" channel
-        const channel = realtime.channels.get("chatroom");
-        await channel.attach();
-        
-        // Enter the presence set of the "chatroom" channel
-        await channel.presence.enter("hello");
-        
-    } catch (error) {
+// useEffect(() => {
 
-        console.log("demn error"+error)
-    }
-  }
-  demn();
+//     // const socket = initializeSocket(userId);
 
-const subscribing = async()=>{
+//       socketI.removeAllListeners()
+//     socketI.disconnect()      
+       
+//     //   socketI.removeEventListener()
+//       socketI.on('connect', () => {
+//           console.log('Connected to server');
+//       });
+//       // socketI.disconnect()
 
-    try {
-        
-        
-        const channel = realtime.channels.get("chatroom");
-        // Subscribe to the presence set to receive updates
-        await channel.presence.subscribe((presenceMessage) => {
-    const { action, clientId } = presenceMessage;
-    console.log("Presence update:", action, "from:", clientId);
+//       socketI.on('disconnect', () => {
+//           console.log('Disconnected from server');
+//       });
 
 
-     // Update the list of channel members when the presence set changes
-  channel.presence.get((err, members) => {
-    if (err) {
-      return console.error(`Error retrieving presence data: ${err}`);
-    }
-    // document.getElementById("presence-set").innerHTML = members
-    //   .map((member) => {
-    //     return `<li>${member.clientId}</li>`;
-    //   })
-    //   .join("");
-    console.log('----------------------------')
-    console.log(members)
-  });
-});
-} catch (error) {
-console.log("error in subscribing ....."+error)
-}
+
   
-}
-subscribing()
+// //     return () => {
+// //  socketI.disconnect()      
+// //     };
+//   }, []);
 
-      return () => {
-        realtime.close();
-        console.log('Closed the connection to Ably.');
-      };
-    }, []); // Empty dependency array to run this effect only once
 
+   
 
 
 
-// ---------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+    async function retrieveUserSession() {
+        try {
+            const session = await EncryptedStorage.getItem("user_session");
+
+            if (session !== undefined) {
+                const parsedSession = JSON.parse(session);
+                if (parsedSession['clientId']) {
+                    return parsedSession['clientId']; // Return the clientId
+                }
+            }
+        } catch (error) {
+            console.error("Error retrieving user session:", error);
+        }
+        return null; // Return null if clientId is not available
+    }
+
+
+
+
+
+    
+    
+    
+
+    
+
+   
+    // ---------------------------------------------------------------------
 
     function handleBackButtonClick() {
         // Alert.alert('Hold on!', 'Are you sure you want to exit the app?', [
@@ -138,43 +140,19 @@ subscribing()
     }, []);
 
 
-
-    const sendFCMNotifs = async () => {
-
-        try {
-            let url = `${ip}/sendFCM`
-            let response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                // body: JSON.stringify
-            })
-            // response = response.json();
-            // console.log(response)
-        } catch (error) {
-
-        }
-
-
-     
-    }
-
-    const onPressHandler = () => {
-        navigation.navigate('Screen_B');
-    }
-
     const Logout = async () => {
         await Keychain.resetGenericPassword();
+        // const socket = getSocket();
+        // socket.disconnect();
         navigation.navigate('Screen_Login');
     }
 
     const handleNotification = () => {
-
+        
         // PushNotification.cancelAllLocalNotifications(); //previous notifs will be cancelled
-
+        
         console.log("notif clicked")
-
+        
         PushNotification.localNotification({
             channelId: "test-channel",
             channelName: "Test Channel",
@@ -195,14 +173,14 @@ subscribing()
             allowWhileIdle: true,
         })
     }
-
+    
 
     const FirebaseNotif_Screen = async () => {
         navigation.navigate('Screen_FirebaseNotif')
     }
 
-
-
+    
+    
     const NextScreen = async () => {
         try {
             let url = `${ip}/verifyToken`
@@ -228,39 +206,97 @@ subscribing()
             console.log(error)
         }
     }
-
-
+    
+    
     return (
         <>
-        <ScrollView>
+            {/* <ScrollView> */}
 
-            <View style={styles.body}>
-                <Text style={[styles.text, GlobalStyle.CustomFont]}>Welcome to home screen</Text>
-                <Pressable onPress={Logout} style={{ backgroundColor: 'orange' }}>
-                    <Text style={(styles.text, { margin: 10 })}>Logout</Text>
-                </Pressable>
-                <Pressable onPress={NextScreen} style={{ backgroundColor: 'orange', marginTop: 30 }}>
-                    <Text style={(styles.text, { margin: 10 })}>Next Screen</Text>
-                </Pressable>
-                <Pressable onPress={handleNotification} style={{ backgroundColor: 'red', marginTop: 30 }}>
-                    <Text style={(styles.text, { margin: 10 })}>Testing notif</Text>
-                </Pressable>
-                <Pressable onPress={FirebaseNotif_Screen} style={{ backgroundColor: 'red', marginTop: 30 }}>
-                    <Text style={(styles.text, { margin: 10 })}>Go to firebase notifs screen</Text>
-                </Pressable>
+                <View style={styles.body}>
+                    <View style={{ width: responsiveWidth(55), height: responsiveHeight(10), justifyContent: 'center', alignItems: 'center', backgroundColor: isConnected ? 'green' : 'red' }}>
+                        <Text style={{ color: 'white' }}>{isConnected ? 'You are connected to the internet' : 'No Internet'}</Text>
+                    </View>
 
-                <View style={{ width: responsiveWidth(55), height: responsiveHeight(10), position: 'absolute', top: 100 , bottom: 50, justifyContent: 'center', alignItems: 'center', backgroundColor:  isConnected? 'green' : 'red' }}>
-                    <Text style={{ color: 'white' }}>{isConnected? 'You are connected to the internet' : 'No Internet'}</Text>
+                    <Text style={[styles.text, GlobalStyle.CustomFont]}>Welcome to home screen</Text>
+
+                    <Pressable onPress={Logout} style={{ backgroundColor: 'orange' }}>
+                        <Text style={(styles.text, { margin: 10 })}>Logout</Text>
+                    </Pressable>
+
+                    <Pressable onPress={NextScreen} style={{ backgroundColor: 'orange', marginTop: 30 }}>
+                        <Text style={(styles.text, { margin: 10 })}>Next Screen</Text>
+                    </Pressable>
+
+                    <Pressable onPress={handleNotification} style={{ backgroundColor: 'red', marginTop: 30 }}>
+                        <Text style={(styles.text, { margin: 10 })}>Testing notif</Text>
+                    </Pressable>
+
+                    <Pressable onPress={FirebaseNotif_Screen} style={{ backgroundColor: 'red', marginTop: 30 }}>
+                        <Text style={(styles.text, { margin: 10 })}>Go to firebase notifs screen</Text>
+                    </Pressable>
+
+                    {/* <Pressable onPress={fetchOnlineUsersCount} style={{ backgroundColor: 'red', marginTop: 30 }}>
+                        <Text style={(styles.text, { margin: 10 })}> Refresh online users</Text>
+                    </Pressable> */}
+
+                    {/* <Pressable onPress={subscribeAndMessage} style={{ backgroundColor: 'red', marginTop: 30 }}>
+                        <Text style={(styles.text, { margin: 10 })}> Publish</Text>
+                    </Pressable> */}
+
+
+                    <View style={{ justifyContent: 'center', alignItems: 'center', width: responsiveWidth(55), height: responsiveHeight(10), marginTop: 10 }}>
+                        {/* Display online users list */}
+                        <Text style={{ color: 'black', fontSize: 15 }}>Online Users: {onlineUsersCount}</Text>
+                    </View>
+
+                    {/* <View>
+                        {presentMembers.map((value, index) => (
+                            <Text key={index} style={{ color: 'black' }}>{value}</Text>
+                        ))}
+                    </View> */}
+
+                    {/* <View>
+                        {CombinedMessages.map((combinedMessage, index) => (
+                            <Text key={index} style={{ color: 'black' }}>
+                                 {combinedMessage.clientId} : {combinedMessage.message}
+                            </Text>
+                            ))}
+                    </View> */}
+
+
+                    {/* <FlatList 
+                        keyExtractor={(combinedMessage, index) => index.toString()}
+                        data={CombinedMessages}
+
+                        renderItem={({ combinedMessage }) => (
+                            <Text key={index} style={{ color: 'black' }}>
+                            {combinedMessage.clientId} : tt4t{combinedMessage.message}
+                       </Text>
+                        )}
+
+                        refreshControl={
+                            <RefreshControl refreshing={Refreshing}
+                                onRefresh={onRefreshHandler}
+                            />
+                        }>
+                    </FlatList> */}
+
+                    {/* <View>
+                        {msgContent.map((message, index) => (
+                            <Text key={index} style={{ color: 'black' }}>{message}</Text>
+                            ))}
+                        {MsgContentSender.map((sender, index) => (
+                            <Text key={index} style={{ color: 'black' }}>{sender}</Text>
+                            ))}
+                    </View> */}
+
                 </View>
-                {/* <Pressable onPress={sendFCMNotifs} style={{ backgroundColor: 'red',  marginTop: 30  }}>
-                    <Text style={(styles.text, {margin: 10 })}>Go to firebase notifs screen</Text>
-                </Pressable> */}
 
-            </View>
-</ScrollView>
+
+            {/* </ScrollView> */}
         </>
     )
-
+    
 }
 
 
@@ -279,5 +315,93 @@ const styles = StyleSheet.create({
         color: 'black',
         textAlign: 'left'
     },
-
+    
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // const realtimeRef = useRef(null); // Ref to store the realtime instance
+
+// let isAblyConnected = false;
+// useEffect(() => {
+
+//     async function initializeRealtime() {
+//         const clientId = await retrieveUserSession(); // Retrieve clientId
+//         if (!clientId) {
+//             console.error("Client ID not available.");
+//             return;
+//         }
+
+//         try {
+//             // realtime = new Ably.Realtime.Promise({
+//             //     key: ably_api_key,
+//             //     clientId: clientId,
+//             // });
+
+//              const realtime = await initialRealtime(ably_api_key, clientId);
+
+//             realtimeRef.current = realtime;
+
+//             await realtime.connection.once('connected');
+//             console.log('Connected to Ably!');
+//             isAblyConnected= true;
+
+//             const channel = realtime.channels.get('chatroom');
+//             await channel.attach();
+//             await channel.presence.enter();
+
+//             await channel.presence.subscribe((presenceMessage) => {
+//                 const { action, clientId } = presenceMessage;
+//                 if (action === 'enter' || action === 'leave') {
+//                     channel.presence.get((err, members) => {
+//                         if (err) {
+//                             console.error(`Error retrieving presence data: ${err}`);
+//                             return;
+//                         }
+//                         setOnlineUsersCount(members.length);
+//                         setpresentMembers(members)
+//                         console.log(members)
+//                     });
+//                 }
+//             });
+//         } catch (error) {
+//             console.error('Error:', error);
+//         }
+//     }
+
+//     initializeRealtime();
+//     // fetchOnlineUsersCount()
+
+//     return () => {
+//         // if (realtime) {
+//         //     realtime.close();
+//         //     console.log('Closed the connection to Ably.');
+//         // }
+//         closeRealtimeConnection()
+//     };
+// }, []);

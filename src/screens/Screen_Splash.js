@@ -1,6 +1,5 @@
-import React, { useState, useEffect, PropsWithChildren } from "react";
+import React, { useState, useEffect, PropsWithChildren, useContext } from "react";
 
-// import LinearGradient from 'react-native-linear-gradient';
 import {
     StyleSheet,
     Text,
@@ -16,10 +15,11 @@ import ip from './IPaddress';
 import HomeTabs from "../HomeTabs";
 import { Screen } from "react-native-screens";
 import Screen_Home from "./Screen_Home";
+import UserIdContext from "../UserIdContext";
 
 export default function Screen_Splash({ navigation, route }) {
 
-   
+    const { setUserId } = useContext(UserIdContext);
     // setTimeout(()=>{
 
     //     // const Forward = ()=>{
@@ -57,8 +57,11 @@ export default function Screen_Splash({ navigation, route }) {
                 })
                 //    console.log(response.text())
                 response = await response.json();
+
+                
                 
                 if (response.success === true) {
+                    setUserId(credentials.username)
                     navigation.navigate(HomeTabs, { screen: Screen_Home, params: { userId: credentials.username}})
                     
                 }

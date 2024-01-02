@@ -1,6 +1,5 @@
 import React, { useState, PropsWithChildren, useEffect } from "react";
 // import type { PropsWithChildren } from 'react';
-import LinearGradient from 'react-native-linear-gradient';
 import {
     StyleSheet,
     Text,
@@ -164,24 +163,20 @@ export default function Screen_FirebaseNotif({ navigation, route }) {
                 <Text style={styles.welcome_text}>Send Firebase notifs</Text>
 
                 <View style={styles.UsernameInputBoxView}>
-                    {/* <Text style={styles.text}>UserId</Text> */}
-                    {/* onChangeText={(value) => setText(value)} */}
+               
                     <TextInput onChangeText={(value) => onHandleTitleChange(value)} style={[styles.UsernameInputBox, { color: 'black' }]} editable placeholder='Title' placeholderTextColor={'black'} ></TextInput>
                 </View>
 
                 <View style={styles.PasswordInputBoxView}>
-                    {/* <Text style={styles.text}>Password</Text> */}
+           
                     <TextInput onChangeText={(value) => onHandleMessageChange(value)} style={[styles.PasswordInputBox, { color: 'black' }]} editable placeholder='Message' placeholderTextColor={'black'} ></TextInput>
                     {/* <Pressable onPress={goToForgotPasswordScreen} style={{ marginTop: 10 }}><Text style={[styles.text, { textAlign: 'right' }]}>Forgot password?</Text></Pressable> */}
                 </View>
 
-                {/* <View>
-                    <Text style={styles.text}>Confirm Password</Text>
-                    <TextInput style={[styles.PasswordInputBox, { color: 'white' }]} editable placeholder='e.g: Harry' placeholderTextColor={'white'} onChangeText={(value) => setText(value)}></TextInput>
-                </View> */}
+            
 
 
-                <Pressable onPress={sendFCMNotifs} style={({ pressed }) => [pressed ? { opacity: 0.8 } : {}, styles.loginBtn, { borderRadius: 100 }]}>
+                {/* <Pressable onPress={sendFCMNotifs} style={({ pressed }) => [pressed ? { opacity: 0.8 } : {}, styles.loginBtn, { borderRadius: 100 }]}>
                     <LinearGradient style={styles.LG} useAngle={true} angle={45} angleCenter={{ x: 0.5, y: 0.5 }} colors={['rgb(5, 214, 217)', 'rgb(249, 7, 252)']} >
                         <Text  style={[styles.btntext, { textAlign: 'center' }]}> Send</Text>
                     </LinearGradient>
@@ -190,13 +185,10 @@ export default function Screen_FirebaseNotif({ navigation, route }) {
                     <LinearGradient style={styles.LG} useAngle={true} angle={45} angleCenter={{ x: 0.5, y: 0.5 }} colors={['rgb(5, 214, 217)', 'rgb(249, 7, 252)']} >
                         <Text  style={[styles.btntext, { textAlign: 'center' }]}> Go back to Home page</Text>
                     </LinearGradient>
-                </Pressable>
+                </Pressable> */}
 
 
-                {/* <View style={styles.bottomText}>
-                    <Text style={[{ color: 'black' }]}>Don't have an account?</Text>
-                    <Pressable ><Text style={styles.linkColor}>Create an account</Text></Pressable>
-                </View> */}
+           
 
 
             </View>
