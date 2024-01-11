@@ -191,7 +191,7 @@ export default function Screen_Login({ navigation, route }) {
             if (response.success === true) {
                 setLoader(true)
                 try {
-                    const username = UsernameText.trim()
+                    const username =  UsernameText.trim()
                     const password = (response.token).toString();
                     console.info("token is:" + response.token)
                     // await AsyncStorage.setItem('Token', response.token)
@@ -207,9 +207,9 @@ export default function Screen_Login({ navigation, route }) {
                 try {
                     await EncryptedStorage.setItem(
                         "user_session",
-                        JSON.stringify({
-                            clientId: UsernameText.trim()
-                        })
+                        
+                            response.mongoId
+                       
                     );
 
                     // Congrats! You've just stored your first value!
@@ -217,7 +217,7 @@ export default function Screen_Login({ navigation, route }) {
                     console.log("Encryptes storage error: " + error)
                     // There was an error on the native side
                 }
-                setUserId(UsernameText.trim());
+                setUserId({ userId: UsernameText.trim(), mongoId: response.mongoId});
                 navigation.navigate(HomeTabs, { screen: Screen_Home, params: { userId: UsernameText.trim() } })
                 setUsernameText('');
                 setPasswordText('');

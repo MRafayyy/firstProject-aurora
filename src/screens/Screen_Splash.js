@@ -16,6 +16,9 @@ import HomeTabs from "../HomeTabs";
 import { Screen } from "react-native-screens";
 import Screen_Home from "./Screen_Home";
 import UserIdContext from "../UserIdContext";
+import EncryptedStorage from 'react-native-encrypted-storage'
+
+
 
 export default function Screen_Splash({ navigation, route }) {
 
@@ -48,6 +51,7 @@ export default function Screen_Splash({ navigation, route }) {
             try {
                 let url = `${ip}/verifyToken`
                 const credentials = await Keychain.getGenericPassword();
+                console.log(credentials)
                 let response = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -59,9 +63,10 @@ export default function Screen_Splash({ navigation, route }) {
                 response = await response.json();
 
                 
-                
                 if (response.success === true) {
-                    setUserId(credentials.username)
+                    const mongoId =  await EncryptedStorage.getItem('user_session')
+                    // credentials = JSON.parse(credentials.username)
+                    setUserId({userId: credentials.username, mongoId})
                     navigation.navigate(HomeTabs, { screen: Screen_Home, params: { userId: credentials.username}})
                     
                 }

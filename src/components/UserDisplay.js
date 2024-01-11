@@ -29,6 +29,7 @@ const UsersShow = ({ item }) => {
                 setrequestSent(true)
             }
         } catch (error) {
+            console.log("error here")
             console.log(error)
         }
     }
@@ -47,7 +48,7 @@ const UsersShow = ({ item }) => {
             </View>
 
 
-            <Pressable onPress={() => sendFriendRequest(userId, item.userId)} style={{ backgroundColor: '#567189', padding: responsiveWidth(2), borderRadius: responsiveWidth(2), width: responsiveWidth(30) }}>
+            <Pressable onPress={() => sendFriendRequest(userId.mongoId, item._id)} style={{ backgroundColor: '#567189', padding: responsiveWidth(2), borderRadius: responsiveWidth(2), width: responsiveWidth(30) }}>
                 <Text style={{ textAlign: 'center', color: 'white', fontSize: responsiveFontSize(2) }}>{requestSent ? 'Sent Request' : 'Add Friend'}</Text>
             </Pressable>
 

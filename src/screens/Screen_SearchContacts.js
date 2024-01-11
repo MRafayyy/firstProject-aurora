@@ -46,6 +46,7 @@ useEffect(()=>{
             // console.log(AllUsers)
             
         } catch (error) {
+            console.log("error here ")
             console.log(error)
         }
     }

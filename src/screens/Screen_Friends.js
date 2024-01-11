@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import ip from "./IPaddress";
 import UserIdContext from "../UserIdContext";
-
+import FriendRequests from "../components/FriendRequests";
 
 export default function Screen_Friends() {
 
@@ -16,8 +16,8 @@ export default function Screen_Friends() {
 
     const fetchFriendRequests = async () => {
         try {
-
-            let response = await fetch(`${ip}/friend-request/${userId}`, {
+            const mongoId = userId.mongoId;
+            let response = await fetch(`${ip}/friend-request/${mongoId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -25,10 +25,11 @@ export default function Screen_Friends() {
             })
             if (response.status === 200) {
                 response = await response.json()
-                console.log(response)
+                // console.log(response)
 
                 const friendRequestsData = response.map((friendRequest) => ({
 
+                    _id: friendRequest._id,
                     name: friendRequest.name,
                     email: friendRequest.email
                 })
@@ -44,9 +45,14 @@ export default function Screen_Friends() {
     }
 
 
-    console.log(friendRequests)
+    // console.log(friendRequests[0].name)
     return (
-        <></>
+        <View style={{padding: 10, marginHorizontal: 12}} >
+           {friendRequests.length > 0?  
+            friendRequests.map((item,index)=>(
+            <FriendRequests key={index} item={item} friendRequests={friendRequests} setFriendRequests={setFriendRequests}/>
+           )) : null }
+        </View>
     );
 }
 
