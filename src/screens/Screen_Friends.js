@@ -23,20 +23,33 @@ export default function Screen_Friends() {
                     'Content-Type': 'application/json'
                 }
             })
+            
             if (response.status === 200) {
                 response = await response.json()
+
+                if (response.status === "empty") {
+                    console.log("no friend request found")
+                }
+                else{
                 // console.log(response)
+                
 
-                const friendRequestsData = response.map((friendRequest) => ({
+                    const friendRequestsData = response.map((friendRequest) => ({
 
-                    _id: friendRequest._id,
-                    name: friendRequest.name,
-                    email: friendRequest.email
-                })
-                )
+                        _id: friendRequest._id,
+                        name: friendRequest.name,
+                        email: friendRequest.email
+                    })
+                    )
 
-                setFriendRequests(friendRequestsData)
+                    setFriendRequests(friendRequestsData)
+                
             }
+        }
+
+        else if(response.status==500){
+            console.log("demn")
+        }
 
 
         } catch (error) {
@@ -47,11 +60,11 @@ export default function Screen_Friends() {
 
     // console.log(friendRequests[0].name)
     return (
-        <View style={{padding: 10, marginHorizontal: 12}} >
-           {friendRequests.length > 0?  
-            friendRequests.map((item,index)=>(
-            <FriendRequests key={index} item={item} friendRequests={friendRequests} setFriendRequests={setFriendRequests}/>
-           )) : null }
+        <View style={{ padding: 10, marginHorizontal: 12 }} >
+            {friendRequests.length > 0 ?
+                friendRequests.map((item, index) => (
+                    <FriendRequests key={index} item={item} friendRequests={friendRequests} setFriendRequests={setFriendRequests} />
+                )) : null}
         </View>
     );
 }
