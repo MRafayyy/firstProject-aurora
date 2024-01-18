@@ -128,6 +128,7 @@ export default function Screen_Registration({ navigation, route }) {
                         email: EmailText,
                         password: PasswordText
                     }
+                    console.log(registrationData)
                     let response = await fetch(url, {
                         method: 'POST',
                         headers: {
@@ -145,13 +146,13 @@ export default function Screen_Registration({ navigation, route }) {
                         setLoader(false)
 
                     }
-                    else {
+                    else if(response === false) {
                         setUsernameError_msg(['User Id or email already exists'])
                         setLoader(false)
                     }
                     // console.log(response);
                 } catch (error) {
-                    Alert.alert("Error", error)
+                    Alert.alert("Error", error.message)
                     setLoader(false)
                     console.log(error)
                 }

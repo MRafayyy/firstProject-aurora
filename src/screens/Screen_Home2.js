@@ -61,7 +61,8 @@ export default function Screen_Home({ navigation, route }) {
     const format = useCameraFormat(device, [
         { videoResolution: { width: 1280, height: 720 },
         // { videoResolution: { width: 3048, height: 2160 },
-         pixelFormat: 'native' }, // if i dont specify vidresol then Error retrieving camcorder profile params
+        //  pixelFormat: 'native'
+         }, // if i dont specify vidresol then Error retrieving camcorder profile params
         { fps: 30 }
         ])
 
