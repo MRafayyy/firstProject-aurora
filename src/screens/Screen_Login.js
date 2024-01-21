@@ -255,33 +255,35 @@ export default function Screen_Login({ navigation, route }) {
         NotificationPermission();
         createChannels();
 
-        async function Logged() {
-            try {
-                let url = `${ip}/verifyToken`
-                const credentials = await Keychain.getGenericPassword();
-                let response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': "application/json"
-                    },
-                    body: JSON.stringify(credentials)
-                })
-                //    console.log(response.text())
-                response = await response.json();
+        // async function Logged() {
+        //     try {
+        //         let url = `${ip}/verifyToken`
+        //         const credentials = await Keychain.getGenericPassword();
+        //         let response = await fetch(url, {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': "application/json"
+        //             },
+        //             body: JSON.stringify(credentials)
+        //         })
+        //         //    console.log(response.text())
+        //         response = await response.json();
                 
-                setUserId('yourUserIdValue');
-                if (response.success === true) {
-                    navigation.navigate(HomeTabs, { screen: Screen_Home, userId: UsernameText })
+        //         setUserId('yourUserIdValue');
+        //         if (response.success === true) {
+        //             navigation.navigate(HomeTabs, { screen: Screen_Home, userId: UsernameText })
 
-                }
-                else if (response.success === false) {
+        //         }
+        //         else if (response.success === false) {
 
-                }
+        //         }
 
-            } catch (error) {
-                // console.info(error)
-            }
-        }
+        //     } catch (error) {
+        //         // console.info(error)
+        //     }
+        // }
+
+
         // Logged();
 
         // Login();

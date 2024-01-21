@@ -126,7 +126,8 @@ export default function Screen_Registration({ navigation, route }) {
                     const registrationData = {
                         userId: UsernameText,
                         email: EmailText,
-                        password: PasswordText
+                        password: PasswordText,
+                        nadra_verified: 0
                     }
                     console.log(registrationData)
                     let response = await fetch(url, {
