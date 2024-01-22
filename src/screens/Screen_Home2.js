@@ -21,6 +21,7 @@ import { ActivityIndicator } from "react-native-paper";
 import storage from '@react-native-firebase/storage';
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 import UserIdContext from "../UserIdContext";
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 // import { Image } from "react-native-paper/lib/typescript/components/Avatar/Avatar";
 
 export default function Screen_Home({ navigation, route }) {
@@ -34,15 +35,19 @@ export default function Screen_Home({ navigation, route }) {
     }
 
     useEffect(() => {
+        console.log("Screen_Home2 rendered");
+        checkPermission();
         BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
         return () => {
             BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
         };
     }, []);
 
-
+    let intervalId;
+    const [hasInitialized, sethasInitialized] = useState(false)
+    const [Counter, setCounter] = useState(0);
     const [ImageData, setImageData] = useState('');
-    const [takePhotoClicked, settakePhotoClicked] = useState(false);
+    const [RescueButtonClicked, setRescueButtonClicked] = useState(false);
     const [VideoData, setVideoData] = useState('');
     const [takeVideoClicked, settakeVideoClicked] = useState(false);
 
@@ -79,10 +84,12 @@ export default function Screen_Home({ navigation, route }) {
     // const device = useCameraDevice('back');
     // const device = useCameraDevices
     // const device = devices.back;
-    useEffect(() => {
-        checkPermission();
-        // hasAndroidPermission();
-    }, [])
+
+    // useEffect(() => {
+    //     checkPermission();
+    //     console.log("Screen_Home2 rendered");
+    //     // hasAndroidPermission();
+    // }, [])
 
 
     async function hasAndroidPermission() {
@@ -105,7 +112,7 @@ export default function Screen_Home({ navigation, route }) {
         if (hasPermission) {
             return true;
         }
-        const getRequestPermissionPromise = async() => {
+        const getRequestPermissionPromise = async () => {
             if (Platform.Version >= 33) {
                 return PermissionsAndroid.requestMultiple([
                     PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
@@ -154,15 +161,18 @@ export default function Screen_Home({ navigation, route }) {
 
             })
             setImageData(photo.path);
-            settakePhotoClicked(false)
+            setRescueButtonClicked(false)
             console.log(photo.path)
         }
     }
 
     const startRecording = () => {
 
-        console.log("start recording clicked")
-        camera.current.startRecording({
+        if(!hasInitialized)
+        {
+
+            console.log("start recording clicked")
+            camera.current.startRecording({
             onRecordingFinished: async (video) => {
                 console.log(video);
                 setVideoData(video.path);
@@ -175,50 +185,71 @@ export default function Screen_Home({ navigation, route }) {
                     type: 'video',
                 })
             },
-        onRecordingError: (error) => console.error(error)
-    });
-
-
-    // camera.current.startRecording({
-    //     flash: 'on',
-    //     onRecordingFinished: (video) => console.log(video),
-    //     onRecordingError: (error) => console.error(error),
-
-    // })
-}
-
-const uploadVideo = async (vpath) => {
-    const timestamp = Date.now();
-    const date = new Date(timestamp);
-
-    // Format the date as a string
-    const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
-
-    const reference = storage().ref(`${userId.userId}/video-${formattedDate}.mov`);
-
-    const pathToFile = `file://${vpath}`;
-    console.log(pathToFile)
-    // uploads file
-    await reference.putFile(pathToFile);
-}
-
-const stopRecording = async () => {
-    try {
-
-        settakePhotoClicked(false)
-        await camera.current.stopRecording()
-
-        // uploadVideo()
-    } catch (error) {
-        console.log(error)
+            onRecordingError: (error) => console.error(error)
+        });
+     sethasInitialized(true)   
     }
-}
+
+        // camera.current.startRecording({
+        //     flash: 'on',
+        //     onRecordingFinished: (video) => console.log(video),
+        //     onRecordingError: (error) => console.error(error),
+
+        // })
+    }
+
+    const uploadVideo = async (vpath) => {
+        const timestamp = Date.now();
+        const date = new Date(timestamp);
+
+        // Format the date as a string
+        const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
+
+        const reference = storage().ref(`${userId.userId}/video-${formattedDate}.mov`);
+
+        const pathToFile = `file://${vpath}`;
+        console.log(pathToFile)
+        // uploads file
+        await reference.putFile(pathToFile);
+    }
 
 
-if (device == null) return <ActivityIndicator />
-return (
-    <>
-        {/* <View style={styles.body}>
+
+    const stopRecording = async () => {
+        try {
+            sethasInitialized(false)
+            clearInterval(intervalId);
+            setRescueButtonClicked(false)
+            await camera.current.stopRecording()
+
+            // uploadVideo()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
+    const formatTime = (seconds) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+    };
+
+
+    const RecordingInitiation = () => {
+        setRescueButtonClicked(true)
+        
+        // const intervalId = setInterval(() => {
+        //     setCounter(Counter + 1);
+        // }, 1000)
+      
+    }
+
+
+    if (device == null) return <ActivityIndicator />
+    return (
+        <>
+            {/* <View style={styles.body}>
                 <Text style={[styles.text, GlobalStyle.CustomFont]}>Wlcome to the screen after home screen</Text>
                 <Pressable onPress={Logout} style={{ backgroundColor: 'orange' }}>
                     <Text style={styles.text}>Logout</Text>
@@ -227,36 +258,75 @@ return (
                     <Text style={styles.text}>Go to Home Page</Text>
                 </Pressable>
             </View> */}
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-            {takePhotoClicked ? (<View style={{ flex: 1 }}>
-                <Camera
-                    onInitialized={() => console.log("initialized cam")}
-                    style={StyleSheet.absoluteFill}
-                    device={device}
-                    isActive={true}
-                    ref={camera}
-                    photo={true}
-                    video={true}
-                    audio={true}
-                    format={format}
-                // videoStabilizationMode='cinematic'
-                />
+            <View style={{ flex: 1, justifyContent: 'center', backgroundColor: 'white' }}>
+                {RescueButtonClicked ? (<View style={{ flex: 1 }}>
+                    <Camera
+                        onInitialized={() => { console.log("initialized cam"); startRecording();   
+                         const intervalId = setInterval(() => {
+                            // setCounter(Counter++);
+                        
+                            setCounter((prevCounter) => prevCounter + 1);
+                        }, 1000) }}
+                        style={StyleSheet.absoluteFill}
+                        device={device}
+                        isActive={true}
+                        ref={camera}
+                        photo={true}
+                        video={true}
+                        audio={true}
+                        format={format}
+                    // videoStabilizationMode='cinematic'
+                    />
+                    {/* <Pressable onPress={takePicture} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'red', borderRadius: 30, bottom: 50, alignSelf: 'center' }}></Pressable> */}
+                    {/* <Pressable onPress={startRecording} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'blue', borderRadius: 30, bottom: 50, alignSelf: 'flex-start' }}></Pressable> */}
+                    <Pressable onPress={() => stopRecording()} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'yellow', borderRadius: 30, bottom: 25, alignSelf: 'center', justifyContent: 'center' }}><Text style={{textAlign:'center'}}>Duration: {Counter}</Text></Pressable>
+                </View>) : (
+                    <View style={{ flex: 1, justifyContent: 'flex-start', gap: responsiveHeight(6), alignItems: 'center' }}>
+                        <Text style={{ textAlign: 'center', fontSize: responsiveFontSize(5), fontWeight: '900', marginTop: responsiveHeight(6) }}>Rescue Button</Text>
+                        <Text style={{ textAlign: 'left', fontSize: responsiveFontSize(2), paddingHorizontal: responsiveWidth(10) }}>Tap the Rescue Button when you need urgent help.
+                            {'\n'}
+                            {'\n'}
+                            Here's what it does:
+                            {'\n'}
+                            {'\n'}
+                          - Record Video & Sound:
+                            {'\n'}
+                            Starts recording what's happening around you.
+                            {'\n'}
+                            {'\n'}
+                          - Share Your Location:
+                            {'\n'}
+                            Sends your location to security agencies and trusted contacts.
+                            {'\n'}
+                            {'\n'}
+                          - Emergency Alert:
+                            {'\n'}
+                            Notifies nearby security agencies with your situation details.
+                            {'\n'}
+                            {'\n'}
+                          - Alerts Close Contacts:
+                            {'\n'}
+                            Tells your close contacts about the emergency and where you are.
+                            {'\n'}
+                            {'\n'}
+                          - Stay Connected:
+                            {'\n'}
+                            Keeps sharing updates until you confirm you're safe.</Text>
+                        {/* {ImageData !== '' && <Image source={{ uri: 'file://' + ImageData }} style={{ width: '90%', height: '10%' }} />} */}
+                        {/* {VideoData !== '' && <Video resizeMode={'cover'} source={{ uri: 'file://' + VideoData }} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "90%" }} />} */}
+                        <Pressable onPress={() => {
 
-                <Pressable onPress={takePicture} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'red', borderRadius: 30, bottom: 50, alignSelf: 'center' }}></Pressable>
-                <Pressable onPress={startRecording} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'blue', borderRadius: 30, bottom: 50, alignSelf: 'flex-start' }}></Pressable>
-                <Pressable onPress={stopRecording} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'yellow', borderRadius: 30, bottom: 50, alignSelf: 'flex-end' }}></Pressable>
-            </View>) : (
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    {ImageData !== '' && <Image source={{ uri: 'file://' + ImageData }} style={{ width: '90%', height: '10%' }} />}
-                    {VideoData !== '' && <Video resizeMode={'cover'} source={{ uri: 'file://' + VideoData }} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "90%" }} />}
-                    <Pressable onPress={() => settakePhotoClicked(true)} style={{ width: '90%', height: 50, borderWidth: 1, alignSelf: 'center', justifyContent: 'center' }}><Text style={{ color: 'black' }}>Click Photo </Text></Pressable>
-                </View>
-            )}
+                            RecordingInitiation();
+
+                        }
+                        } style={{ width: '80%', height: 55, backgroundColor: '#0662bf', borderWidth: 1, marginTop: responsiveHeight(1), borderRadius: 10, alignSelf: 'center', justifyContent: 'center' }}><Text style={{ fontSize: responsiveFontSize(2.2), color: 'white', textAlign: 'center' }}>Rescue</Text></Pressable>
+                    </View>
+                )}
 
 
-        </View>
-    </>
-)
+            </View>
+        </>
+    )
 }
 
 

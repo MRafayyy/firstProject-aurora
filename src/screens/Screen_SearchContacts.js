@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 
 import { View, Pressable, ScrollView, Text, StyleSheet, BackHandler, TextInput, Keyboard, FlatList, RefreshControl, Refreshing, VirtualizedList } from 'react-native'
 
@@ -14,11 +14,14 @@ import ip from './IPaddress'
 
 // import {getSocket} from '../components/sockets'
 import UserDisplay from "../components/UserDisplay";
+import UserIdContext from "../UserIdContext";
 
 
 
 
 export default function Screen_SearchContacts({ navigation }) {
+
+    const { userId } = useContext(UserIdContext)
 
 
     const [onlineUsersCount, setOnlineUsersCount] = useState(0);
@@ -32,9 +35,9 @@ useEffect(()=>{
     
     const fetchUsers = async()=>{
         try {
-            
-            let credentials = await Keychain.getGenericPassword()
-            let response = await fetch(`${ip}/users/${credentials.username}`,{
+            const mongoId = userId.mongoId;
+            // let credentials = await Keychain.getGenericPassword()
+            let response = await fetch(`${ip}/users/${mongoId}`,{
                 method: 'GET',
                 headers:{
                     'Content-Type': 'application/json'

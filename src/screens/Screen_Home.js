@@ -18,7 +18,7 @@ import {
 import ip from './IPaddress'
 import * as Keychain from 'react-native-keychain';
 import PushNotification from "react-native-push-notification";
-import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { useConnectionStatus } from "../components/NoInternet";
 // import * as Ably from 'ably';
 import EncryptedStorage from 'react-native-encrypted-storage'
@@ -33,50 +33,48 @@ import UserIdContext from "../UserIdContext";
 // import { getSocket } from "../components/sockets";
 
 export default function Screen_Home({ navigation, route }) {
-    // const route = useRoute();
-    // const { userId } = route.params;
-    // console.log("hey thereeeeeee"+route.params.userId)
+ 
     const isConnected = useConnectionStatus();
     const [onlineUsersCount, setOnlineUsersCount] = useState(0);
     const [presentMembers, setpresentMembers] = useState([])
 
 
 
- 
-    const {userId} = useContext(UserIdContext)
-    console.log(userId+"huraaa")
 
-//    const socketI = io(`${ip}/userrr`,{
-//         auth: {Token: userId}
-//       }); 
+    const { userId } = useContext(UserIdContext)
+    console.log(userId + "huraaa")
 
-// useEffect(() => {
+    //    const socketI = io(`${ip}/userrr`,{
+    //         auth: {Token: userId}
+    //       }); 
 
-//     // const socket = initializeSocket(userId);
+    // useEffect(() => {
 
-//       socketI.removeAllListeners()
-//     socketI.disconnect()      
-       
-//     //   socketI.removeEventListener()
-//       socketI.on('connect', () => {
-//           console.log('Connected to server');
-//       });
-//       // socketI.disconnect()
+    //     // const socket = initializeSocket(userId);
 
-//       socketI.on('disconnect', () => {
-//           console.log('Disconnected from server');
-//       });
+    //       socketI.removeAllListeners()
+    //     socketI.disconnect()      
 
+    //     //   socketI.removeEventListener()
+    //       socketI.on('connect', () => {
+    //           console.log('Connected to server');
+    //       });
+    //       // socketI.disconnect()
 
-
-  
-// //     return () => {
-// //  socketI.disconnect()      
-// //     };
-//   }, []);
+    //       socketI.on('disconnect', () => {
+    //           console.log('Disconnected from server');
+    //       });
 
 
-   
+
+
+    // //     return () => {
+    // //  socketI.disconnect()      
+    // //     };
+    //   }, []);
+
+
+
 
 
 
@@ -110,13 +108,13 @@ export default function Screen_Home({ navigation, route }) {
 
 
 
-    
-    
-    
 
-    
 
-   
+
+
+
+
+
     // ---------------------------------------------------------------------
 
     function handleBackButtonClick() {
@@ -148,11 +146,11 @@ export default function Screen_Home({ navigation, route }) {
     }
 
     const handleNotification = () => {
-        
+
         // PushNotification.cancelAllLocalNotifications(); //previous notifs will be cancelled
-        
+
         console.log("notif clicked")
-        
+
         PushNotification.localNotification({
             channelId: "test-channel",
             channelName: "Test Channel",
@@ -173,14 +171,14 @@ export default function Screen_Home({ navigation, route }) {
             allowWhileIdle: true,
         })
     }
-    
+
 
     const FirebaseNotif_Screen = async () => {
         navigation.navigate('Screen_FirebaseNotif')
     }
 
-    
-    
+
+
     const NextScreen = async () => {
         try {
             let url = `${ip}/verifyToken`
@@ -206,18 +204,24 @@ export default function Screen_Home({ navigation, route }) {
             console.log(error)
         }
     }
-    
-    
+
+
     return (
         <>
             {/* <ScrollView> */}
 
-                <View style={styles.body}>
-                    <View style={{ width: responsiveWidth(55), height: responsiveHeight(10), justifyContent: 'center', alignItems: 'center', backgroundColor: isConnected ? 'green' : 'red' }}>
+            <View style={styles.body}>
+
+                <Text style={{ textAlign: 'left', color: '#0662bf', fontSize: responsiveFontSize(4), fontWeight: '900', margin: responsiveWidth(3) }}>Aurora</Text>
+
+
+                <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: responsiveHeight(4) }}>
+
+                    {/* <Text style={[styles.text, GlobalStyle.CustomFont]}>Welcome to home screen</Text> */}
+
+                    <View style={{ marginTop: responsiveHeight(10), marginBottom:responsiveHeight(3) , width: responsiveWidth(55), height: responsiveHeight(6), justifyContent: 'center', alignItems: 'center', backgroundColor: isConnected ? 'green' : 'red' }}>
                         <Text style={{ color: 'white' }}>{isConnected ? 'You are connected to the internet' : 'No Internet'}</Text>
                     </View>
-
-                    <Text style={[styles.text, GlobalStyle.CustomFont]}>Welcome to home screen</Text>
 
                     <Pressable onPress={Logout} style={{ backgroundColor: 'orange' }}>
                         <Text style={(styles.text, { margin: 10 })}>Logout</Text>
@@ -235,13 +239,7 @@ export default function Screen_Home({ navigation, route }) {
                         <Text style={(styles.text, { margin: 10 })}>Go to firebase notifs screen</Text>
                     </Pressable>
 
-                    {/* <Pressable onPress={fetchOnlineUsersCount} style={{ backgroundColor: 'red', marginTop: 30 }}>
-                        <Text style={(styles.text, { margin: 10 })}> Refresh online users</Text>
-                    </Pressable> */}
-
-                    {/* <Pressable onPress={subscribeAndMessage} style={{ backgroundColor: 'red', marginTop: 30 }}>
-                        <Text style={(styles.text, { margin: 10 })}> Publish</Text>
-                    </Pressable> */}
+               
 
 
                     <View style={{ justifyContent: 'center', alignItems: 'center', width: responsiveWidth(55), height: responsiveHeight(10), marginTop: 10 }}>
@@ -249,54 +247,16 @@ export default function Screen_Home({ navigation, route }) {
                         <Text style={{ color: 'black', fontSize: 15 }}>Online Users: {onlineUsersCount}</Text>
                     </View>
 
-                    {/* <View>
-                        {presentMembers.map((value, index) => (
-                            <Text key={index} style={{ color: 'black' }}>{value}</Text>
-                        ))}
-                    </View> */}
-
-                    {/* <View>
-                        {CombinedMessages.map((combinedMessage, index) => (
-                            <Text key={index} style={{ color: 'black' }}>
-                                 {combinedMessage.clientId} : {combinedMessage.message}
-                            </Text>
-                            ))}
-                    </View> */}
-
-
-                    {/* <FlatList 
-                        keyExtractor={(combinedMessage, index) => index.toString()}
-                        data={CombinedMessages}
-
-                        renderItem={({ combinedMessage }) => (
-                            <Text key={index} style={{ color: 'black' }}>
-                            {combinedMessage.clientId} : tt4t{combinedMessage.message}
-                       </Text>
-                        )}
-
-                        refreshControl={
-                            <RefreshControl refreshing={Refreshing}
-                                onRefresh={onRefreshHandler}
-                            />
-                        }>
-                    </FlatList> */}
-
-                    {/* <View>
-                        {msgContent.map((message, index) => (
-                            <Text key={index} style={{ color: 'black' }}>{message}</Text>
-                            ))}
-                        {MsgContentSender.map((sender, index) => (
-                            <Text key={index} style={{ color: 'black' }}>{sender}</Text>
-                            ))}
-                    </View> */}
-
+           
                 </View>
+
+            </View>
 
 
             {/* </ScrollView> */}
         </>
     )
-    
+
 }
 
 
@@ -305,8 +265,8 @@ const styles = StyleSheet.create({
     body: {
         flex: 1,
         backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center'
+        // alignItems: 'center',
+        // justifyContent: 'center'
     },
     text: {
         margin: 10,
@@ -315,7 +275,7 @@ const styles = StyleSheet.create({
         color: 'black',
         textAlign: 'left'
     },
-    
+
 });
 
 
@@ -345,7 +305,7 @@ const styles = StyleSheet.create({
 
 
 
-    // const realtimeRef = useRef(null); // Ref to store the realtime instance
+// const realtimeRef = useRef(null); // Ref to store the realtime instance
 
 // let isAblyConnected = false;
 // useEffect(() => {
