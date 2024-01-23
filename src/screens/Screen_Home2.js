@@ -12,8 +12,10 @@ import {
     // TextInput,
     Image,
     BackHandler,
-    Platform
+    Platform,
+    Alert
 } from 'react-native';
+import * as Progress from 'react-native-progress';
 import Video from 'react-native-video'
 import * as Keychain from 'react-native-keychain';
 import { Camera, useCameraDevice, useCameraFormat } from "react-native-vision-camera";
@@ -30,7 +32,7 @@ export default function Screen_Home({ navigation, route }) {
     const { userId } = useContext(UserIdContext)
 
     function handleBackButtonClick() {
-        navigation.navigate('Screen_Home');
+        navigation.navigate('Screen_Home'); 
         return true;
     }
 
@@ -44,6 +46,7 @@ export default function Screen_Home({ navigation, route }) {
     }, []);
 
     let intervalId;
+    const[progress, setProgress] = useState(0)
     const [hasInitialized, sethasInitialized] = useState(false)
     const [Counter, setCounter] = useState(0);
     const [ImageData, setImageData] = useState('');
@@ -168,27 +171,26 @@ export default function Screen_Home({ navigation, route }) {
 
     const startRecording = () => {
 
-        if(!hasInitialized)
-        {
-
+        if (!hasInitialized) {
+setProgress(0)
             console.log("start recording clicked")
             camera.current.startRecording({
-            onRecordingFinished: async (video) => {
-                console.log(video);
-                setVideoData(video.path);
-                uploadVideo(video.path)
-                if (Platform.OS === "android" && !(await hasAndroidPermission())) {
-                    console.log(await hasAndroidPermission())
-                    return;
-                }
-                await CameraRoll.saveAsset(`file://${video.path}`, {
-                    type: 'video',
-                })
-            },
-            onRecordingError: (error) => console.error(error)
-        });
-     sethasInitialized(true)   
-    }
+                onRecordingFinished: async (video) => {
+                    console.log(video);
+                    setVideoData(video.path);
+                    uploadVideo(video.path)
+                    if (Platform.OS === "android" && !(await hasAndroidPermission())) {
+                        console.log(await hasAndroidPermission())
+                        return;
+                    }
+                    await CameraRoll.saveAsset(`file://${video.path}`, {
+                        type: 'video',
+                    })
+                },
+                onRecordingError: (error) => console.error(error)
+            });
+            sethasInitialized(true)
+        }
 
         // camera.current.startRecording({
         //     flash: 'on',
@@ -201,16 +203,42 @@ export default function Screen_Home({ navigation, route }) {
     const uploadVideo = async (vpath) => {
         const timestamp = Date.now();
         const date = new Date(timestamp);
-
+        
+        // Get hours and minutes
+        let hours = date.getHours();
+        const minutes = date.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        
+        // Convert hours to 12-hour format
+        hours = hours % 12 || 12;
+        
         // Format the date as a string
-        const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
+        const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
 
         const reference = storage().ref(`${userId.userId}/video-${formattedDate}.mov`);
 
         const pathToFile = `file://${vpath}`;
         console.log(pathToFile)
         // uploads file
-        await reference.putFile(pathToFile);
+        const task = reference.putFile(pathToFile);
+        console.log("upload vid response: " + task)
+        let a = 0
+        task.on('state_changed', taskSnapshot => {
+            a = (taskSnapshot.bytesTransferred/taskSnapshot.totalBytes)*100;
+            // console.log(`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`);
+            // console.log(a);
+            setProgress(a)
+            
+          });
+          
+          task.then(async() => {
+            console.log('Image uploaded to the bucket!');
+            const url = await storage().ref(`${userId.userId}/video-${formattedDate}.mov`).getDownloadURL();
+            Alert.alert("Upload successful", "Video recording has been sent")
+            console.log(url)
+          });
+
+
     }
 
 
@@ -238,11 +266,11 @@ export default function Screen_Home({ navigation, route }) {
 
     const RecordingInitiation = () => {
         setRescueButtonClicked(true)
-        
+
         // const intervalId = setInterval(() => {
         //     setCounter(Counter + 1);
         // }, 1000)
-      
+
     }
 
 
@@ -261,12 +289,14 @@ export default function Screen_Home({ navigation, route }) {
             <View style={{ flex: 1, justifyContent: 'center', backgroundColor: 'white' }}>
                 {RescueButtonClicked ? (<View style={{ flex: 1 }}>
                     <Camera
-                        onInitialized={() => { console.log("initialized cam"); startRecording();   
-                         const intervalId = setInterval(() => {
-                            // setCounter(Counter++);
-                        
-                            setCounter((prevCounter) => prevCounter + 1);
-                        }, 1000) }}
+                        onInitialized={() => {
+                            console.log("initialized cam"); startRecording();
+                            const intervalId = setInterval(() => {
+                                // setCounter(Counter++);
+
+                                setCounter((prevCounter) => prevCounter + 1);
+                            }, 1000)
+                        }}
                         style={StyleSheet.absoluteFill}
                         device={device}
                         isActive={true}
@@ -279,39 +309,41 @@ export default function Screen_Home({ navigation, route }) {
                     />
                     {/* <Pressable onPress={takePicture} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'red', borderRadius: 30, bottom: 50, alignSelf: 'center' }}></Pressable> */}
                     {/* <Pressable onPress={startRecording} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'blue', borderRadius: 30, bottom: 50, alignSelf: 'flex-start' }}></Pressable> */}
-                    <Pressable onPress={() => stopRecording()} style={{ width: 60, height: 60, position: 'absolute', backgroundColor: 'yellow', borderRadius: 30, bottom: 25, alignSelf: 'center', justifyContent: 'center' }}><Text style={{textAlign:'center'}}>Duration: {Counter}</Text></Pressable>
+                    {/* <Text style={{ textAlign: 'center' }}>Duration: {Counter}</Text> */}
+                    <Pressable onPress={() => stopRecording()} style={({ pressed }) => [pressed ? { opacity: 0.8 } : {}, { width: 60, height: 70, position: 'absolute', backgroundColor: 'yellow', borderRadius: 30, bottom: 25, alignSelf: 'center', justifyContent: 'center' }]}></Pressable>
                 </View>) : (
-                    <View style={{ flex: 1, justifyContent: 'flex-start', gap: responsiveHeight(6), alignItems: 'center' }}>
-                        <Text style={{ textAlign: 'center', fontSize: responsiveFontSize(5), fontWeight: '900', marginTop: responsiveHeight(6) }}>Rescue Button</Text>
-                        <Text style={{ textAlign: 'left', fontSize: responsiveFontSize(2), paddingHorizontal: responsiveWidth(10) }}>Tap the Rescue Button when you need urgent help.
+                    <View style={{ flex: 1, justifyContent: 'flex-start', gap: responsiveHeight(3), alignItems: 'center' }}>
+                        <Text style={{ textAlign: 'center', fontSize: responsiveFontSize(5), fontWeight: '900', marginTop: responsiveHeight(6), color: 'black' }}>Rescue Button</Text>
+                        <Text style={{ textAlign: 'left', fontSize: responsiveFontSize(2), paddingHorizontal: responsiveWidth(10), color: 'black' }}>Tap the Rescue Button when you need urgent help.
                             {'\n'}
                             {'\n'}
                             Here's what it does:
                             {'\n'}
                             {'\n'}
-                          - Record Video & Sound:
+                            - Record Video & Sound:
                             {'\n'}
                             Starts recording what's happening around you.
                             {'\n'}
                             {'\n'}
-                          - Share Your Location:
+                            - Share Your Location:
                             {'\n'}
                             Sends your location to security agencies and trusted contacts.
                             {'\n'}
                             {'\n'}
-                          - Emergency Alert:
+                            - Emergency Alert:
                             {'\n'}
                             Notifies nearby security agencies with your situation details.
                             {'\n'}
                             {'\n'}
-                          - Alerts Close Contacts:
+                            - Alerts Close Contacts:
                             {'\n'}
                             Tells your close contacts about the emergency and where you are.
                             {'\n'}
                             {'\n'}
-                          - Stay Connected:
+                            - Stay Connected:
                             {'\n'}
                             Keeps sharing updates until you confirm you're safe.</Text>
+                            <Progress.Bar progress={progress} width={200} />
                         {/* {ImageData !== '' && <Image source={{ uri: 'file://' + ImageData }} style={{ width: '90%', height: '10%' }} />} */}
                         {/* {VideoData !== '' && <Video resizeMode={'cover'} source={{ uri: 'file://' + VideoData }} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "90%" }} />} */}
                         <Pressable onPress={() => {
