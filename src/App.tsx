@@ -5,7 +5,7 @@
  * @format
  */
 // import 'react-native-gesture-handler'; --no needed only npm se krna tha
-import React from 'react';
+import React, { useContext } from 'react';
 import { useEffect, useState } from 'react';
 // import { Icon } from 'react-native-vector-icons/Icon';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -70,11 +70,9 @@ import {useConnectionStatus} from './components/NoInternet'
 import SocketIOClient from 'socket.io-client'
 import { io } from 'socket.io-client';
 import ip from './screens/IPaddress';
-import { UserIdProvider } from './UserIdContext'
+import UserIdContext, { UserIdProvider } from './UserIdContext'
 
 function App() {
-
-
 
 
 const [isLoggedIn, setisLoggedIn] = useState(false)

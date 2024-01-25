@@ -12,6 +12,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useRoute } from '@react-navigation/native';
 import FriendTabs from './FriendTabs';
+import Screen_ReceiveNotifs from './screens/Screen_ReceiveNotifs';
 
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -72,6 +73,20 @@ export default function HomeTabs({ navigation, route }) {
             // tabBarStyle: {display:'none'}
           })}
         />
+
+        <Tab.Screen
+          name='Screen_ReceiveNotifs'
+          component={Screen_ReceiveNotifs}
+          
+          options={{
+            lazy: true,
+            tabBarLabel: 'Notifs',
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name="bell-outline" color={color} size={25} />
+            ),
+          }}
+        />
+    
         <Tab.Screen
           name='Screen_FirebaseNotif'
           component={Screen_FirebaseNotif}
