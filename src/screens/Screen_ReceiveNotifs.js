@@ -118,6 +118,7 @@ export default function Screen_ReceiveNotifs({ navigation }) {
             } else if (date.isSame(yesterday, 'day')) {
                 return 'Yesterday';
             } else {
+                console.log(date.format('Do MMMM YYYY'))
                 return date.format('Do MMMM YYYY');
             }
         }
@@ -174,7 +175,7 @@ export default function Screen_ReceiveNotifs({ navigation }) {
             return fetchedTime
         }
         else {
-            return fetchedDate
+            return formattedDate
         }
 
     }
@@ -210,9 +211,9 @@ export default function Screen_ReceiveNotifs({ navigation }) {
                         data={Notifs}
                         renderItem={({ item }) => {
                             return (
-                                <Pressable style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingTop: responsiveHeight(2), paddingBottom: responsiveHeight(2), paddingHorizontal: responsiveWidth(5), borderBottomWidth: 1, borderColor: 'gray' }}>
+                                <Pressable style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingTop: responsiveHeight(3), paddingBottom: responsiveHeight(3), paddingHorizontal: responsiveWidth(5), borderBottomWidth: 1, borderColor: 'gray', marginVertical: responsiveHeight(0) }}>
 
-                                    <Image style={{ alignSelf: 'flex-start', width: responsiveWidth(14), height: responsiveHeight(7), resizeMode: 'cover', borderRadius: responsiveWidth(30) }} source={require('../../assets/images/speakerw1.jpeg')} /
+                                    <Image style={{ alignSelf: 'flex-start', width: responsiveWidth(14), height: responsiveHeight(6.5), resizeMode: 'cover', borderRadius: responsiveWidth(30) }} source={require('../../assets/images/speakerw1.jpeg')} /
                                     >
 
                                     <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', width: responsiveWidth(78) }}>
@@ -222,7 +223,7 @@ export default function Screen_ReceiveNotifs({ navigation }) {
                                             <Text style={{ fontSize: responsiveFontSize(1.3), paddingHorizontal: 10, paddingTop: responsiveHeight(0.4), textAlign: 'right', color: '#7a7a7a', marginLeft: responsiveWidth(4), marginRight: responsiveWidth(2) }}>{checking(item.date, item.time)}</Text>
                                         </View>
 
-                                        <Text style={{ paddingRight: responsiveWidth(4), fontSize: responsiveFontSize(2), textAlign: 'left', fontSize: responsiveFontSize(2), marginLeft: responsiveWidth(4), color: '#7a7a7a' }}>{item.body}</Text>
+                                        <Text style={{ paddingRight: responsiveWidth(4), fontSize: responsiveFontSize(1.8), textAlign: 'left', marginLeft: responsiveWidth(4), color: '#7a7a7a' }}>{item.body}</Text>
 
                                     </View>
 
