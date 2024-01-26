@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useBackHandler } from '@react-native-community/hooks'
 
 
+const moment = require('moment-timezone');
 import {
     StyleSheet,
     Text,
@@ -61,6 +62,7 @@ export default function Screen_ReceiveNotifs({ navigation }) {
             setRefreshing(false);
         }, 2000);
         fetchNotifs()
+
     }, []);
 
 
@@ -82,13 +84,101 @@ export default function Screen_ReceiveNotifs({ navigation }) {
                 return
             }
             else {
-                setNotifs(response)
+                setNotifs(response.reverse())
             }
 
         } catch (error) {
             console.log(error)
         }
     }
+
+
+
+
+    const checking = (fetchedDate, fetchedTime) => {
+      
+
+
+        const parsedDate = moment.tz(fetchedDate, 'Asia/Karachi');
+
+        // Function to format the date
+        function formatDate(date) {
+            const today = moment().tz('Asia/Karachi');
+            console.log(today)
+            const yesterday = moment().tz('Asia/Karachi').subtract(1, 'day');
+        
+            const dateFormatOptions = {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            };
+        
+            if (date.isSame(today, 'day')) {
+                return 'Today';
+            } else if (date.isSame(yesterday, 'day')) {
+                return 'Yesterday';
+            } else {
+                return date.format('Do MMMM YYYY');
+            }
+        }
+        
+        // Function to format the time
+        function formatTime(time) {
+            return time;
+        }
+        
+        // Format the parsed date and time
+        const formattedDate = formatDate(parsedDate);
+        const formattedTime = formatTime(fetchedTime);
+
+
+        // const parsedDate = new Date(fetchedDate);
+
+     
+        // function formatDate(date) {
+        //     const today = new Date();
+        //     const yesterday = new Date(today);
+        //     yesterday.setDate(yesterday.getDate() - 1);
+
+        //     const dateFormatOptions = {
+        //         year: 'numeric',
+        //         month: '2-digit',
+        //         day: '2-digit'
+        //     };
+        //     console.log(date.toDateString())
+        //     if (date.toDateString() === today.toDateString()) {
+        //         return 'Today';
+        //     } else if (date.toDateString() === yesterday.toDateString()) {
+        //         return 'Yesterday';
+        //     } else {
+        //         return date.toLocaleDateString('en-US', dateFormatOptions);
+        //     }
+        // }
+
+    
+        // function formatTime(time) {
+        //     return time;
+        // }
+
+        // const formattedDate = formatDate(parsedDate);
+        // const formattedTime = formatTime(fetchedTime);
+
+      
+
+  
+
+        if (formattedDate === "Yesterday") {
+            return "Yesterday"
+        }
+        else if (formattedDate === "Today") {
+            return fetchedTime
+        }
+        else {
+            return fetchedDate
+        }
+
+    }
+
 
 
 
@@ -106,7 +196,7 @@ export default function Screen_ReceiveNotifs({ navigation }) {
         }> */}
 
 
-                <Text style={{ backgroundColor: '#0662bf', color: 'white', fontSize: responsiveFontSize(2.3), padding: responsiveWidth(5), borderBottomWidth: 1, borderColor: 'transparent', paddingLeft: responsiveWidth(12) }}>Notifications</Text>
+                <Text style={{ backgroundColor: '#0662bf', color: 'white', fontSize: responsiveFontSize(2.3), padding: responsiveWidth(5), borderBottomWidth: 1,fontWeight: '700' , borderColor: 'transparent', paddingLeft: responsiveWidth(12) }}>Notifications</Text>
 
 
                 {NoAlerts ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text style={{ fontSize: responsiveFontSize(2.3), color: 'black' }}>No alerts to show</Text></View>
@@ -114,25 +204,25 @@ export default function Screen_ReceiveNotifs({ navigation }) {
 
 
                     <FlatList
-                    refreshControl={
-                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                    }
+                        refreshControl={
+                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                        }
                         data={Notifs}
                         renderItem={({ item }) => {
                             return (
-                                <Pressable  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingTop: responsiveHeight(2), paddingBottom: responsiveHeight(2), paddingHorizontal: responsiveWidth(5), borderBottomWidth: 1, borderColor: 'gray' }}>
+                                <Pressable style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingTop: responsiveHeight(2), paddingBottom: responsiveHeight(2), paddingHorizontal: responsiveWidth(5), borderBottomWidth: 1, borderColor: 'gray' }}>
 
-                                    <Image style={{ alignSelf: 'flex-start', width: responsiveWidth(16), height: responsiveHeight(9.5), resizeMode: 'cover', borderRadius: responsiveWidth(30) }} source={require('../../assets/images/womenAvatar.jpg')} /
+                                    <Image style={{ alignSelf: 'flex-start', width: responsiveWidth(14), height: responsiveHeight(7), resizeMode: 'cover', borderRadius: responsiveWidth(30) }} source={require('../../assets/images/speakerw1.jpeg')} /
                                     >
 
                                     <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', width: responsiveWidth(78) }}>
 
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <Text style={{ flex: 1, fontSize: responsiveFontSize(2), textAlign: 'left', fontSize: responsiveFontSize(2), marginLeft: responsiveWidth(4), fontWeight: '600', color: '#666666' }}>{item.title}</Text>
-                                            <Text style={{ fontSize: responsiveFontSize(1.3), paddingHorizontal: 10, paddingTop: responsiveHeight(0.4), textAlign: 'right', color: '#7a7a7a', marginLeft: responsiveWidth(4), marginRight: responsiveWidth(2) }}>{item.time}</Text>
+                                        <View style={{ flexDirection: 'row', marginBottom: responsiveHeight(0.4) }}>
+                                            <Text style={{ flex: 1, fontSize: responsiveFontSize(2), textAlign: 'left', fontSize: responsiveFontSize(2), marginLeft: responsiveWidth(4), color: '#0a0a0a' }}>{item.title}</Text>
+                                            <Text style={{ fontSize: responsiveFontSize(1.3), paddingHorizontal: 10, paddingTop: responsiveHeight(0.4), textAlign: 'right', color: '#7a7a7a', marginLeft: responsiveWidth(4), marginRight: responsiveWidth(2) }}>{checking(item.date, item.time)}</Text>
                                         </View>
 
-                                        <Text style={{paddingRight: responsiveWidth(4), fontSize: responsiveFontSize(2), textAlign: 'left', fontSize: responsiveFontSize(2), marginLeft: responsiveWidth(4), color: '#7a7a7a' }}>{item.body}</Text>
+                                        <Text style={{ paddingRight: responsiveWidth(4), fontSize: responsiveFontSize(2), textAlign: 'left', fontSize: responsiveFontSize(2), marginLeft: responsiveWidth(4), color: '#7a7a7a' }}>{item.body}</Text>
 
                                     </View>
 

@@ -24,6 +24,7 @@
     "ably": "^1.2.48",
     "axios": "^1.6.3",
     "crypto-js": "^4.2.0",
+    "moment-timezone": "^0.5.44",
     "patch-package": "^8.0.0",
     "react": "18.2.0",
     "react-native": "0.72.6",
