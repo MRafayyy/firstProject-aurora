@@ -40,13 +40,13 @@ try {
 
 
     return (
-        <Pressable style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: responsiveHeight(5) }}>
+        <Pressable style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: responsiveHeight(2), backgroundColor: 'white' }}>
 
-            <Image style={{ width: responsiveWidth(10), height: responsiveHeight(7), borderRadius: 25 }} source={require('../../assets/images/nadraV.jpg')} />
+            <Image style={{ width: responsiveWidth(14), height: responsiveWidth(14), borderRadius: 30 }} source={require('../../assets/images/womenAvatar.jpg')} resizeMode='cover' />
 
-           <Text style={{textAlign: 'left' , fontSize: responsiveFontSize(2), marginLeft: responsiveWidth(5), flex: 1 }}>{item?.name} sent you a friend request</Text>
+           <Text style={{textAlign: 'left' , fontSize: responsiveFontSize(2), marginLeft: responsiveWidth(5), flex: 1, color: 'black' }}>{item?.name} sent you a friend request</Text>
 
-            <Pressable onPress={()=>acceptRequest(item._id)} style={{ backgroundColor: 'blue', padding: 10, borderRadius: 6 }}><Text style={{ textAlign: 'center', color: 'white' }}>{Accepted? 'Accepted': 'Accept'}</Text></Pressable>
+            <Pressable onPress={()=>acceptRequest(item._id)} style={{ borderColor: '#0662bf',borderWidth:1, padding: responsiveWidth(2), borderRadius: responsiveWidth(2), width: responsiveWidth(20) }}><Text style={{ textAlign: 'center', color: '#0662bf' }}>{Accepted? 'Accepted': 'Accept'}</Text></Pressable>
         </Pressable>
     )
 }

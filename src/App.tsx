@@ -74,6 +74,7 @@ import UserIdContext, { UserIdProvider } from './UserIdContext'
 
 function App() {
 
+  // const {setUserId} = useContext(UserIdContext)
 
 const [isLoggedIn, setisLoggedIn] = useState(false)
 
@@ -113,6 +114,7 @@ useEffect(() => {
 
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
+      // setUserId({notificationArrived: true})
       PushNotification.localNotification({
         ticker: "My Notification Ticker",
         channelId: "test-channel",

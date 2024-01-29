@@ -24,6 +24,7 @@ import storage from '@react-native-firebase/storage';
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 import UserIdContext from "../UserIdContext";
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
+import ip from "./IPaddress";
 // import { Image } from "react-native-paper/lib/typescript/components/Avatar/Avatar";
 
 export default function Screen_Home({ navigation, route }) {
@@ -243,16 +244,39 @@ export default function Screen_Home({ navigation, route }) {
             // console.log(`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`);
             // console.log(a);
             setProgress(a)
+            setUploadStatus("Uploading video...")
 
         });
 
         task.then(async () => {
-            console.log('Video uploaded to the bucket!');
-            const url = await storage().ref(`${userId.userId}/video-${formattedDate}.mov`).getDownloadURL();
+            try {
+                
+                console.log('Video uploaded to the bucket!');
+                console.log(reference)
+                const url = await reference.getDownloadURL();
+                console.log("donwload url is: "+url)
+                let response = await fetch(`${ip}/save-download-url/${userId.mongoId}`,{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({downloadUrl: url})
+            })
+            response =await response.json();
+            if(response.success===true){
+                console.log("saved to db")
+            }
+
             Alert.alert("Upload successful", "Video recording has been sent")
             setUploadStatus("Rescue")
             setUploadinProgress(false)
             console.log(url)
+        } catch (error) {
+            console.log(error)
+            Alert.alert("Upload not successful", error.message)
+            setUploadStatus("Rescue")
+            setUploadinProgress(false)
+        }
         });
 
 
@@ -351,13 +375,14 @@ export default function Screen_Home({ navigation, route }) {
                             - Stay Connected:
                             {'\n'}
                             Keeps sharing updates until you confirm you're safe.</Text>
+                       {/* <Video resizeMode={'cover'} source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/aurora-51db1.appspot.com/o/Rafay%2Fvideo-2024-01-29%2009%3A16%20AM.mov?alt=media&token=57793d02-6512-4eec-a440-772e37917d9c'}} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "30%" }} /> */}
                         <Progress.Bar progress={progress} width={200} />
                         {/* {ImageData !== '' && <Image source={{ uri: 'file://' + ImageData }} style={{ width: '90%', height: '10%' }} />} */}
-                        {/* {VideoData !== '' && <Video resizeMode={'cover'} source={{ uri: 'file://' + VideoData }} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "90%" }} />} */}
+                       {/* <Video resizeMode={'cover'} source={{ uri: 'file://' + VideoData }} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "90%" }} /> */}
                         <Pressable onPress={() => {
                             RecordingInitiation();
                         }
-                        } disabled={UploadinProgress} style={{ width: '75%', height: 50, backgroundColor: '#0662bf', borderWidth: 1, marginTop: responsiveHeight(1), borderRadius: 10, alignSelf: 'center', justifyContent: 'center' }}><Text style={{ fontSize: responsiveFontSize(2.2), color: 'white', textAlign: 'center' }}>Rescue</Text></Pressable>
+                        } disabled={UploadinProgress} style={{ width: '75%', height: 50, backgroundColor: '#0662bf', borderWidth: 1, marginTop: responsiveHeight(1), borderRadius: 10, alignSelf: 'center', justifyContent: 'center' }}><Text style={{ fontSize: responsiveFontSize(2.2), color: 'white', textAlign: 'center' }}>{UploadStatus}</Text></Pressable>
                     </View>
                 )}
 

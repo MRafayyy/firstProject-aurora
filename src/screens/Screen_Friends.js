@@ -1,17 +1,34 @@
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import {
+    StyleSheet,
+    View,
+    RefreshControl,
+    FlatList,
+} from 'react-native';
 import ip from "./IPaddress";
 import UserIdContext from "../UserIdContext";
 import FriendRequests from "../components/FriendRequests";
+import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 
 export default function Screen_Friends() {
 
     const { userId } = useContext(UserIdContext)
     const [friendRequests, setFriendRequests] = useState([])
+    const [refreshing, setRefreshing] = useState(false);
 
     useEffect(() => {
         fetchFriendRequests();
     }, [])
+
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 2000);
+        fetchFriendRequests()
+    
+    }, []);
 
 
     const fetchFriendRequests = async () => {
@@ -60,11 +77,24 @@ export default function Screen_Friends() {
 
     // console.log(friendRequests[0].name)
     return (
-        <View style={{ padding: 10, marginHorizontal: 12 }} >
+        <View style={{flex:1, backgroundColor: 'white' ,paddingHorizontal: responsiveWidth(5), paddingTop: responsiveHeight(3), backgroundColor: 'white' }} >
             {friendRequests.length > 0 ?
-                friendRequests.map((item, index) => (
-                    <FriendRequests key={index} item={item} friendRequests={friendRequests} setFriendRequests={setFriendRequests} />
-                )) : null}
+                    
+                <FlatList
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+                data={friendRequests}
+                renderItem={({ item }) => {
+                    return (
+                        <FriendRequests item={item} friendRequests={friendRequests} setFriendRequests={setFriendRequests} />
+                    )
+                }}
+                keyExtractor={(item, index) => index}
+                />
+                
+                
+                : null}
         </View>
     );
 }

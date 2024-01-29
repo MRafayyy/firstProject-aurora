@@ -25,6 +25,7 @@ import { UserIdProvider } from './UserIdContext'
 import Screen_Friends from './screens/Screen_Friends';
 import Screen_SearchContacts from './screens/Screen_SearchContacts';
 import { responsiveScreenWidth } from 'react-native-responsive-dimensions';
+import Screen_MyFriends from './screens/Screen_MyFriends';
 
 
 export default function FriendTabs() {
@@ -35,16 +36,17 @@ export default function FriendTabs() {
     return (
         <>
             <Stack.Navigator initialRouteName='Screen_SearchContacts' screenOptions={{ animationEnabled: true, animationTypeForReplace: 'push', ...TransitionPresets.RevealFromBottomAndroid }}  >
-                <Stack.Screen name="Screen_SearchContacts" component={Screen_SearchContacts} options={({navigation})=>({ headerShown: true,
-                     title: 'My Contacts',
-                     headerRight: () => (
+                <Stack.Screen name="Screen_SearchContacts" component={Screen_SearchContacts} options={({ navigation }) => ({
+                    headerShown: true,
+                    title: 'My Contacts',
+                    headerRight: () => (
 
-                        <View style={{flexDirection: 'row', alignItems: 'center', gap: responsiveScreenWidth(4) , paddingHorizontal: 9}}>
-                            <Ionicons name='chatbox-ellipses-outline' size={24} color={'black'}/>
-                            <MaterialCommunityIcons name='account-multiple'  size={28} color={'black'}
-                            onPress={()=> navigation.navigate('Screen_Friends')}
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveScreenWidth(4), paddingHorizontal: 9 }}>
+                            <Ionicons name='chatbox-ellipses-outline' size={24} color={'black'} onPress={() => navigation.navigate('Screen_MyFriends')} />
+                            <MaterialCommunityIcons name='account-multiple' size={28} color={'black'}
+                                onPress={() => navigation.navigate('Screen_Friends')}
                             />
-                             </View>
+                        </View>
                         // <Pressable
                         //   onPress={() => alert('This is a button!')}
                         //   title="Info"
@@ -53,13 +55,22 @@ export default function FriendTabs() {
                         // >
                         //     <Text style={{color: 'white'}}>hey</Text>
                         //      </Pressable> 
-                      ),
-                      headerLeft: ()=> null,
-                      
-                       })}  />
-                <Stack.Screen name="Screen_Friends" component={Screen_Friends} options={{ headerShown: true,
-                headerTitle: ''
+                    ),
+                    headerLeft: () => null,
+
+                })} />
+
+
+                <Stack.Screen name="Screen_Friends" component={Screen_Friends} options={{
+                    headerShown: true,
+                    headerTitle: 'Friend Requests'
                 }} />
+              
+                <Stack.Screen name="Screen_MyFriends" component={Screen_MyFriends} options={{
+                    headerShown: true,
+                    headerTitle: 'Friends'
+                }} />
+                
             </Stack.Navigator>
         </>
     )

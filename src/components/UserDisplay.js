@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import React from "react";
 
 import { Text, View, Pressable, Image, StyleSheet } from 'react-native';
@@ -8,10 +8,13 @@ import ip from '../screens/IPaddress';
 
 
 
-const UsersShow = ({ item }) => {
+const UsersShow = ({ item, requestSent, setrequestSent }) => {
 
+    const [disableNow, setdisableNow] = useState(false)
     const { userId } = useContext(UserIdContext)
-    const [requestSent, setrequestSent] = useState(false)
+    let sel = item._id
+    // const [requestSent, setrequestSent] = useState({sel: false})
+
 
     const sendFriendRequest = async (currentUserId, selectedUserId) => {
         try {
@@ -26,7 +29,9 @@ const UsersShow = ({ item }) => {
 
             // response = await response.json()
             if (response.ok) {
-                setrequestSent(true)
+
+                setrequestSent({...requestSent,[selectedUserId]: true})
+                setdisableNow(true)
             }
         } catch (error) {
             console.log("error here")
@@ -35,7 +40,7 @@ const UsersShow = ({ item }) => {
     }
 
     return (
-        <Pressable style={{ flexDirection: 'row', alignItems: 'center', marginVertical: responsiveHeight(2) }}>
+        <Pressable style={{ flexDirection: 'row', alignItems: 'center', marginVertical: responsiveHeight(2), paddingHorizontal: responsiveWidth(5)}}>
 
             <View>
                 <Image style={{ width: responsiveWidth(14), height: responsiveHeight(7), resizeMode: 'cover' }} source={require('../../assets/images/womenAvatar.jpg')} /
@@ -48,8 +53,8 @@ const UsersShow = ({ item }) => {
             </View>
 
 
-            <Pressable onPress={() => sendFriendRequest(userId.mongoId, item._id)} style={{borderColor: '#0662bf',borderWidth:1, padding: responsiveWidth(2), borderRadius: responsiveWidth(2), width: responsiveWidth(30) }}>
-                <Text style={{ textAlign: 'center', color: '#0662bf', fontSize: responsiveFontSize(2) }}>{requestSent ? 'Sent Request' : 'Add Friend'}</Text>
+            <Pressable disabled={disableNow} onPress={() => sendFriendRequest(userId.mongoId, item._id)} style={{borderColor: '#0662bf',borderWidth:1, padding: responsiveWidth(2), borderRadius: responsiveWidth(2), width: responsiveWidth(30) }}>
+                <Text style={{ textAlign: 'center', color: '#0662bf', fontSize: responsiveFontSize(2) }}>{requestSent[item._id] ? 'Sent Request' : 'Add Friend'}</Text>
             </Pressable>
             {/* backgroundColor: '#567189' */}
 

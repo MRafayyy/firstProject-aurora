@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from 'react';
 
-import { Dimensions } from 'react-native';
+import { Dimensions, Text } from 'react-native';
 
 import Screen_Home from './screens/Screen_Home';
 import Screen_Home2 from './screens/Screen_Home2';
@@ -79,6 +79,8 @@ export default function HomeTabs({ navigation, route }) {
           component={Screen_ReceiveNotifs}
           
           options={{
+            // tabBarBadge:()=> { return (  <Text>3</Text> ) },
+            
             lazy: true,
             tabBarLabel: 'Notifs',
             tabBarIcon: ({ color }) => (
@@ -128,6 +130,7 @@ export default function HomeTabs({ navigation, route }) {
             navigation.navigate(FriendTabs, {screen:  Screen_SearchContacts})
           }}
           options={{
+           
             tabBarLabel: 'Contacts',
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="magnify" color={color} size={25} />
