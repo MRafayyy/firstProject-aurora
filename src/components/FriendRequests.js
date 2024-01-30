@@ -4,8 +4,8 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-nat
 import ip from '../screens/IPaddress'
 import UserIdContext from '../UserIdContext'
 
-const FriendRequests = ({ item, friendRequests, setFriendRequests }) => {
-    const [Accepted, setAccepted] = useState(false)
+const FriendRequests = ({ item, friendRequests, setFriendRequests, Accepted, setAccepted }) => {
+    // const [Accepted, setAccepted] = useState(false)
 
     const {userId} = useContext(UserIdContext)
 
@@ -27,7 +27,7 @@ try {
         setFriendRequests(friendRequests.filter((requestID)=>{
             return requestID._id !== friendRequestSenderId
         }))
-        setAccepted(true)
+        setAccepted({...Accepted, [friendRequestSenderId]: true})
         console.log("friend request accepted")
     }
 
@@ -44,9 +44,9 @@ try {
 
             <Image style={{ width: responsiveWidth(14), height: responsiveWidth(14), borderRadius: 30 }} source={require('../../assets/images/womenAvatar.jpg')} resizeMode='cover' />
 
-           <Text style={{textAlign: 'left' , fontSize: responsiveFontSize(2), marginLeft: responsiveWidth(5), flex: 1, color: 'black' }}>{item?.name} sent you a friend request</Text>
+           <Text style={{textAlign: 'left' , fontSize: responsiveFontSize(2), marginLeft: responsiveWidth(5), paddingRight: responsiveWidth(2), flex: 1, color: 'black' }}>{item?.name} sent you a friend request</Text>
 
-            <Pressable onPress={()=>acceptRequest(item._id)} style={{ borderColor: '#0662bf',borderWidth:1, padding: responsiveWidth(2), borderRadius: responsiveWidth(2), width: responsiveWidth(20) }}><Text style={{ textAlign: 'center', color: '#0662bf' }}>{Accepted? 'Accepted': 'Accept'}</Text></Pressable>
+            <Pressable onPress={()=>acceptRequest(item._id)} style={{ borderColor: '#0662bf',borderWidth:1, padding: responsiveWidth(2), borderRadius: responsiveWidth(2), width: responsiveWidth(20) }}><Text style={{ textAlign: 'center', color: '#0662bf' }}>{Accepted[item._id]? 'Accepted': 'Accept'}</Text></Pressable>
         </Pressable>
     )
 }

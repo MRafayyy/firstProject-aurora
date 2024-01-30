@@ -41,7 +41,7 @@ export default function Screen_Home({ navigation, route }) {
 
 
 
-    const { userId } = useContext(UserIdContext)
+    const { userId, setUserId } = useContext(UserIdContext)
     console.log(userId + "huraaa")
 
     //    const socketI = io(`${ip}/userrr`,{
@@ -143,6 +143,8 @@ export default function Screen_Home({ navigation, route }) {
         // const socket = getSocket();
         // socket.disconnect();
         navigation.navigate('Screen_Login');
+        setUserId({userId: '', mongoId: ''})
+
     }
 
     const handleNotification = () => {

@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 
-import { View, Pressable, Text, StyleSheet, BackHandler, FlatList, RefreshControl, refreshing } from 'react-native'
+import { View, Pressable, Text, StyleSheet, BackHandler, FlatList, RefreshControl, refreshing, TextInput } from 'react-native'
 
 // import EncryptedStorage from 'react-native-encrypted-storage'
 
@@ -23,7 +23,7 @@ export default function Screen_SearchContacts({ navigation }) {
 
     const { userId } = useContext(UserIdContext)
     // const navigation = useNavigation();
-
+const [searchText, setSearchText] = useState('')
     const [onlineUsersCount, setOnlineUsersCount] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
 
@@ -56,7 +56,7 @@ export default function Screen_SearchContacts({ navigation }) {
 
 
 
-    React.useEffect(() => {
+    useEffect(() => {
         const unsubscribe = navigation.addListener('focus', (e) => {
             fetchUsers()
         });
@@ -69,7 +69,7 @@ export default function Screen_SearchContacts({ navigation }) {
         fetchUsers()
     }, [])
 
-    const onRefresh = React.useCallback(() => {
+    const onRefresh = useCallback(() => {
         setRefreshing(true);
         setTimeout(() => {
             setRefreshing(false);
@@ -110,6 +110,11 @@ export default function Screen_SearchContacts({ navigation }) {
     }, []);
 
 
+    const handleOnChangeText = (text)=>{
+setSearchText(text)
+    }
+
+
 
 
 
@@ -118,13 +123,14 @@ export default function Screen_SearchContacts({ navigation }) {
 
             <View style={styles.body}>
 
-                {/* <View style={{ justifyContent: 'center', alignItems: 'center', width: responsiveWidth(55), height: responsiveHeight(10), marginTop: 10 }}> */}
-                {/* Display online users list */}
-                {/* <Text style={{ color: 'black', fontSize: 15 }}>Online Users: {onlineUsersCount}</Text> */}
-                {/* </View> */}
+
+<View style={{justifyContent: 'center', alignItems: 'center'}}>
+<Pressable style={{width: responsiveWidth(80), height: responsiveHeight(6), borderWidth:1, paddingHorizontal: responsiveWidth(4) , borderColor: 'gray',borderRadius: 30}}><TextInput  value={searchText} onChangeText={(text)=>{handleOnChangeText(text)}} placeholder="search"></TextInput></Pressable>
+</View>
 
 
                 {/* <View style={{ justifyContent: 'center', alignItems: 'center',width: responsiveWidth(95) }}> */}
+
 
                 {
                     <FlatList style={{ paddingTop: responsiveHeight(4), marginBottom: responsiveHeight(15) }}

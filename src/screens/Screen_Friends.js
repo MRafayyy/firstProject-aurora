@@ -15,6 +15,7 @@ export default function Screen_Friends() {
     const { userId } = useContext(UserIdContext)
     const [friendRequests, setFriendRequests] = useState([])
     const [refreshing, setRefreshing] = useState(false);
+    const [Accepted, setAccepted] = useState({})
 
     useEffect(() => {
         fetchFriendRequests();
@@ -87,7 +88,7 @@ export default function Screen_Friends() {
                 data={friendRequests}
                 renderItem={({ item }) => {
                     return (
-                        <FriendRequests item={item} friendRequests={friendRequests} setFriendRequests={setFriendRequests} />
+                        <FriendRequests item={item} friendRequests={friendRequests} setFriendRequests={setFriendRequests} Accepted={Accepted} setAccepted={setAccepted} />
                     )
                 }}
                 keyExtractor={(item, index) => index}
