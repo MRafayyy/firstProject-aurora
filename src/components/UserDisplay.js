@@ -12,7 +12,7 @@ const UsersShow = ({ item, requestSent, setrequestSent }) => {
 
     const [disableNow, setdisableNow] = useState(false)
     const { userId } = useContext(UserIdContext)
-    let sel = item._id
+    
     // const [requestSent, setrequestSent] = useState({sel: false})
 
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
 
-import { View, Pressable, Text, StyleSheet, BackHandler, FlatList, RefreshControl, refreshing, TextInput } from 'react-native'
+import { View, Pressable, StyleSheet, BackHandler, FlatList, RefreshControl, refreshing, TextInput, Image } from 'react-native'
 
 // import EncryptedStorage from 'react-native-encrypted-storage'
 
@@ -23,11 +23,12 @@ export default function Screen_SearchContacts({ navigation }) {
 
     const { userId } = useContext(UserIdContext)
     // const navigation = useNavigation();
-const [searchText, setSearchText] = useState('')
+    const [searchText, setSearchText] = useState('')
     const [onlineUsersCount, setOnlineUsersCount] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
 
     const [AllUsers, setAllUsers] = useState([]);
+    const [AllUsers2, setAllUsers2] = useState([]);
     const [requestSent, setrequestSent] = useState({})
 
 
@@ -46,6 +47,7 @@ const [searchText, setSearchText] = useState('')
 
             response = await response.json();
             setAllUsers(response)
+            setAllUsers2(response)
 
 
         } catch (error) {
@@ -110,10 +112,59 @@ const [searchText, setSearchText] = useState('')
     }, []);
 
 
-    const handleOnChangeText = (text)=>{
-setSearchText(text)
+    const handleOnChangeText = (text) => {
+        setSearchText(text)
     }
 
+
+    const onSearch = (text)=>{
+
+
+        const searchText = text.trim().toLowerCase();
+
+    // Debugging: Log the search text
+    // console.log("Search text:", searchText);
+
+    if (searchText === '') {
+        // If the search text is empty, reset to the original list
+        setAllUsers(AllUsers2);
+    } else {
+        
+        let tempList = AllUsers2.filter((item) => {
+            if (item.name && typeof item.name === 'string') {
+                return item.name.toLowerCase().startsWith(searchText);
+                // return item.name.toLowerCase().includes(searchText);
+                            // return (item.name.toLowerCase()).indexOf(text.trim().toLowerCase()) > -1;
+            }
+            return false;
+        });
+
+        // Debugging: Log the filtered list
+        // console.log("Filtered list:", tempList);
+
+        setAllUsers(tempList);
+    }
+    // ------------------------------------
+
+        // let tempList = AllUsers.filter((item)=>{
+        //     const searchText = text.trim().toLowerCase();
+        //     // if(item.name!==undefined){
+
+        //         // return (item.name.toLowerCase()).indexOf(text.trim().toLowerCase()) > -1;
+        //         if (item.name && typeof item.name === 'string') {
+        //     return item.name.toLowerCase().includes(searchText);
+        // }
+        //     // }
+        // })
+        // setAllUsers(tempList)
+
+        // if(text.trim()===''){
+        //     setAllUsers(AllUsers2)
+        // }
+
+
+
+    }
 
 
 
@@ -124,16 +175,16 @@ setSearchText(text)
             <View style={styles.body}>
 
 
-<View style={{justifyContent: 'center', alignItems: 'center'}}>
-<Pressable style={{width: responsiveWidth(80), height: responsiveHeight(6), borderWidth:1, paddingHorizontal: responsiveWidth(4) , borderColor: 'gray',borderRadius: 30}}><TextInput  value={searchText} onChangeText={(text)=>{handleOnChangeText(text)}} placeholder="search"></TextInput></Pressable>
-</View>
+                <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: responsiveHeight(3) }}>
+                    <Pressable style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' ,width: responsiveWidth(89), height: responsiveHeight(6), borderWidth: 1, paddingHorizontal: responsiveWidth(3), borderColor: 'gray', borderRadius: 20 }}><Image source={require('../../assets/images/icons8-search-50.png')} style={{marginRight: responsiveWidth(1) ,width:responsiveWidth(6), height: responsiveWidth(6)}} /><TextInput style={{color: 'black', fontSize: responsiveFontSize(2)}} value={searchText} onChangeText={(text) => { handleOnChangeText(text); onSearch(text) }} placeholder="search name here..."></TextInput></Pressable>
+                </View>
 
 
                 {/* <View style={{ justifyContent: 'center', alignItems: 'center',width: responsiveWidth(95) }}> */}
 
 
                 {
-                    <FlatList style={{ paddingTop: responsiveHeight(4), marginBottom: responsiveHeight(15) }}
+                    <FlatList style={{ marginTop: responsiveHeight(4), paddingBottom: responsiveHeight(10) }}
                         refreshControl={
                             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                         }
@@ -161,6 +212,7 @@ const styles = StyleSheet.create({
     body: {
         flex: 1,
         backgroundColor: 'white',
+       
         // alignItems: 'center',
         // justifyContent: 'flex-start'
     },

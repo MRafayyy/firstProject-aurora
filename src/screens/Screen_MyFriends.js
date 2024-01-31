@@ -16,6 +16,7 @@ export default function Screen_MyFriends() {
     const { userId } = useContext(UserIdContext)
     const [friends, setFriends] = useState([])
     const [refreshing, setRefreshing] = useState(false);
+    const [friendRemoved, setfriendRemoved] = useState({})
 
     useEffect(() => {
         fetchFriends();
@@ -88,7 +89,7 @@ export default function Screen_MyFriends() {
                     data={friends}
                     renderItem={({ item }) => {
                         return (
-                            <MyFriends item={item} />
+                            <MyFriends item={item} friendRemoved={friendRemoved} setfriendRemoved={setfriendRemoved} />
                         )
                     }}
                     keyExtractor={(item, index) => index}
