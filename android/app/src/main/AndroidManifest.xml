@@ -50,6 +50,10 @@
         <meta-data  android:name="com.dieam.reactnativepushnotification.notification_color"
                     android:resource="@color/black"/> <!-- or @android:color/{name} to use a standard color -->
 
+             <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="Your Google maps API Key Here"/>
+
         <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" android:exported="false" />
         <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher"  android:exported="false"/>
         <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver" android:exported="false">

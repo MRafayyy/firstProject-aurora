@@ -344,8 +344,8 @@ export default function Screen_Home({ navigation, route }) {
                     {/* <Text style={{ textAlign: 'center' }}>Duration: {Counter}</Text> */}
                     <Pressable onPress={() => { console.log("stop recording clicked here"); stopRecording() }} style={({ pressed }) => [pressed ? { opacity: 0.8 } : { width: 60, height: 70, position: 'absolute', backgroundColor: 'yellow', borderRadius: 30, bottom: 25, alignSelf: 'center', justifyContent: 'center' }]}></Pressable>
                 </View>) : (
-                    <View style={{ flex: 1, justifyContent: 'flex-start', gap: responsiveHeight(3), alignItems: 'center' }}>
-                        <Text style={{ textAlign: 'center', fontSize: responsiveFontSize(5), fontWeight: '900', marginTop: responsiveHeight(4), color: 'black' }}>Rescue Button</Text>
+                    <View style={{ flex: 1, justifyContent: 'flex-start', gap: responsiveHeight(3), alignItems: 'center', marginTop: responsiveHeight(5) }}>
+                        {/* <Text style={{ textAlign: 'center', fontSize: responsiveFontSize(5), fontWeight: '900', marginTop: responsiveHeight(4), color: 'black' }}>Rescue Button</Text> */}
                         <Text style={{ textAlign: 'left', fontSize: responsiveFontSize(2), paddingHorizontal: responsiveWidth(10), color: 'black' }}>Tap the Rescue Button when you need urgent help.
                             {'\n'}
                             {'\n'}

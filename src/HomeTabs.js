@@ -17,6 +17,7 @@ import Screen_ReceiveNotifs from './screens/Screen_ReceiveNotifs';
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import UserIdContext from './UserIdContext';
+import RescueTabs from './RescueTabs';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -101,8 +102,8 @@ export default function HomeTabs({ navigation, route }) {
         />
 
         <Tab.Screen
-          name='Screen_Home2'
-          component={Screen_Home2}
+          name='RescueTabs'
+          component={RescueTabs}
           options={{
             tabBarLabel: 'Rescue',
             tabBarIcon: ({ color }) => (
