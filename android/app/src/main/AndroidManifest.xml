@@ -52,7 +52,8 @@
 
              <meta-data
                 android:name="com.google.android.geo.API_KEY"
-                android:value="Your Google maps API Key Here"/>
+                android:value="abc"/>
+                <!-- android:value="AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY"/> -->
 
         <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" android:exported="false" />
         <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher"  android:exported="false"/>

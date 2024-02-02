@@ -60,7 +60,7 @@ import {default as Settings} from './screens/Screen_Settings'
 import {default as Contacts} from './screens/Screen_SearchContacts';
 import HomeTabs from './HomeTabs';
 import { RevealFromBottomAndroid } from '@react-navigation/stack/lib/typescript/src/TransitionConfigs/TransitionPresets';
-
+import { LogLevel, OneSignal } from 'react-native-onesignal';
 
 // import PushNotification from 'react-native-push-notification';
 
@@ -72,6 +72,20 @@ import { io } from 'socket.io-client';
 import ip from './screens/IPaddress';
 import UserIdContext, { UserIdProvider } from './UserIdContext'
 
+
+const demnit = ()=>{
+  //  OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+  //  OneSignal.initialize('a24118e0-d18b-4834-9dce-adba4b8a03d3');
+  //  // OneSignal.Notifications.requestPermission(true);
+
+  //  OneSignal.Notifications.requestPermission(true);
+
+  // // Method for listening for notification clicks
+  // OneSignal.Notifications.addEventListener('click', (event) => {
+  //   console.log('OneSignal: notification clicked:', event);
+  // });
+}
+
 function App() {
 
   // const {setUserId} = useContext(UserIdContext)
@@ -79,7 +93,17 @@ function App() {
 const [isLoggedIn, setisLoggedIn] = useState(false)
 
     // const [isConnected, setisConnected] = useState(false)
-    const isConnected = useConnectionStatus()
+    const isConnected = useConnectionStatus();
+    
+useEffect(()=>{
+demnit();
+  // OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+  // OneSignal.initialize('a24118e0-d18b-4834-9dce-adba4b8a03d3');
+  // OneSignal.Notifications.requestPermission(true);
+  // OneSignal.initialize("a24118e0-d18b-4834-9dce-adba4b8a03d3");
+  
+},[])
+
 
     // useEffect(() => {
    

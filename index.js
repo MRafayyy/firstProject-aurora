@@ -9,6 +9,7 @@ import {name as appName} from './app.json';
 
 import PushNotification from "react-native-push-notification";
 import messaging from '@react-native-firebase/messaging';
+import { LogLevel, OneSignal } from 'react-native-onesignal';
 
 
 
@@ -88,46 +89,11 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
 // })
   });
 
-  // const theme = {
-  //   ...DefaultTheme,
-  //   colors: {
-  //     ...DefaultTheme.colors,
-  //     primary: 'tomato',
-  //     secondary: 'yellow',
-  //   },
-  // };
 
 
-  // const Main = () => (
-  //   <PaperProvider theme={theme}>
-  //     <App />
-  //   </PaperProvider>
-  // );
-  
 
-//   const pusher = Pusher.getInstance();
 
-// const pu = async()=>{
 
-  
-//   try {
-    
-//     await pusher.init({
-//       apiKey: "5441fc042a55775fd4dc",
-//       cluster: "ap2"
-//     });
-    
-//     await pusher.connect();
-//     await pusher.subscribe({
-//       channelName: "my-channel", 
-//       onEvent: (event) => {
-//         console.log(`Event received: ${event}`);
-//       }
-//     });
-    
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
-// pu()  
+
+ 
 AppRegistry.registerComponent(appName, () => App);
