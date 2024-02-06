@@ -14,6 +14,11 @@
     android:maxSdkVersion="32" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
 <!-- added below 3 permissions for local notifs -->
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
@@ -50,10 +55,6 @@
         <meta-data  android:name="com.dieam.reactnativepushnotification.notification_color"
                     android:resource="@color/black"/> <!-- or @android:color/{name} to use a standard color -->
 
-             <meta-data
-                android:name="com.google.android.geo.API_KEY"
-                android:value="abc"/>
-                <!-- android:value="AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY"/> -->
 
         <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" android:exported="false" />
         <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher"  android:exported="false"/>
@@ -72,5 +73,10 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+             <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY"/>
+
     </application>
 </manifest>
