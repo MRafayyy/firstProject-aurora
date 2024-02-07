@@ -60,7 +60,7 @@ export default function RescueTabs() {
            
               
                 <Stack.Screen name="Screen_Maps" component={Screen_Maps} options={{
-                    headerShown: true,
+                    headerShown: false,
                     headerTitle: 'Maps'
                 }} />
                 
