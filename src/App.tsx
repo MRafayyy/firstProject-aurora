@@ -60,7 +60,7 @@ import {default as Settings} from './screens/Screen_Settings'
 import {default as Contacts} from './screens/Screen_SearchContacts';
 import HomeTabs from './HomeTabs';
 import { RevealFromBottomAndroid } from '@react-navigation/stack/lib/typescript/src/TransitionConfigs/TransitionPresets';
-import { LogLevel, OneSignal } from 'react-native-onesignal';
+// import { LogLevel, OneSignal } from 'react-native-onesignal';
 
 // import PushNotification from 'react-native-push-notification';
 

@@ -31,7 +31,7 @@ export default function HomeTabs({ navigation, route }) {
   return (
     <>
       {/* <NavigationContainer> */}
-      <Tab.Navigator initialRouteName='Screen_Home'
+      <Tab.Navigator initialRouteName='RescueTabs'
 
         //  activeColor="#007cff"
         //  inactiveColor="gray"
