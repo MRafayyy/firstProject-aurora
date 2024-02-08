@@ -5,10 +5,14 @@ import Geolocation from 'react-native-geolocation-service';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import Screen_Home from './Screen_Home2';
+import MapViewDirections from 'react-native-maps-directions';
 
 export default function Screen_Maps() {
 
-  const mapRef = useRef(null)
+  const mapref = useRef(null)
+
+  const [origin, setOrigin] = useState();
+  const [destination, setDestination] = useState();
 
   const [MLat, setMLat] = useState(33)
   const [MLong, setMLong] = useState(33)
@@ -38,14 +42,14 @@ export default function Screen_Maps() {
   function handleBackButtonClick() {
     navigation.navigate('Screen_Home');
     return true;
-}
+  }
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
     return () => {
-        BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
     };
-}, []);
+  }, []);
 
   useEffect(() => {
     requestLocationPermission()
@@ -56,16 +60,18 @@ export default function Screen_Maps() {
   }, [])
 
 
-  const moveToLocation = (latitude, longitude)=>{
-
-    mapRef.animateToRegion({
+  const moveToLocation = async(latitude, longitude) => {
+console.log("full full"+ latitude+ "  "+ longitude)
+    mapref.current.animateToRegion({
       latitude,
       longitude,
-      latitudeDelta: 0.1,
-      longitudeDelta: 0.1,
+      latitudeDelta: 0.001,
+      longitudeDelta: 0.001,
 
-    })
-    
+    },
+    5000,
+    )
+
   }
 
   const requestLocationPermission = async () => {
@@ -116,82 +122,181 @@ export default function Screen_Maps() {
     <>
       <View style={styles.container}>
 
-        <View style={{ zIndex: 1, width:responsiveWidth(100),height: responsiveHeight(80) , paddingHorizontal: responsiveWidth(7) }}>
-          <GooglePlacesAutocomplete styles={styles.a}
-          fetchDetails={true}
-            placeholder='Search'
+        <View style={{flexDirection: 'row', zIndex: 1, gap:8 , flex: 0.5, marginHorizontal: responsiveWidth(2), color: 'black' }}>
+         
+         <View style={{flex:0.5}}>
+
+          <GooglePlacesAutocomplete
+            styles={{
+              description: { color: 'black' },
+              textInput: { color: 'black', borderRadius: 0, paddingHorizontal: responsiveWidth(1) },
+              // poweredContainer: { display: 'none' },
+              // separator: { height: 4, borderColor: 'blue', backgroundColor: 'transparent'},
+              row: { borderRadius: 0 },              
+            }}
+
+            textInputProps={{
+              placeholderTextColor: 'black',
+              returnKeyType: 'search'
+            }}
+
+            fetchDetails={true}
+            placeholder='Origin'
+            enablePoweredByContainer={false}
+
             onPress={(data, details = null) => {
               // 'details' is provided when fetchDetails = true
+              let origin = {
+                latitude: details.geometry.location.lat,
+                longitude: details.geometry.location.lng,
+              }
+              setOrigin(origin);
               console.log(JSON.stringify(data));
-              console.log(JSON.stringify("Latitude: "+details.geometry.location.lat+" Longitude: "+ details.geometry.location.lng));
+              console.log(JSON.stringify("Latitude: " + details.geometry.location.lat + " Longitude: " + details.geometry.location.lng));
+              moveToLocation(origin.latitude, origin.longitude)
             }}
             query={{
               // key: 'AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY',
               key: 'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4',
               language: 'en',
             }}
-
+            
             onFail={(error) => {
               console.log(error)
             }}
-          />
+            />
+            </View>
+
+
+<View style={{flex: 0.5}}>
+
+          <GooglePlacesAutocomplete
+          
+          styles={{
+              description: { color: 'black' },
+              textInput: { color: 'black', borderRadius: 0, paddingHorizontal: responsiveWidth(1) },
+              // poweredContainer: { display: 'none' },
+              // separator: { height: 4, borderColor: 'blue', backgroundColor: 'transparent'},
+              row: { borderRadius: 0 },              
+            }}
+
+            textInputProps={{
+              placeholderTextColor: 'black',
+              returnKeyType: 'search'
+            }}
+
+            fetchDetails={true}
+            placeholder='Destination'
+            enablePoweredByContainer={false}
+            
+            onPress={(data, details = null) => {
+              // 'details' is provided when fetchDetails = true
+              let destination = {
+                latitude: details.geometry.location.lat,
+                longitude: details.geometry.location.lng,
+              }
+              setDestination(destination);
+              console.log(JSON.stringify(data));
+              console.log(JSON.stringify("Latitude: " + details.geometry.location.lat + " Longitude: " + details.geometry.location.lng));
+              moveToLocation(destination.latitude, destination.longitude)
+            }}
+            query={{
+              // key: 'AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY',
+              key: 'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4',
+              language: 'en',
+            }}
+            
+            onFail={(error) => {
+              console.log(error)
+            }}
+            />
+            </View>
+
         </View>
 
 
         {/* <View style={{}}> */}
-          <MapView
-          ref={mapRef}
-            style={styles.map}
-            region={{
-              latitude: 24.860735,
-              longitude: 67.001137,
-              latitudeDelta: 0.1,
-              longitudeDelta: 0.1,
-            }}
-            onRegionChange={x => {
-              // console.log(x)
-            }}
-          >
+        <MapView
+          ref={mapref}
+          style={styles.map}
+          region={{
+            latitude: 24.860735,
+            longitude: 67.001137,
+            latitudeDelta: 0.1,
+            longitudeDelta: 0.1,
+          }}
+          
+          onRegionChange={x => {
+            // console.log(x)
+          }}
+        >
 
+          {origin!== undefined?
+        <Marker
+        coordinate={{ latitude: origin.latitude, longitude: origin.longitude  }}
+        // title={value.title}
+        // description={value.description}
+      /> : null  
+        }
+
+          {destination!== undefined?
+        <Marker
+        coordinate={{ latitude: destination.latitude, longitude: destination.longitude  }}
+        // title={value.title}
+        // description={value.description}
+      /> : null  
+        }
+
+          {/* {
+            markerList.map((value, index) => {
+              return (
+                <Marker
+                  draggable
+                  key={index}
+                  coordinate={{ latitude: value.latitude, longitude: value.longitude }}
+                  title={value.title}
+                  description={value.description}
+                  onDragEnd={(e) => console.log({ x: e.nativeEvent.coordinate })}
+                />
+              )
+            })
+          } */}
+
+
+
+          {/* <Circle center={{ latitude: 24.846805698946756, longitude: 67.05454979091883 }}
+            radius={500}
+            fillColor='#9fd1c3'
+            strokeColor='green'
+          /> */}
+
+          {/* <Polyline coordinates={[
             {
-              markerList.map((value, index) => {
-                return (
-                  <Marker
-                    draggable
-                    key={index}
-                    coordinate={{ latitude: value.latitude, longitude: value.longitude }}
-                    title={value.title}
-                    description={value.description}
-                    onDragEnd={(e) => console.log({ x: e.nativeEvent.coordinate })}
-                  />
-                )
-              })
-            }
+              latitude: 24.811122,
+              longitude: 67.044730
+            },
+            {
+              latitude: 24.833791,
+              longitude: 67.031683,
+            },
+            {
+              latitude: 24.862219,
+              longitude: 67.068301
+            },
+          ]} /> */}
 
 
+{origin!== undefined && destination !== undefined?
+<MapViewDirections
+    origin={origin}
+    strokeColor='blue'
+    strokeWidth={3}
+    destination={destination}
+    apikey={'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4'}
+    />
+: null  }
 
-            <Circle center={{ latitude: 24.846805698946756, longitude: 67.05454979091883 }}
-              radius={500}
-              fillColor='#9fd1c3'
-              strokeColor='green'
-            />
-
-            <Polyline coordinates={[
-              {
-                latitude: 24.811122,
-                longitude: 67.044730
-              },
-              {
-                latitude: 24.833791,
-                longitude: 67.031683,
-              },
-              {
-                latitude: 24.862219,
-                longitude: 67.068301
-              },
-            ]} />
-
-          </MapView>
+        </MapView>
         {/* </View> */}
 
         <Pressable onPress={() => getLocation()} style={{ width: 40, backgroundColor: 'blue', height: 40, alignSelf: 'center', position: 'absolute', bottom: 34 }}>
@@ -208,12 +313,16 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     flex: 1,
     justifyContent: 'flex-start',
-    alignItems: 'center'
+    alignItems: 'center',
+    color: 'black'
   },
   map: {
     ...StyleSheet.absoluteFillObject,
-    zIndex: 0
+    zIndex: 0,
+    color: 'black'
   },
-  a:{
-  borderRadius: 100}
+  a: {
+    borderRadius: 100,
+    color: 'black'
+  }
 })
