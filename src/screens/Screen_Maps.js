@@ -1,16 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { StyleSheet, View, PermissionsAndroid, Pressable, Text, BackHandler } from 'react-native'
-import MapView, { Circle, Marker, Polyline } from 'react-native-maps';
+import MapView, { Circle, Marker, Polyline, MarkerAnimated } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
+import GetLocation from 'react-native-get-location'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import Screen_Home from './Screen_Home2';
 import MapViewDirections from 'react-native-maps-directions';
 
-export default function Screen_Maps() {
+export default function Screen_Maps({ navigation }) {
 
   const mapref = useRef(null)
 
+  const [myLocation, setmyLocation] = useState()
+  const [PermissionGranted, setPermissionGranted] = useState(false);
   const [origin, setOrigin] = useState();
   const [destination, setDestination] = useState();
 
@@ -39,6 +42,9 @@ export default function Screen_Maps() {
     },
   ])
 
+
+
+
   function handleBackButtonClick() {
     navigation.navigate('Screen_Home');
     return true;
@@ -51,166 +57,232 @@ export default function Screen_Maps() {
     };
   }, []);
 
+
+
+  
+  
   useEffect(() => {
     requestLocationPermission()
 
-    // if (requestLocationPermission()) {
-    //   getLocation()
+    // getLiveLocations();
+
+    // const getLiveLocations = async()=>{
+      const watchId = Geolocation.watchPosition(
+        (position)=>{
+          // this.marker.animateMarkerToCoordinate({
+          //   latitude: position.coords.latitude,
+          //   longitude: position.coords.longitude,
+          // }, 4000)
+         console.log(position)
+         setmyLocation(position.coords)
+              // moveToLocation(position.coords.latitude, position.coords.longitude)
+        },
+        (error)=>{
+         console.log(error)
+        },
+        {
+         enableHighAccuracy: true, timeout: 10000, maximumAge: 0, interval: 10, distanceFilter: 0,
+        }
+       )
+
+       return(()=>{
+        Geolocation.clearWatch(watchId);
+       })
     // }
-  }, [])
 
+    // if (requestLocationPermission()) {
+      //   getLocation()
+      // }
+    }, [])
+    
+    // useEffect(()=>{
+  //     if(myLocation !== undefined){
+  //   setInterval(()=>{
+  //     moveToLocation(myLocation.Latitude, myLocation.longitude)
+  //   }, 3000)
+  // }
+    // },[])
+    
+    
 
-  const moveToLocation = async(latitude, longitude) => {
-console.log("full full"+ latitude+ "  "+ longitude)
+    
+  const moveToLocation = async (latitude, longitude) => {
+    console.log("full full" + latitude + "  " + longitude)
     mapref.current.animateToRegion({
       latitude,
       longitude,
-      latitudeDelta: 0.001,
-      longitudeDelta: 0.001,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
 
     },
-    5000,
+      5000,
     )
 
   }
+
+
+
 
   const requestLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
-          title: 'Cool Photo App Location Permission',
+          title: 'Cool Location Permission',
           message:
-            'Cool Photo App needs access to your location ' +
-            'so you can take awesome pictures.',
+            'Please allow location permissions to continue...',
           buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can use the camera');
+        setPermissionGranted(true)
+        getCurrentLocation();
       } else {
-        console.log('Camera permission denied');
+        console.log('Location permission denied');
       }
     } catch (err) {
       console.warn(err);
     }
   };
 
-  const getLocation = async () => {
+
+
+
+  const getCurrentLocation = async () => {
 
     Geolocation.getCurrentPosition(
-      (position) => {
-        console.log(position);
-        setMLong(position.coords.longitude)
-        setMLat(position.coords.latitude)
-      },
-      (error) => {
-        // See error code charts below.
-        console.log(error.code, error.message);
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-    );
-
+     (position)=>{
+      console.log(position)
+      setmyLocation(position.coords)
+           moveToLocation(position.coords.latitude, position.coords.longitude)
+     },
+     (error)=>{
+      console.log(error)
+     },
+     {
+      enableHighAccuracy: true, timeout: 15000, maximumAge: 1000
+     }
+    )
+   
+   
+    // GetLocation.getCurrentPosition({
+    //   enableHighAccuracy: true,
+    //   timeout: 60000,
+    // })
+    //   .then(location => {
+    //     setmyLocation(location)
+    //     console.log("My location is :" + JSON.stringify(location));
+    //     // console.log("hey"+myLocation.longitude)
+    //     // moveToLocation(location.latitude, location.longitude)
+    //   })
+    //   .catch(error => {
+    //     const { code, message } = error;
+    //     console.warn(code, message);
+    //   })
+    
   }
 
 
+  if (!PermissionGranted) { return <View><Text style={{ color: 'black' }}>Please allow location permissions</Text></View> }
 
 
   return (
     <>
       <View style={styles.container}>
 
-        <View style={{flexDirection: 'row', zIndex: 1, gap:8 , flex: 0.5, marginHorizontal: responsiveWidth(2), color: 'black' }}>
-         
-         <View style={{flex:0.5}}>
+        <View style={{ flexDirection: 'row', zIndex: 1, gap: 8, flex: 0.5, marginHorizontal: responsiveWidth(2), color: 'black' }}>
 
-          <GooglePlacesAutocomplete
-            styles={{
-              description: { color: 'black' },
-              textInput: { color: 'black', borderRadius: 0, paddingHorizontal: responsiveWidth(1) },
-              // poweredContainer: { display: 'none' },
-              // separator: { height: 4, borderColor: 'blue', backgroundColor: 'transparent'},
-              row: { borderRadius: 0 },              
-            }}
+          <View style={{ flex: 0.5 }}>
 
-            textInputProps={{
-              placeholderTextColor: 'black',
-              returnKeyType: 'search'
-            }}
+            <GooglePlacesAutocomplete
+              styles={{
+                description: { color: 'black' },
+                textInput: { color: 'black', borderRadius: 0, paddingHorizontal: responsiveWidth(1) },
+                // poweredContainer: { display: 'none' },
+                // separator: { height: 4, borderColor: 'blue', backgroundColor: 'transparent'},
+                row: { borderRadius: 0 },
+              }}
 
-            fetchDetails={true}
-            placeholder='Origin'
-            enablePoweredByContainer={false}
+              textInputProps={{
+                placeholderTextColor: 'black',
+                returnKeyType: 'search'
+              }}
 
-            onPress={(data, details = null) => {
-              // 'details' is provided when fetchDetails = true
-              let origin = {
-                latitude: details.geometry.location.lat,
-                longitude: details.geometry.location.lng,
-              }
-              setOrigin(origin);
-              console.log(JSON.stringify(data));
-              console.log(JSON.stringify("Latitude: " + details.geometry.location.lat + " Longitude: " + details.geometry.location.lng));
-              moveToLocation(origin.latitude, origin.longitude)
-            }}
-            query={{
-              // key: 'AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY',
-              key: 'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4',
-              language: 'en',
-            }}
-            
-            onFail={(error) => {
-              console.log(error)
-            }}
+              fetchDetails={true}
+              placeholder='Origin'
+              enablePoweredByContainer={false}
+
+              onPress={(data, details = null) => {
+                // 'details' is provided when fetchDetails = true
+                let origin = {
+                  latitude: details.geometry.location.lat,
+                  longitude: details.geometry.location.lng,
+                }
+                setOrigin(origin);
+                console.log(JSON.stringify(data));
+                console.log(JSON.stringify("Latitude: " + details.geometry.location.lat + " Longitude: " + details.geometry.location.lng));
+                moveToLocation(origin.latitude, origin.longitude)
+              }}
+              query={{
+                // key: 'AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY',
+                key: 'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4',
+                language: 'en',
+              }}
+
+              onFail={(error) => {
+                console.log(error)
+              }}
             />
-            </View>
+          </View>
 
 
-<View style={{flex: 0.5}}>
+          <View style={{ flex: 0.5 }}>
 
-          <GooglePlacesAutocomplete
-          
-          styles={{
-              description: { color: 'black' },
-              textInput: { color: 'black', borderRadius: 0, paddingHorizontal: responsiveWidth(1) },
-              // poweredContainer: { display: 'none' },
-              // separator: { height: 4, borderColor: 'blue', backgroundColor: 'transparent'},
-              row: { borderRadius: 0 },              
-            }}
+            <GooglePlacesAutocomplete
 
-            textInputProps={{
-              placeholderTextColor: 'black',
-              returnKeyType: 'search'
-            }}
+              styles={{
+                description: { color: 'black' },
+                textInput: { color: 'black', borderRadius: 0, paddingHorizontal: responsiveWidth(1) },
+                // poweredContainer: { display: 'none' },
+                // separator: { height: 4, borderColor: 'blue', backgroundColor: 'transparent'},
+                row: { borderRadius: 0 },
+              }}
 
-            fetchDetails={true}
-            placeholder='Destination'
-            enablePoweredByContainer={false}
-            
-            onPress={(data, details = null) => {
-              // 'details' is provided when fetchDetails = true
-              let destination = {
-                latitude: details.geometry.location.lat,
-                longitude: details.geometry.location.lng,
-              }
-              setDestination(destination);
-              console.log(JSON.stringify(data));
-              console.log(JSON.stringify("Latitude: " + details.geometry.location.lat + " Longitude: " + details.geometry.location.lng));
-              moveToLocation(destination.latitude, destination.longitude)
-            }}
-            query={{
-              // key: 'AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY',
-              key: 'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4',
-              language: 'en',
-            }}
-            
-            onFail={(error) => {
-              console.log(error)
-            }}
+              textInputProps={{
+                placeholderTextColor: 'black',
+                returnKeyType: 'search'
+              }}
+
+              fetchDetails={true}
+              placeholder='Destination'
+              enablePoweredByContainer={false}
+
+              onPress={(data, details = null) => {
+                // 'details' is provided when fetchDetails = true
+                let destination = {
+                  latitude: details.geometry.location.lat,
+                  longitude: details.geometry.location.lng,
+                }
+                setDestination(destination);
+                console.log(JSON.stringify(data));
+                console.log(JSON.stringify("Latitude: " + details.geometry.location.lat + " Longitude: " + details.geometry.location.lng));
+                moveToLocation(destination.latitude, destination.longitude)
+
+
+              }}
+              query={{
+                // key: 'AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY',
+                key: 'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4',
+                language: 'en',
+              }}
+
+              onFail={(error) => {
+                console.log(error)
+              }}
             />
-            </View>
+          </View>
 
         </View>
 
@@ -225,27 +297,35 @@ console.log("full full"+ latitude+ "  "+ longitude)
             latitudeDelta: 0.1,
             longitudeDelta: 0.1,
           }}
-          
+
           onRegionChange={x => {
             // console.log(x)
           }}
         >
 
-          {origin!== undefined?
-        <Marker
-        coordinate={{ latitude: origin.latitude, longitude: origin.longitude  }}
-        // title={value.title}
-        // description={value.description}
-      /> : null  
-        }
 
-          {destination!== undefined?
-        <Marker
-        coordinate={{ latitude: destination.latitude, longitude: destination.longitude  }}
-        // title={value.title}
-        // description={value.description}
-      /> : null  
-        }
+          {myLocation !== undefined ? <MarkerAnimated
+          ref={marker => (this.marker = marker)}
+            coordinate={{ latitude: myLocation.latitude, longitude: myLocation.longitude }}
+          // title={value.title}
+          // description={value.description}
+          /> : null}
+
+          {origin !== undefined ?
+            <Marker
+              coordinate={{ latitude: origin.latitude, longitude: origin.longitude }}
+            // title={value.title}
+            // description={value.description}
+            /> : null
+          }
+
+          {destination !== undefined ?
+            <Marker
+              coordinate={{ latitude: destination.latitude, longitude: destination.longitude }}
+            // title={value.title}
+            // description={value.description}
+            /> : null
+          }
 
           {/* {
             markerList.map((value, index) => {
@@ -286,20 +366,20 @@ console.log("full full"+ latitude+ "  "+ longitude)
           ]} /> */}
 
 
-{origin!== undefined && destination !== undefined?
-<MapViewDirections
-    origin={origin}
-    strokeColor='blue'
-    strokeWidth={3}
-    destination={destination}
-    apikey={'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4'}
-    />
-: null  }
+          {origin !== undefined && destination !== undefined ?
+            <MapViewDirections
+              origin={origin}
+              strokeColor='blue'
+              strokeWidth={3}
+              destination={destination}
+              apikey={'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4'}
+            />
+            : null}
 
         </MapView>
         {/* </View> */}
 
-        <Pressable onPress={() => getLocation()} style={{ width: 40, backgroundColor: 'blue', height: 40, alignSelf: 'center', position: 'absolute', bottom: 34 }}>
+        <Pressable onPress={() => { getCurrentLocation(); moveToLocation(myLocation.latitude, myLocation.longitude)}} style={{ width: 40, backgroundColor: 'blue', height: 40, alignSelf: 'center', position: 'absolute', bottom: 34 }}>
           <Text>Get Current Location</Text>
         </Pressable>
       </View>
