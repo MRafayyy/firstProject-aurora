@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { StyleSheet, View, PermissionsAndroid, Pressable, Text, BackHandler } from 'react-native'
-import MapView, { Circle, Marker, Polyline, MarkerAnimated } from 'react-native-maps';
+import MapView, { Circle, Marker, Polyline, MarkerAnimated, AnimatedRegion } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import GetLocation from 'react-native-get-location'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -11,6 +11,7 @@ import MapViewDirections from 'react-native-maps-directions';
 export default function Screen_Maps({ navigation }) {
 
   const mapref = useRef(null)
+  const markerref = useRef(null)
 
   const [myLocation, setmyLocation] = useState()
   const [PermissionGranted, setPermissionGranted] = useState(false);
@@ -59,63 +60,68 @@ export default function Screen_Maps({ navigation }) {
 
 
 
-  
-  
+
+
   useEffect(() => {
     requestLocationPermission()
 
     // getLiveLocations();
 
     // const getLiveLocations = async()=>{
-      const watchId = Geolocation.watchPosition(
-        (position)=>{
-          // this.marker.animateMarkerToCoordinate({
-          //   latitude: position.coords.latitude,
-          //   longitude: position.coords.longitude,
-          // }, 4000)
-         console.log(position)
-         setmyLocation(position.coords)
-              // moveToLocation(position.coords.latitude, position.coords.longitude)
-        },
-        (error)=>{
-         console.log(error)
-        },
-        {
-         enableHighAccuracy: true, timeout: 10000, maximumAge: 0, interval: 10, distanceFilter: 0,
-        }
-       )
+    const watchId = Geolocation.watchPosition(
+      (position) => {
 
-       return(()=>{
-        Geolocation.clearWatch(watchId);
-       })
+        // setTimeout(()=>{
+            markerref?.current.animateMarkerToCoordinate({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+        }, 6000)
+        // }, 0);
+
+
+        console.log(position)
+        setmyLocation(position.coords)
+        moveToLocation(position.coords.latitude, position.coords.longitude)
+      },
+      (error) => {
+        console.log(error)
+      },
+      {
+        enableHighAccuracy: true, timeout: 10000, maximumAge: 1000, interval: 100, 
+      }
+    )
+
+    return (() => {
+      Geolocation.clearWatch(watchId);
+    })
     // }
 
     // if (requestLocationPermission()) {
-      //   getLocation()
-      // }
-    }, [])
-    
-    // useEffect(()=>{
+    //   getLocation()
+    // }
+  }, [])
+
+  // useEffect(()=>{
   //     if(myLocation !== undefined){
   //   setInterval(()=>{
   //     moveToLocation(myLocation.Latitude, myLocation.longitude)
   //   }, 3000)
   // }
-    // },[])
-    
-    
+  // },[])
 
-    
+
+
+
   const moveToLocation = async (latitude, longitude) => {
     console.log("full full" + latitude + "  " + longitude)
     mapref.current.animateToRegion({
-      latitude,
-      longitude,
-      latitudeDelta: 0.01,
-      longitudeDelta: 0.01,
+      latitude: latitude,
+      longitude: longitude,
+      latitudeDelta: 0.009,
+      longitudeDelta: 0.009,
 
     },
-      5000,
+      6000,
     )
 
   }
@@ -144,6 +150,7 @@ export default function Screen_Maps({ navigation }) {
       }
     } catch (err) {
       console.warn(err);
+      console.log("demnit")
     }
   };
 
@@ -152,21 +159,25 @@ export default function Screen_Maps({ navigation }) {
 
   const getCurrentLocation = async () => {
 
-    Geolocation.getCurrentPosition(
-     (position)=>{
-      console.log(position)
-      setmyLocation(position.coords)
-           moveToLocation(position.coords.latitude, position.coords.longitude)
-     },
-     (error)=>{
-      console.log(error)
-     },
-     {
-      enableHighAccuracy: true, timeout: 15000, maximumAge: 1000
-     }
-    )
-   
-   
+    if (PermissionGranted) {
+      // Geolocation.getCurrentPosition(
+      //   (position) => {
+      //     console.log(position)
+      //     setmyLocation(position.coords)
+      //     moveToLocation(position.coords.latitude, position.coords.longitude)
+      //   },
+      //   (error) => {
+        //     console.log(error)
+        //   },
+        //   {
+          //     enableHighAccuracy: true, timeout: 15000, maximumAge: 1000
+          //   }
+          // )
+              moveToLocation(myLocation.latitude, myLocation.longitude)
+      
+    }
+
+
     // GetLocation.getCurrentPosition({
     //   enableHighAccuracy: true,
     //   timeout: 60000,
@@ -181,7 +192,7 @@ export default function Screen_Maps({ navigation }) {
     //     const { code, message } = error;
     //     console.warn(code, message);
     //   })
-    
+
   }
 
 
@@ -294,8 +305,8 @@ export default function Screen_Maps({ navigation }) {
           region={{
             latitude: 24.860735,
             longitude: 67.001137,
-            latitudeDelta: 0.1,
-            longitudeDelta: 0.1,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
           }}
 
           onRegionChange={x => {
@@ -305,8 +316,8 @@ export default function Screen_Maps({ navigation }) {
 
 
           {myLocation !== undefined ? <MarkerAnimated
-          ref={marker => (this.marker = marker)}
-            coordinate={{ latitude: myLocation.latitude, longitude: myLocation.longitude }}
+            ref={markerref}
+            coordinate={ new AnimatedRegion({ latitude: myLocation.latitude, longitude: myLocation.longitude })}
           // title={value.title}
           // description={value.description}
           /> : null}
@@ -379,7 +390,7 @@ export default function Screen_Maps({ navigation }) {
         </MapView>
         {/* </View> */}
 
-        <Pressable onPress={() => { getCurrentLocation(); moveToLocation(myLocation.latitude, myLocation.longitude)}} style={{ width: 40, backgroundColor: 'blue', height: 40, alignSelf: 'center', position: 'absolute', bottom: 34 }}>
+        <Pressable onPress={() => { getCurrentLocation(); }} style={{ width: 40, backgroundColor: 'blue', height: 40, alignSelf: 'center', position: 'absolute', bottom: 34 }}>
           <Text>Get Current Location</Text>
         </Pressable>
       </View>
