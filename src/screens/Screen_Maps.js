@@ -72,16 +72,16 @@ export default function Screen_Maps({ navigation }) {
       (position) => {
 
         // setTimeout(()=>{
-            markerref?.current.animateMarkerToCoordinate({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
+            markerref?.current?.animateMarkerToCoordinate({
+            latitude: position?.coords?.latitude,
+            longitude: position?.coords?.longitude,
         }, 6000)
         // }, 0);
 
 
         console.log(position)
         setmyLocation(position.coords)
-        moveToLocation(position.coords.latitude, position.coords.longitude)
+        moveToLocation(position?.coords?.latitude, position?.coords?.longitude)
       },
       (error) => {
         console.log(error)
@@ -99,7 +99,7 @@ export default function Screen_Maps({ navigation }) {
     // if (requestLocationPermission()) {
     //   getLocation()
     // }
-  }, [])
+  }, [markerref])
 
   // useEffect(()=>{
   //     if(myLocation !== undefined){
