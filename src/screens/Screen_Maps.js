@@ -5,7 +5,7 @@ import Geolocation from 'react-native-geolocation-service';
 import GetLocation from 'react-native-get-location'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
-import Screen_Home from './Screen_Home2';
+import {default as Screen_Home2} from './Screen_Home2';
 import MapViewDirections from 'react-native-maps-directions';
 
 export default function Screen_Maps({ navigation }) {
@@ -47,7 +47,7 @@ export default function Screen_Maps({ navigation }) {
 
 
   function handleBackButtonClick() {
-    navigation.navigate('Screen_Home');
+    navigation.navigate('Screen_Home2');
     return true;
   }
 
@@ -75,7 +75,7 @@ export default function Screen_Maps({ navigation }) {
             markerref?.current?.animateMarkerToCoordinate({
             latitude: position?.coords?.latitude,
             longitude: position?.coords?.longitude,
-        }, 6000)
+        }, 7000)
         // }, 0);
 
 
@@ -87,7 +87,7 @@ export default function Screen_Maps({ navigation }) {
         console.log(error)
       },
       {
-        enableHighAccuracy: true, timeout: 10000, maximumAge: 1000, interval: 100, 
+        enableHighAccuracy: true, timeout: 3000, maximumAge: 1000, interval: 0, distanceFilter: 0
       }
     )
 
@@ -99,7 +99,7 @@ export default function Screen_Maps({ navigation }) {
     // if (requestLocationPermission()) {
     //   getLocation()
     // }
-  }, [markerref])
+  }, [])
 
   // useEffect(()=>{
   //     if(myLocation !== undefined){
@@ -114,14 +114,14 @@ export default function Screen_Maps({ navigation }) {
 
   const moveToLocation = async (latitude, longitude) => {
     console.log("full full" + latitude + "  " + longitude)
-    mapref.current.animateToRegion({
+    mapref?.current?.animateToRegion({
       latitude: latitude,
       longitude: longitude,
       latitudeDelta: 0.009,
       longitudeDelta: 0.009,
 
     },
-      6000,
+      4000,
     )
 
   }
@@ -167,12 +167,12 @@ export default function Screen_Maps({ navigation }) {
       //     moveToLocation(position.coords.latitude, position.coords.longitude)
       //   },
       //   (error) => {
-        //     console.log(error)
-        //   },
-        //   {
-          //     enableHighAccuracy: true, timeout: 15000, maximumAge: 1000
-          //   }
-          // )
+      //       console.log(error)
+      //     },
+      //     {
+      //         enableHighAccuracy: true, timeout: 15000, maximumAge: 1000
+      //       }
+      //     )
               moveToLocation(myLocation.latitude, myLocation.longitude)
       
     }
