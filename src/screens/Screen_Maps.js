@@ -1,28 +1,38 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { StyleSheet, View, PermissionsAndroid, Pressable, Text, BackHandler } from 'react-native'
-import MapView, { Circle, Marker, Polyline, MarkerAnimated, AnimatedRegion } from 'react-native-maps';
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  StyleSheet,
+  View,
+  PermissionsAndroid,
+  Pressable,
+  Text,
+  BackHandler,
+} from 'react-native';
+import MapView, {
+  Circle,
+  Marker,
+  Polyline,
+  MarkerAnimated,
+  AnimatedRegion,
+} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 // import GetLocation from 'react-native-get-location'
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { responsiveWidth } from 'react-native-responsive-dimensions';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import {responsiveWidth} from 'react-native-responsive-dimensions';
 
 import MapViewDirections from 'react-native-maps-directions';
 
-export default function Screen_Maps({ navigation }) {
+export default function Screen_Maps({navigation}) {
+  const mapref = useRef(null);
+  const markerref = useRef(null);
 
-  const mapref = useRef(null)
-  const markerref = useRef(null)
-
-  const [myLocation, setmyLocation] = useState()
+  const [myLocation, setmyLocation] = useState();
   const [PermissionGranted, setPermissionGranted] = useState(false);
   const [origin, setOrigin] = useState();
   const [destination, setDestination] = useState();
 
-
   // const [Region, setRegion] = useState(null)
   // const [MLat, setMLat] = useState(33)
   // const [MLong, setMLong] = useState(33)
-
 
   // const [markerList, setMarkerList] = useState([
   //   {
@@ -45,58 +55,57 @@ export default function Screen_Maps({ navigation }) {
   //   },
   // ])
 
-
-
-
   function handleBackButtonClick() {
     navigation.navigate('Screen_Home2');
     return true;
   }
 
   useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
     return () => {
-      BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+      BackHandler.removeEventListener(
+        'hardwareBackPress',
+        handleBackButtonClick,
+      );
     };
   }, []);
 
-
-
-
-
   useEffect(() => {
-
-    requestLocationPermission()
-
+    requestLocationPermission();
 
     const watchId = Geolocation.watchPosition(
-      (position) => {
-
+      position => {
+        setmyLocation(position.coords);
         // setTimeout(()=>{
-        markerref?.current?.animateMarkerToCoordinate({
-          latitude: position?.coords?.latitude,
-          longitude: position?.coords?.longitude,
-        }, 7000)
+          markerref?.current?.animateMarkerToCoordinate(
+            {
+              latitude: position?.coords?.latitude,
+              longitude: position?.coords?.longitude,
+            },
+            7000,
+            );
+            console.log(position.coords);
         // }, 0);
 
-
         // console.log(position)
-        setmyLocation(position?.coords)
         // moveToLocation(position?.coords?.latitude, position?.coords?.longitude)
       },
-      (error) => {
-        console.log(error)
+      error => {
+        console.log(error);
       },
       {
-        enableHighAccuracy: true, timeout: 10000, maximumAge: 1000, interval: 100, distanceFilter: 100
-      }
-    )
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 1000,
+        interval: 100,
+        distanceFilter: 100,
+      },
+    );
 
-    return (() => {
+    return () => {
       Geolocation.clearWatch(watchId);
-    })
-
-  }, [])
+    };
+  }, []);
 
   // useEffect(()=>{
   //     if(myLocation !== undefined){
@@ -106,25 +115,18 @@ export default function Screen_Maps({ navigation }) {
   // }
   // },[])
 
-
-
-
   const moveToLocation = async (latitude, longitude) => {
-    console.log("full full" + latitude + "  " + longitude)
-    mapref?.current?.animateToRegion({
-      latitude: latitude,
-      longitude: longitude,
-      latitudeDelta: 0.01,
-      longitudeDelta: 0.01,
-
-    },
+    console.log('full full' + latitude + '  ' + longitude);
+    mapref?.current?.animateToRegion(
+      {
+        latitude: latitude,
+        longitude: longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      },
       4000,
-    )
-
-  }
-
-
-
+    );
+  };
 
   const requestLocationPermission = async () => {
     try {
@@ -132,30 +134,25 @@ export default function Screen_Maps({ navigation }) {
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
           title: 'Cool Location Permission',
-          message:
-            'Please allow location permissions to continue...',
+          message: 'Please allow location permissions to continue...',
           buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        setPermissionGranted(true)
+        setPermissionGranted(true);
         // getCurrentLocation();
       } else {
         console.log('Location permission denied');
       }
     } catch (err) {
       console.warn(err);
-      console.log("demnit")
+      console.log('demnit');
     }
   };
 
-
-
-
   const getCurrentLocation = async () => {
-
     if (PermissionGranted) {
       // Geolocation.getCurrentPosition(
       //   (position) => {
@@ -170,10 +167,13 @@ export default function Screen_Maps({ navigation }) {
       //         enableHighAccuracy: true, timeout: 15000, maximumAge: 1000
       //       }
       //     )
-      moveToLocation(myLocation.latitude, myLocation.longitude)
-
+      if (myLocation !== undefined) {
+        moveToLocation(myLocation.latitude, myLocation.longitude);
+      }
+      else{
+        console.log("myLocation is undefined")
+      }
     }
-
 
     // GetLocation.getCurrentPosition({
     //   enableHighAccuracy: true,
@@ -189,117 +189,125 @@ export default function Screen_Maps({ navigation }) {
     //     const { code, message } = error;
     //     console.warn(code, message);
     //   })
-
-  }
-
+  };
 
   // if (!PermissionGranted) { return <View><Text style={{ color: 'black' }}>Please allow location permissions</Text></View> }
-
 
   return (
     <>
       <View style={styles.container}>
-
-        <View style={{ flexDirection: 'row', zIndex: 1, gap: 8, flex: 0.5, marginHorizontal: responsiveWidth(2), color: 'black' }}>
-
-          <View style={{ flex: 0.5 }}>
-
+        <View
+          style={{
+            flexDirection: 'row',
+            zIndex: 1,
+            gap: 8,
+            flex: 0.5,
+            marginHorizontal: responsiveWidth(2),
+            color: 'black',
+          }}>
+          <View style={{flex: 0.5}}>
             <GooglePlacesAutocomplete
               styles={{
-                description: { color: 'black' },
-                textInput: { color: 'black', borderRadius: 0, paddingHorizontal: responsiveWidth(1) },
+                description: {color: 'black'},
+                textInput: {
+                  color: 'black',
+                  borderRadius: 0,
+                  paddingHorizontal: responsiveWidth(1),
+                },
                 // poweredContainer: { display: 'none' },
                 // separator: { height: 4, borderColor: 'blue', backgroundColor: 'transparent'},
-                row: { borderRadius: 0 },
+                row: {borderRadius: 0},
               }}
-
               textInputProps={{
                 placeholderTextColor: 'black',
-                returnKeyType: 'search'
+                returnKeyType: 'search',
               }}
-
               fetchDetails={true}
-              placeholder='Origin'
+              placeholder="Origin"
               enablePoweredByContainer={false}
-
               onPress={(data, details = null) => {
                 // 'details' is provided when fetchDetails = true
                 let origin = {
                   latitude: details.geometry.location.lat,
                   longitude: details.geometry.location.lng,
-                }
+                };
                 setOrigin(origin);
                 console.log(JSON.stringify(data));
-                console.log(JSON.stringify("Latitude: " + details.geometry.location.lat + " Longitude: " + details.geometry.location.lng));
-                moveToLocation(origin.latitude, origin.longitude)
+                console.log(
+                  JSON.stringify(
+                    'Latitude: ' +
+                      details.geometry.location.lat +
+                      ' Longitude: ' +
+                      details.geometry.location.lng,
+                  ),
+                );
+                moveToLocation(origin.latitude, origin.longitude);
               }}
               query={{
                 // key: 'AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY',
                 key: 'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4',
                 language: 'en',
               }}
-
-              onFail={(error) => {
-                console.log(error)
+              onFail={error => {
+                console.log(error);
               }}
             />
           </View>
 
-
-          <View style={{ flex: 0.5 }}>
-
+          <View style={{flex: 0.5}}>
             <GooglePlacesAutocomplete
-
               styles={{
-                description: { color: 'black' },
-                textInput: { color: 'black', borderRadius: 0, paddingHorizontal: responsiveWidth(1) },
+                description: {color: 'black'},
+                textInput: {
+                  color: 'black',
+                  borderRadius: 0,
+                  paddingHorizontal: responsiveWidth(1),
+                },
                 // poweredContainer: { display: 'none' },
                 // separator: { height: 4, borderColor: 'blue', backgroundColor: 'transparent'},
-                row: { borderRadius: 0 },
+                row: {borderRadius: 0},
               }}
-
               textInputProps={{
                 placeholderTextColor: 'black',
-                returnKeyType: 'search'
+                returnKeyType: 'search',
               }}
-
               fetchDetails={true}
-              placeholder='Destination'
+              placeholder="Destination"
               enablePoweredByContainer={false}
-
               onPress={(data, details = null) => {
                 // 'details' is provided when fetchDetails = true
                 let destination = {
                   latitude: details.geometry.location.lat,
                   longitude: details.geometry.location.lng,
-                }
+                };
                 setDestination(destination);
                 console.log(JSON.stringify(data));
-                console.log(JSON.stringify("Latitude: " + details.geometry.location.lat + " Longitude: " + details.geometry.location.lng));
-                moveToLocation(destination.latitude, destination.longitude)
-
-
+                console.log(
+                  JSON.stringify(
+                    'Latitude: ' +
+                      details.geometry.location.lat +
+                      ' Longitude: ' +
+                      details.geometry.location.lng,
+                  ),
+                );
+                moveToLocation(destination.latitude, destination.longitude);
               }}
               query={{
                 // key: 'AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY',
                 key: 'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4',
                 language: 'en',
               }}
-
-              onFail={(error) => {
-                console.log(error)
+              onFail={error => {
+                console.log(error);
               }}
             />
           </View>
-
         </View>
-
 
         {/* <View style={{}}> */}
         <MapView
           ref={mapref}
           style={styles.map}
-
           // initialRegion={myLocation && {
           //   latitude: myLocation.latitude,
           //   longitude: myLocation.longitude,
@@ -312,38 +320,51 @@ export default function Screen_Maps({ navigation }) {
             latitudeDelta: 0.1,
             longitudeDelta: 0.1,
           }}
-
           onRegionChange={x => {
             // console.log(x)
           }}
           showsUserLocation={true}
           // showsMyLocationButton={true}
-          
         >
+          {myLocation != undefined &&
+          myLocation.latitude != undefined &&
+          myLocation.longitude != undefined ? (
+            <MarkerAnimated
+              ref={markerref}
+              coordinate={
+                new AnimatedRegion({
+                  latitude: myLocation?.latitude,
+                  longitude: myLocation?.longitude,
+                  latitudeDelta: 0.1,
+                  longitudeDelta: 0.1,
+                })
+              }
+              // title={value.title}
+              // description={value.description}
+            />
+          ) : null}
 
-
-          {myLocation !== undefined ? <MarkerAnimated
-            ref={markerref}
-            coordinate={new AnimatedRegion({ latitude: myLocation.latitude, longitude: myLocation.longitude })}
-          // title={value.title}
-          // description={value.description}
-          /> : null}
-
-          {origin !== undefined ?
+          {origin !== undefined ? (
             <Marker
-              coordinate={{ latitude: origin.latitude, longitude: origin.longitude }}
-            // title={value.title}
-            // description={value.description}
-            /> : null
-          }
+              coordinate={{
+                latitude: origin.latitude,
+                longitude: origin.longitude,
+              }}
+              // title={value.title}
+              // description={value.description}
+            />
+          ) : null}
 
-          {destination !== undefined ?
+          {destination !== undefined ? (
             <Marker
-              coordinate={{ latitude: destination.latitude, longitude: destination.longitude }}
-            // title={value.title}
-            // description={value.description}
-            /> : null
-          }
+              coordinate={{
+                latitude: destination.latitude,
+                longitude: destination.longitude,
+              }}
+              // title={value.title}
+              // description={value.description}
+            />
+          ) : null}
 
           {/* {
             markerList.map((value, index) => {
@@ -359,8 +380,6 @@ export default function Screen_Maps({ navigation }) {
               )
             })
           } */}
-
-
 
           {/* <Circle center={{ latitude: 24.846805698946756, longitude: 67.05454979091883 }}
             radius={500}
@@ -383,44 +402,52 @@ export default function Screen_Maps({ navigation }) {
             },
           ]} /> */}
 
-
-          {origin !== undefined && destination !== undefined ?
+          {origin !== undefined && destination !== undefined ? (
             <MapViewDirections
               origin={origin}
-              strokeColor='blue'
+              strokeColor="blue"
               strokeWidth={3}
               destination={destination}
               apikey={'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4'}
             />
-            : null}
-
+          ) : null}
         </MapView>
         {/* </View> */}
 
-        <Pressable onPress={() => { getCurrentLocation(); }} style={{ width: 60, backgroundColor: 'blue', height: 40, alignSelf: 'center', position: 'absolute', bottom: 34 }}>
-          <Text style={{ color: 'white' }}>Get Current Location</Text>
+        <Pressable
+          onPress={() => {
+            getCurrentLocation();
+          }}
+          style={{
+            width: 60,
+            backgroundColor: 'blue',
+            height: 40,
+            alignSelf: 'center',
+            position: 'absolute',
+            bottom: 34,
+          }}>
+          <Text style={{color: 'white'}}>Get Current Location</Text>
         </Pressable>
       </View>
     </>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-
   container: {
     ...StyleSheet.absoluteFillObject,
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    color: 'black'
+    color: 'black',
   },
   map: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 0,
-    color: 'black'
+    color: 'black',
   },
   a: {
     borderRadius: 100,
-    color: 'black'
-  }
-})
+    color: 'black',
+  },
+});
