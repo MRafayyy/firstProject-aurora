@@ -6,6 +6,7 @@ import {
   Pressable,
   Text,
   BackHandler,
+  ActivityIndicator,
 } from 'react-native';
 import MapView, {
   Circle,
@@ -14,6 +15,7 @@ import MapView, {
   MarkerAnimated,
   AnimatedRegion,
 } from 'react-native-maps';
+
 import Geolocation from 'react-native-geolocation-service';
 // import GetLocation from 'react-native-get-location'
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
@@ -427,8 +429,14 @@ export default function Screen_Maps({navigation}) {
         {/* </View> */}
 
         <Pressable
+        disabled={myLocation==undefined? true: false}
           onPress={() => {
-            getCurrentLocation(myLocation.latitude, myLocation.longitude);
+            if(myLocation!=undefined){
+              getCurrentLocation(myLocation.latitude, myLocation.longitude);
+            }
+            else{
+              console.log("waitin for myLocxation")
+            }
           }}
           style={{
             width: 60,
@@ -438,7 +446,9 @@ export default function Screen_Maps({navigation}) {
             position: 'absolute',
             bottom: 34,
           }}>
+          {myLocation==undefined? <ActivityIndicator size='large' color="#fff" /> : 
           <Text style={{color: 'white'}}>Get Current Location</Text>
+          }
         </Pressable>
       </View>
     </>

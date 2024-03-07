@@ -83,5 +83,7 @@
                 android:name="com.google.android.geo.API_KEY"
                 android:value="AIzaSyA4HHx45fBoFy2TahURORLc5bdIyQ4pR9o"/>
 
+                
+
     </application>
 </manifest>
