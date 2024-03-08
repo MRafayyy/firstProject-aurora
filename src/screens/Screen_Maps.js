@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -8,54 +8,35 @@ import {
   BackHandler,
   ActivityIndicator,
 } from 'react-native';
+
 import MapView, {
-  Circle,
   Marker,
-  Polyline,
   MarkerAnimated,
   AnimatedRegion,
 } from 'react-native-maps';
 
 import Geolocation from 'react-native-geolocation-service';
 // import GetLocation from 'react-native-get-location'
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import {responsiveWidth} from 'react-native-responsive-dimensions';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { responsiveWidth } from 'react-native-responsive-dimensions';
 
 import MapViewDirections from 'react-native-maps-directions';
 
-export default function Screen_Maps({navigation}) {
+// import socket from '../components/SocketService';
+import  { connectToSocket } from '../components/SocketService';
+
+
+
+export default function Screen_Maps({ navigation }) {
   const mapref = useRef(null);
   const markerref = useRef(null);
+  // const [socket, setSocket] = useState()
 
   const [myLocation, setmyLocation] = useState();
   const [PermissionGranted, setPermissionGranted] = useState(false);
   const [origin, setOrigin] = useState();
   const [destination, setDestination] = useState();
 
-  // const [Region, setRegion] = useState(null)
-  // const [MLat, setMLat] = useState(33)
-  // const [MLong, setMLong] = useState(33)
-
-  // const [markerList, setMarkerList] = useState([
-  //   {
-  //     latitude: 24.806327,
-  //     longitude: 67.046672,
-  //     title: 'Team A',
-  //     description: 'my current location'
-  //   },
-  //   {
-  //     latitude: 24.847379,
-  //     longitude: 67.015945,
-  //     title: 'Team A',
-  //     description: 'my current location'
-  //   },
-  //   {
-  //     latitude: 24.885537,
-  //     longitude: 67.081176,
-  //     title: 'Team A',
-  //     description: 'my current location'
-  //   },
-  // ])
 
   function handleBackButtonClick() {
     navigation.navigate('Screen_Home2');
@@ -72,8 +53,20 @@ export default function Screen_Maps({navigation}) {
     };
   }, []);
 
+  
+  useEffect(()=>{
+    // const socket = connectToSocket();
+    
+    // socket.emit('newMarkers', {hey: 'dagaf'});
 
+    // return(()=>{
+    //   socket.disconnect();
+    // })
+  },[])
 
+  
+  
+  
   const requestLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -97,31 +90,47 @@ export default function Screen_Maps({navigation}) {
       console.log('demnit');
     }
   };
-
-
-
+  
+  
+  
   useEffect(() => {
+    const socket = connectToSocket();
+    socket.on('bd',(data)=>{
+      console.log(data)
+    })
+
     requestLocationPermission();
-
+    
+   
+  
+  
+      // socket.emit('newMarker', {hey: 'daga'});
+  
+   
     // getCurrentLocation();
-      const watchId = Geolocation.watchPosition(
-        position => {
-          // setTimeout(()=>{
-            if(mapref.current != null){
-              setmyLocation(position.coords);
+    const watchId = Geolocation.watchPosition(
+      position => {
+        
+        
+        // setTimeout(()=>{
+          if (mapref.current != null) {
+            setmyLocation(position.coords);
 
-              markerref?.current.animateMarkerToCoordinate(
-                {
-                  latitude: position.coords.latitude,
-                  longitude: position.coords.longitude,
-                },
-                7000,
-                );
-              }
+            // const socket= connectToSocket();
+            socket.emit('shareCoordinates', {hey: position.coords});
+            
+            markerref?.current.animateMarkerToCoordinate(
+              {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+              },
+              7000,
+              );
+            }
           console.log(position);
           // console.log(myLocation)
           // }, 0);
-
+          
           // console.log(position)
           // moveToLocation(position?.coords?.latitude, position?.coords?.longitude)
         },
@@ -136,24 +145,19 @@ export default function Screen_Maps({navigation}) {
           // interval: 1000,
           distanceFilter: 1,
         },
-      );
-      return () => {
-        Geolocation.clearWatch(watchId);
-      };
-    
+        );
+        return () => {
+          Geolocation.clearWatch(watchId);
+          // socket.disconnect();
+        };
+
   }, []);
 
-  // useEffect(()=>{
-  //     if(myLocation !== undefined){
-  //   setInterval(()=>{
-  //     moveToLocation(myLocation.Latitude, myLocation.longitude)
-  //   }, 3000)
-  // }
-  // },[])
+
 
   const moveToLocation = async (latitude, longitude) => {
     console.log('full full' + latitude + '  ' + longitude);
-     mapref?.current?.animateToRegion(
+    mapref?.current?.animateToRegion(
       {
         latitude: latitude,
         longitude: longitude,
@@ -178,31 +182,16 @@ export default function Screen_Maps({navigation}) {
       //     console.log(error);
       //   },
       //   {
-        //     enableHighAccuracy: true,
-        //     timeout: 15000,
-        //     maximumAge: 1000,
-        //   },
-        // );
-      
-        console.log('entered get location method');
-         moveToLocation(latitude, longitude);
-   
-    }
+      //     enableHighAccuracy: true,
+      //     timeout: 15000,
+      //     maximumAge: 1000,
+      //   },
+      // );
 
-    // GetLocation.getCurrentPosition({
-    //   enableHighAccuracy: true,
-    //   timeout: 60000,
-    // })
-    //   .then(location => {
-    //     setmyLocation(location)
-    //     console.log("My location is :" + JSON.stringify(location));
-    //     // console.log("hey"+myLocation.longitude)
-    //     // moveToLocation(location.latitude, location.longitude)
-    //   })
-    //   .catch(error => {
-    //     const { code, message } = error;
-    //     console.warn(code, message);
-    //   })
+      console.log('entered get location method');
+      moveToLocation(latitude, longitude);
+
+    }
   };
 
   // if (!PermissionGranted) { return <View><Text style={{ color: 'black' }}>Please allow location permissions</Text></View> }
@@ -219,10 +208,10 @@ export default function Screen_Maps({navigation}) {
             marginHorizontal: responsiveWidth(2),
             color: 'black',
           }}>
-          <View style={{flex: 0.5}}>
+          <View style={{ flex: 0.5 }}>
             <GooglePlacesAutocomplete
               styles={{
-                description: {color: 'black'},
+                description: { color: 'black' },
                 textInput: {
                   color: 'black',
                   borderRadius: 0,
@@ -230,7 +219,7 @@ export default function Screen_Maps({navigation}) {
                 },
                 // poweredContainer: { display: 'none' },
                 // separator: { height: 4, borderColor: 'blue', backgroundColor: 'transparent'},
-                row: {borderRadius: 0},
+                row: { borderRadius: 0 },
               }}
               textInputProps={{
                 placeholderTextColor: 'black',
@@ -250,9 +239,9 @@ export default function Screen_Maps({navigation}) {
                 console.log(
                   JSON.stringify(
                     'Latitude: ' +
-                      details.geometry.location.lat +
-                      ' Longitude: ' +
-                      details.geometry.location.lng,
+                    details.geometry.location.lat +
+                    ' Longitude: ' +
+                    details.geometry.location.lng,
                   ),
                 );
                 moveToLocation(origin.latitude, origin.longitude);
@@ -268,10 +257,10 @@ export default function Screen_Maps({navigation}) {
             />
           </View>
 
-          <View style={{flex: 0.5}}>
+          <View style={{ flex: 0.5 }}>
             <GooglePlacesAutocomplete
               styles={{
-                description: {color: 'black'},
+                description: { color: 'black' },
                 textInput: {
                   color: 'black',
                   borderRadius: 0,
@@ -279,7 +268,7 @@ export default function Screen_Maps({navigation}) {
                 },
                 // poweredContainer: { display: 'none' },
                 // separator: { height: 4, borderColor: 'blue', backgroundColor: 'transparent'},
-                row: {borderRadius: 0},
+                row: { borderRadius: 0 },
               }}
               textInputProps={{
                 placeholderTextColor: 'black',
@@ -299,9 +288,9 @@ export default function Screen_Maps({navigation}) {
                 console.log(
                   JSON.stringify(
                     'Latitude: ' +
-                      details.geometry.location.lat +
-                      ' Longitude: ' +
-                      details.geometry.location.lng,
+                    details.geometry.location.lat +
+                    ' Longitude: ' +
+                    details.geometry.location.lng,
                   ),
                 );
                 moveToLocation(destination.latitude, destination.longitude);
@@ -328,7 +317,7 @@ export default function Screen_Maps({navigation}) {
           //   longitudeDelta: 0.001,
           // }}
           region={
-         {
+            {
               latitude: 24.860735,
               longitude: 67.001137,
               latitudeDelta: 0.1,
@@ -338,23 +327,23 @@ export default function Screen_Maps({navigation}) {
           onRegionChange={x => {
             // console.log(x)
           }}
-          // showsUserLocation={true}
-          // showsMyLocationButton={true}
+        // showsUserLocation={true}
+        // showsMyLocationButton={true}
         >
           {/* {myLocation != undefined ? ( */}
-            <MarkerAnimated
-              ref={markerref}
-              coordinate={
-                new AnimatedRegion({
-                  latitude: myLocation?.latitude,
-                  longitude: myLocation?.longitude,
-                  latitudeDelta: 0.1,
-                  longitudeDelta: 0.1,
-                })
-              }
-              // title={value.title}
-              // description={value.description}
-            />
+          <MarkerAnimated
+            ref={markerref}
+            coordinate={
+              new AnimatedRegion({
+                latitude: myLocation?.latitude,
+                longitude: myLocation?.longitude,
+                latitudeDelta: 0.1,
+                longitudeDelta: 0.1,
+              })
+            }
+          // title={value.title}
+          // description={value.description}
+          />
           {/* ) : null} */}
 
           {origin !== undefined ? (
@@ -363,8 +352,8 @@ export default function Screen_Maps({navigation}) {
                 latitude: origin.latitude,
                 longitude: origin.longitude,
               }}
-              // title={value.title}
-              // description={value.description}
+            // title={value.title}
+            // description={value.description}
             />
           ) : null}
 
@@ -374,8 +363,8 @@ export default function Screen_Maps({navigation}) {
                 latitude: destination.latitude,
                 longitude: destination.longitude,
               }}
-              // title={value.title}
-              // description={value.description}
+            // title={value.title}
+            // description={value.description}
             />
           ) : null}
 
@@ -429,12 +418,12 @@ export default function Screen_Maps({navigation}) {
         {/* </View> */}
 
         <Pressable
-        disabled={myLocation==undefined? true: false}
+          disabled={myLocation == undefined ? true : false}
           onPress={() => {
-            if(myLocation!=undefined){
+            if (myLocation != undefined) {
               getCurrentLocation(myLocation.latitude, myLocation.longitude);
             }
-            else{
+            else {
               console.log("waitin for myLocxation")
             }
           }}
@@ -446,8 +435,8 @@ export default function Screen_Maps({navigation}) {
             position: 'absolute',
             bottom: 34,
           }}>
-          {myLocation==undefined? <ActivityIndicator size='large' color="#fff" /> : 
-          <Text style={{color: 'white'}}>Get Current Location</Text>
+          {myLocation == undefined ? <ActivityIndicator size='large' color="#fff" /> :
+            <Text style={{ color: 'white' }}>Get Current Location</Text>
           }
         </Pressable>
       </View>

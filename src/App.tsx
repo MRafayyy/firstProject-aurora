@@ -73,19 +73,6 @@ import ip from './screens/IPaddress';
 import UserIdContext, { UserIdProvider } from './UserIdContext'
 
 
-const demnit = ()=>{
-  //  OneSignal.Debug.setLogLevel(LogLevel.Verbose);
-  //  OneSignal.initialize('a24118e0-d18b-4834-9dce-adba4b8a03d3');
-  //  // OneSignal.Notifications.requestPermission(true);
-
-  //  OneSignal.Notifications.requestPermission(true);
-
-  // // Method for listening for notification clicks
-  // OneSignal.Notifications.addEventListener('click', (event) => {
-  //   console.log('OneSignal: notification clicked:', event);
-  // });
-}
-
 function App() {
 
   // const {setUserId} = useContext(UserIdContext)
@@ -94,30 +81,29 @@ const [isLoggedIn, setisLoggedIn] = useState(false)
 
     // const [isConnected, setisConnected] = useState(false)
     const isConnected = useConnectionStatus();
+
+
+
+
+//     const socket = SocketIOClient('http://192.168.0.107:3000');
+
+// socket.on('connect', () => {
+//   console.log('Connected to server');
+// });
+
+// socket.on('disconnect', () => {
+//   console.log('Disconnected from server');
+// });
+
+// socket.on('chat message', (msg) => {
+//   console.log('New message:', msg);
+// });
+
+// const sendMessage = (msg) => {
+//   socket.emit('chat message', msg);
+// };
     
-useEffect(()=>{
-demnit();
-  // OneSignal.Debug.setLogLevel(LogLevel.Verbose);
-  // OneSignal.initialize('a24118e0-d18b-4834-9dce-adba4b8a03d3');
-  // OneSignal.Notifications.requestPermission(true);
-  // OneSignal.initialize("a24118e0-d18b-4834-9dce-adba4b8a03d3");
-  
-},[])
 
-
-    // useEffect(() => {
-   
-    //     const unsubscribe = NetInfo.addEventListener((state) => {
-    //       // console.log(state);
-    //       console.log("Connection type", state.type);
-    //       console.log("Is connected?", state.isConnected);
-    //       setisConnected(state.isConnected)
-    //     });
-    //     return () => {
-    //       unsubscribe();
-    //     };
-
-    // }, [])
 
 
   useEffect(()=>{
