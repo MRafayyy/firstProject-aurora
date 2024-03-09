@@ -1,8 +1,9 @@
 import React from 'react';
 import socketIOClient from 'socket.io-client';
+import ip from '../screens/IPaddress';
 
 // Exporting the socket instance directly
-const socket = socketIOClient('http://192.168.0.107:3000');
+const socket = socketIOClient(ip);
 
 export const connectToSocket = () => {
     socket.on('connect', () => {

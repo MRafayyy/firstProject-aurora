@@ -13,64 +13,45 @@ import NetInfo from "@react-native-community/netinfo";
 import { addEventListener } from "@react-native-community/netinfo";
 
 import messaging from '@react-native-firebase/messaging'
-import { TransitionSpecs } from '@react-navigation/stack';
+
 import { TransitionPresets } from '@react-navigation/stack';
 
 
 import {
   StyleSheet,
-  Text,
-  View,
-  Pressable,
-  Alert,
-  useColorScheme,
-  Dimensions
+
 } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme, } from '@react-navigation/native';
-// import { createStackNavigator } from '@react-navigation/stack';
-// import {createBottomTabNavigator} from '@react-navigation/stack';
-// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import * as Keychain from 'react-native-keychain';
-import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navigation';
 import { Header, createStackNavigator } from '@react-navigation/stack';
 
 const Stack = createStackNavigator()
-// const Tab = createBottomTabNavigator();
-// const Drawer  = createDrawerNavigator();
-// const Tab = createMaterialBottomTabNavigator();
-import { TabView, SceneMap } from 'react-native-tab-view';
+
 
 
 
 import Screen_Login from './screens/Screen_Login';
 import Screen_NadraVerification from './screens/Screen_NadraVerification';
 import Screen_Registration from './screens/Screen_Registration';
-// import { default as Home } from './screens/Screen_Home';
+
 import Screen_Splash from './screens/Screen_Splash';
-import Screen_Home2 from './screens/Screen_Home2';
+
 import Screen_ForgotPassword from './screens/Screen_ForgotPassword';
-import Screen_FirebaseNotif from './screens/Screen_FirebaseNotif';
+
 import PushNotification from "react-native-push-notification";
 import Screen_Decider from './screens/Screen_Decider';
-import {default as Settings} from './screens/Screen_Settings'
-import {default as Contacts} from './screens/Screen_SearchContacts';
+
 import HomeTabs from './HomeTabs';
-import { RevealFromBottomAndroid } from '@react-navigation/stack/lib/typescript/src/TransitionConfigs/TransitionPresets';
-// import { LogLevel, OneSignal } from 'react-native-onesignal';
 
-// import PushNotification from 'react-native-push-notification';
-
-// import NoInternet from './components/NoInternet';
 import {useConnectionStatus} from './components/NoInternet'
 
-import SocketIOClient from 'socket.io-client'
-import { io } from 'socket.io-client';
-import ip from './screens/IPaddress';
+
 import UserIdContext, { UserIdProvider } from './UserIdContext'
+
+import { connectToSocket } from './components/SocketService';
 
 
 function App() {
@@ -83,7 +64,7 @@ const [isLoggedIn, setisLoggedIn] = useState(false)
     const isConnected = useConnectionStatus();
 
 
-
+    const socket = connectToSocket();
 
 //     const socket = SocketIOClient('http://192.168.0.107:3000');
 
@@ -197,14 +178,13 @@ const styles = StyleSheet.create({
           backgroundColor: 'black',
           alignItems: 'center',
           justifyContent: 'center'
-          // marginBottom: "13%"
         },
   text: {
           margin: 10,
           fontSize: 25,
           fontWeight: '600',
           color: 'white',
-          // marginBottom: 20
+       
         }
  
 });

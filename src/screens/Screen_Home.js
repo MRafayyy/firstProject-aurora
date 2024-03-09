@@ -28,6 +28,7 @@ import { io } from 'socket.io-client';
 import { useRoute } from '@react-navigation/native';
 // import {initializeSocket} from '../components/sockets'
 import UserIdContext from "../UserIdContext";
+import socket from "../components/SocketService";
 
 
 // import { getSocket } from "../components/sockets";
@@ -43,6 +44,18 @@ export default function Screen_Home({ navigation, route }) {
 
     const { userId, setUserId } = useContext(UserIdContext)
     console.log(userId + "huraaa")
+
+
+useEffect(()=>{
+    // socket.on('bd',(data)=>{
+    //     console.log("lalala")
+    // })
+
+    // return(()=>{
+    //     // socket.close();
+    // })
+},[])
+
 
     //    const socketI = io(`${ip}/userrr`,{
     //         auth: {Token: userId}
@@ -131,6 +144,7 @@ export default function Screen_Home({ navigation, route }) {
     }
 
     useEffect(() => {
+        
         BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
         return () => {
             BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);

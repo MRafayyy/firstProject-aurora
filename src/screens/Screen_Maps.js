@@ -22,7 +22,7 @@ import { responsiveWidth } from 'react-native-responsive-dimensions';
 
 import MapViewDirections from 'react-native-maps-directions';
 
-// import socket from '../components/SocketService';
+import socket from '../components/SocketService';
 import  { connectToSocket } from '../components/SocketService';
 
 
@@ -94,9 +94,9 @@ export default function Screen_Maps({ navigation }) {
   
   
   useEffect(() => {
-    const socket = connectToSocket();
+    // const socket = connectToSocket();
     socket.on('bd',(data)=>{
-      console.log(data)
+      console.log("sooo")
     })
 
     requestLocationPermission();
@@ -149,6 +149,7 @@ export default function Screen_Maps({ navigation }) {
         return () => {
           Geolocation.clearWatch(watchId);
           // socket.disconnect();
+          // socket.close();
         };
 
   }, []);
@@ -170,7 +171,7 @@ export default function Screen_Maps({ navigation }) {
 
 
   const getCurrentLocation = (latitude, longitude) => {
-    console.log('entering get location method');
+    // console.log('entering get location method');
     if (PermissionGranted) {
       // Geolocation.getCurrentPosition(
       //   position => {
@@ -188,7 +189,7 @@ export default function Screen_Maps({ navigation }) {
       //   },
       // );
 
-      console.log('entered get location method');
+      // console.log('entered get location method');
       moveToLocation(latitude, longitude);
 
     }
