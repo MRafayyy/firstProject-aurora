@@ -30,12 +30,14 @@ import  { connectToSocket } from '../components/SocketService';
 export default function Screen_Maps({ navigation }) {
   const mapref = useRef(null);
   const markerref = useRef(null);
+  const marker2ref = useRef(null);
   // const [socket, setSocket] = useState()
 
   const [myLocation, setmyLocation] = useState();
   const [PermissionGranted, setPermissionGranted] = useState(false);
   const [origin, setOrigin] = useState();
   const [destination, setDestination] = useState();
+  const [AnotherUsersLocation, setAnotherUsersLocation]= useState();
 
 
   function handleBackButtonClick() {
@@ -55,13 +57,29 @@ export default function Screen_Maps({ navigation }) {
 
   
   useEffect(()=>{
-    // const socket = connectToSocket();
     
-    // socket.emit('newMarkers', {hey: 'dagaf'});
+    socket.on('bd', (data)=>{
+      console.log("nahh")
+      if (mapref.current != null) {
+        setAnotherUsersLocation(data.latlng.hey)
+        // setTimeout(()=>{
+          // console.log(data)
+          // console.log("entered: "+data.latlng.hey.latitude)
 
-    // return(()=>{
-    //   socket.disconnect();
-    // })
+          marker2ref?.current.animateMarkerToCoordinate(
+            {
+              latitude: data.latlng.hey.latitude,
+              longitude: data.latlng.hey.longitude,
+            },
+            7000,
+            );
+          // },0)
+        }
+    });
+
+    return(()=>{
+      socket.off('bd');
+    })
   },[])
 
   
@@ -94,15 +112,11 @@ export default function Screen_Maps({ navigation }) {
   
   
   useEffect(() => {
-    // const socket = connectToSocket();
-    socket.on('bd',(data)=>{
-      console.log("sooo")
-    })
+    // socket.on('bd',(data)=>{
+    //   console.log("sooo")
+    // })
 
     requestLocationPermission();
-    
-   
-  
   
       // socket.emit('newMarker', {hey: 'daga'});
   
@@ -110,28 +124,23 @@ export default function Screen_Maps({ navigation }) {
     // getCurrentLocation();
     const watchId = Geolocation.watchPosition(
       position => {
-        
-        
         // setTimeout(()=>{
           if (mapref.current != null) {
             setmyLocation(position.coords);
-
-            // const socket= connectToSocket();
-            socket.emit('shareCoordinates', {hey: position.coords});
+            // socket.emit('shareCoordinates', {hey: position.coords});
             
-            markerref?.current.animateMarkerToCoordinate(
-              {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-              },
-              7000,
-              );
+            // setTimeout(()=>{
+
+              markerref?.current.animateMarkerToCoordinate(
+                {
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude,
+                },
+                7000,
+                );
+              // },0)
             }
           console.log(position);
-          // console.log(myLocation)
-          // }, 0);
-          
-          // console.log(position)
           // moveToLocation(position?.coords?.latitude, position?.coords?.longitude)
         },
         error => {
@@ -331,8 +340,11 @@ export default function Screen_Maps({ navigation }) {
         // showsUserLocation={true}
         // showsMyLocationButton={true}
         >
-          {/* {myLocation != undefined ? ( */}
+       
+          {/* ------------------------------------------------ */}
           <MarkerAnimated
+          pinColor={'blue'}
+          
             ref={markerref}
             coordinate={
               new AnimatedRegion({
@@ -345,7 +357,22 @@ export default function Screen_Maps({ navigation }) {
           // title={value.title}
           // description={value.description}
           />
-          {/* ) : null} */}
+    {/* ------------------------------------------------ */}
+          <MarkerAnimated
+          pinColor={'orange'}
+            ref={marker2ref}
+            coordinate={
+              new AnimatedRegion({
+                latitude: AnotherUsersLocation?.latitude,
+                longitude: AnotherUsersLocation?.longitude,
+                latitudeDelta: 0.1,
+                longitudeDelta: 0.1,
+              })
+            }
+            // title={"hey"}
+          // description={"hey there"}
+          />
+            {/* ------------------------------------------------ */}
 
           {origin !== undefined ? (
             <Marker
@@ -419,7 +446,7 @@ export default function Screen_Maps({ navigation }) {
         {/* </View> */}
 
         <Pressable
-          disabled={myLocation == undefined ? true : false}
+          // disabled={myLocation == undefined ? true : false}
           onPress={() => {
             if (myLocation != undefined) {
               getCurrentLocation(myLocation.latitude, myLocation.longitude);
@@ -436,9 +463,9 @@ export default function Screen_Maps({ navigation }) {
             position: 'absolute',
             bottom: 34,
           }}>
-          {myLocation == undefined ? <ActivityIndicator size='large' color="#fff" /> :
+          {/* {myLocation == undefined ? <ActivityIndicator size='large' color="#fff" /> : */}
             <Text style={{ color: 'white' }}>Get Current Location</Text>
-          }
+          {/* } */}
         </Pressable>
       </View>
     </>
