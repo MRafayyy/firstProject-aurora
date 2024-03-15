@@ -3,7 +3,11 @@ import socketIOClient from 'socket.io-client';
 import ip from '../screens/IPaddress';
 
 // Exporting the socket instance directly
-const socket = socketIOClient(ip);
+const socket = socketIOClient(ip, {
+    auth: {
+        userType: 'user'
+    }
+});
 
 export const connectToSocket = () => {
     socket.on('connect', () => {

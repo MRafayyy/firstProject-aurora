@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -24,6 +24,7 @@ import MapViewDirections from 'react-native-maps-directions';
 
 import socket from '../components/SocketService';
 import  { connectToSocket } from '../components/SocketService';
+import UserIdContext from '../UserIdContext';
 
 
 
@@ -32,6 +33,7 @@ export default function Screen_Maps({ navigation }) {
   const markerref = useRef(null);
   const marker2ref = useRef(null);
   // const [socket, setSocket] = useState()
+  const {userId}  = useContext(UserIdContext);
 
   const [myLocation, setmyLocation] = useState();
   const [PermissionGranted, setPermissionGranted] = useState(false);
@@ -56,31 +58,30 @@ export default function Screen_Maps({ navigation }) {
   }, []);
 
   
-  useEffect(()=>{
+  // useEffect(()=>{
     
-    socket.on('bd', (data)=>{
-      console.log("nahh")
-      if (mapref.current != null) {
-        setAnotherUsersLocation(data.latlng.hey)
-        // setTimeout(()=>{
-          // console.log(data)
-          // console.log("entered: "+data.latlng.hey.latitude)
+  //   socket.on('bd', (data)=>{
+  //     console.log("nahh")
+  //     if (mapref.current != null) {
+  //       setAnotherUsersLocation(data)
+  
+  //         console.log("entered: "+data.latitude)
 
-          marker2ref?.current.animateMarkerToCoordinate(
-            {
-              latitude: data.latlng.hey.latitude,
-              longitude: data.latlng.hey.longitude,
-            },
-            7000,
-            );
-          // },0)
-        }
-    });
+  //         marker2ref?.current.animateMarkerToCoordinate(
+  //           {
+  //             latitude: data.latlng.hey.latitude,
+  //             longitude: data.latlng.hey.longitude,
+  //           },
+  //           7000,
+  //           );
+        
+  //       }
+  //   });
 
-    return(()=>{
-      socket.off('bd');
-    })
-  },[])
+  //   return(()=>{
+  //     socket.off('bd');
+  //   })
+  // },[])
 
   
   
@@ -127,7 +128,7 @@ export default function Screen_Maps({ navigation }) {
         // setTimeout(()=>{
           if (mapref.current != null) {
             setmyLocation(position.coords);
-            // socket.emit('shareCoordinates', {hey: position.coords});
+            socket.emit('shareCoordinates', {userId: userId.userId, Location: position.coords});
             
             // setTimeout(()=>{
 
