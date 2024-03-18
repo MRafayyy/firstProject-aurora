@@ -17,12 +17,13 @@ import { Screen } from "react-native-screens";
 import Screen_Home from "./Screen_Home";
 import UserIdContext from "../UserIdContext";
 import EncryptedStorage from 'react-native-encrypted-storage'
+import { connectToSocket } from "../components/SocketService";
 
 
 
 export default function Screen_Splash({ navigation, route }) {
 
-    const { setUserId } = useContext(UserIdContext);
+    const {userId, setUserId } = useContext(UserIdContext);
     // setTimeout(()=>{
 
     //     // const Forward = ()=>{
@@ -68,7 +69,8 @@ export default function Screen_Splash({ navigation, route }) {
                     // credentials = JSON.parse(credentials.username)
                     setUserId({userId: credentials.username, mongoId})
                     navigation.navigate(HomeTabs, { screen: Screen_Home, params: { userId: credentials.username}})
-                    
+                   const socket = connectToSocket(credentials.username, mongoId)
+                    socket.emit('LoggedIn',{ userId: credentials.username, mongoId: mongoId} )
                 }
                 else if (response.success === false) {
                     

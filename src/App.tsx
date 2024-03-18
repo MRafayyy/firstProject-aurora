@@ -51,7 +51,7 @@ import {useConnectionStatus} from './components/NoInternet'
 
 import UserIdContext, { UserIdProvider } from './UserIdContext'
 
-import { connectToSocket } from './components/SocketService';
+// import { connectToSocket } from './components/SocketService';
 
 
 function App() {
@@ -64,25 +64,9 @@ const [isLoggedIn, setisLoggedIn] = useState(false)
     const isConnected = useConnectionStatus();
 
 
-    const socket = connectToSocket();
+    // const socket = connectToSocket();
 
-//     const socket = SocketIOClient('http://192.168.0.107:3000');
 
-// socket.on('connect', () => {
-//   console.log('Connected to server');
-// });
-
-// socket.on('disconnect', () => {
-//   console.log('Disconnected from server');
-// });
-
-// socket.on('chat message', (msg) => {
-//   console.log('New message:', msg);
-// });
-
-// const sendMessage = (msg) => {
-//   socket.emit('chat message', msg);
-// };
     
 
 

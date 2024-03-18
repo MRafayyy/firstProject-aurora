@@ -43,13 +43,14 @@ import * as Keychain from 'react-native-keychain';
 import ip from './IPaddress';
 import { useConnectionStatus } from "../components/NoInternet";
 import UserIdContext from "../UserIdContext";
+import { connectToSocket } from "../components/SocketService";
 // import { ScrollView } from "react-native-gesture-handler";
 
 // const storage = new MMKVLoader().initialize();
 export default function Screen_Login({ navigation, route }) {
 
     // console.log(route.params)
-    const { setUserId } = useContext(UserIdContext);
+    const {userId, setUserId } = useContext(UserIdContext);
 
 
     // const [user, setUser] = useMMKVStorage('user', storage, 'robert');
@@ -224,6 +225,8 @@ export default function Screen_Login({ navigation, route }) {
                 setUsernameError_msg([])
                 setPasswordError_msg([])
                 setLoader(false)
+                const socket = connectToSocket(UsernameText.trim(), response.mongoId)
+                socket.emit('LoggedIn',{ userId: UsernameText.trim(), mongoId: response.mongoId} )
             }
 
             else if (response.success === false) {
