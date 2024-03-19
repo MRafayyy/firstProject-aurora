@@ -4,9 +4,14 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-nat
 import ip from '../screens/IPaddress'
 import UserIdContext from '../UserIdContext'
 
-const MyFriends = ({ item, friendRemoved, setfriendRemoved }) => {
+const MyFriends = ({ item, friendRemoved, setfriendRemoved, navigation }) => {
     
 // const [friendRemoved, setfriendRemoved] = useState(false)
+const GoToFriendProfilePage = () =>{
+    navigation.navigate('Screen_FriendProfile', {item: item})
+  }
+
+
     const {userId} = useContext(UserIdContext)
 
     const removeFriend = async (currentUserId, selectedUserId) => {
@@ -34,7 +39,7 @@ const MyFriends = ({ item, friendRemoved, setfriendRemoved }) => {
 
 
     return (
-        <Pressable style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: responsiveHeight(1), backgroundColor: 'white' }}>
+        <Pressable onPress={GoToFriendProfilePage} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: responsiveHeight(1), backgroundColor: 'white' }}>
 
             <Image style={{ width: responsiveWidth(14), height: responsiveWidth(14), borderRadius: 30 }} source={require('../../assets/images/womenAvatar.jpg')} resizeMode='cover' />
 

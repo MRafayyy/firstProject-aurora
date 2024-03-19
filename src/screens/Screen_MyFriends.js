@@ -11,7 +11,7 @@ import FriendRequests from "../components/FriendRequests";
 import { responsiveWidth } from "react-native-responsive-dimensions";
 import MyFriends from "../components/MyFriends";
 
-export default function Screen_MyFriends() {
+export default function Screen_MyFriends({navigation}) {
 
     const { userId } = useContext(UserIdContext)
     const [friends, setFriends] = useState([])
@@ -89,7 +89,7 @@ export default function Screen_MyFriends() {
                     data={friends}
                     renderItem={({ item }) => {
                         return (
-                            <MyFriends item={item} friendRemoved={friendRemoved} setfriendRemoved={setfriendRemoved} />
+                            <MyFriends navigation={navigation} item={item} friendRemoved={friendRemoved} setfriendRemoved={setfriendRemoved} />
                         )
                     }}
                     keyExtractor={(item, index) => index}

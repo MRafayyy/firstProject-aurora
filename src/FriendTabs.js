@@ -26,6 +26,8 @@ import Screen_Friends from './screens/Screen_Friends';
 import Screen_SearchContacts from './screens/Screen_SearchContacts';
 import { responsiveScreenWidth } from 'react-native-responsive-dimensions';
 import Screen_MyFriends from './screens/Screen_MyFriends';
+import Screen_FriendProfile from './screens/Screen_FriendProfile';
+import Screen_MapTracking from './screens/Screen_MapTracking';
 
 
 export default function FriendTabs() {
@@ -70,7 +72,16 @@ export default function FriendTabs() {
                     headerShown: true,
                     headerTitle: 'Friends'
                 }} />
+
+                <Stack.Screen name="Screen_FriendProfile" component={Screen_FriendProfile} options={{
+                    headerShown: true,
+                    headerTitle: 'Info'
+                }} />
                 
+                <Stack.Screen name="Screen_MapTracking" component={Screen_MapTracking} options={{
+                    headerShown: false,
+                    headerTitle: ''
+                }} />
             </Stack.Navigator>
         </>
     )
