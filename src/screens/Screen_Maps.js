@@ -103,6 +103,7 @@ export default function Screen_Maps({navigation}) {
         setmyLocation(position.coords);
         socket.emit('shareCoordinates', {
           userId: userId.userId,
+          mongoId: userId.mongoId,
           Location: position.coords,
         });
 

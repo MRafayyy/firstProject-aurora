@@ -7,6 +7,7 @@ import UserIdContext from '../UserIdContext'
 const MyFriends = ({ item, friendRemoved, setfriendRemoved, navigation }) => {
     
 // const [friendRemoved, setfriendRemoved] = useState(false)
+console.log(item)
 const GoToFriendProfilePage = () =>{
     navigation.navigate('Screen_FriendProfile', {item: item})
   }

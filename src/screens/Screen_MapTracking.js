@@ -25,8 +25,10 @@ import MapViewDirections from 'react-native-maps-directions';
 import socket from '../components/SocketService';
 
 export default function Screen_MapTracking({navigation, route}) {
-  const userId = route.params.item;
+  // const userId = route.params.item;
+  const mongoId = route.params.item;
   // console.log(userId)
+  console.log(mongoId)
 
   const [showMap, setShowMap] = useState(false);
   const mapref = useRef(null);
@@ -63,7 +65,8 @@ export default function Screen_MapTracking({navigation, route}) {
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
         },
-      );
+        );
+        console.log(granted)
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         setPermissionGranted(true);
         // getCurrentLocation();
@@ -79,7 +82,10 @@ export default function Screen_MapTracking({navigation, route}) {
   useEffect(() => {
     requestLocationPermission();
 
-    socket.on(userId, data => {
+    // socket.on(userId, data => {
+    // socket.on('bd', data => {
+    socket.on(mongoId, data => {
+      console.log("hey"+mongoId)
       setShowMap(true);
       console.log('receiving user coordinates');
       setmyLocation(data.Location);
@@ -97,7 +103,7 @@ export default function Screen_MapTracking({navigation, route}) {
     });
 
     return () => {
-      socket.off(userId);
+      socket.off(mongoId);
     };
   }, []);
 
@@ -186,6 +192,8 @@ export default function Screen_MapTracking({navigation, route}) {
     }
   };
   if (showMap === false) {
+    console.log("why shomap false")
+   
     return(
       <View style={styles.body}>
       <ActivityIndicator size='large' color="#00000" style={{justifyContent:'center', alignItems:'center'}} />
@@ -197,6 +205,7 @@ export default function Screen_MapTracking({navigation, route}) {
     //   </View>
     // );
   }
+  else
 
   return (
     <>

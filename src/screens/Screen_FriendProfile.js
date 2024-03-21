@@ -5,9 +5,10 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-nat
 export default function Screen_FriendProfile({navigation,route}) {
 
     const item = route.params.item
+    console.log(item._id)
     // console.log(item.is_online)
     const GoToTrackingPage = () =>{
-        navigation.navigate('Screen_MapTracking', {item: item.userId})
+        navigation.navigate('Screen_MapTracking', {item: item._id})
       }
 
 
