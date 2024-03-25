@@ -95,6 +95,21 @@ export default function Screen_Maps({navigation}) {
     }
   };
 
+  const animateTheMarker = async(lat,lng)=>{
+    if (mapref.current != null) {
+      // console.log("animateTheMarker clicked!")
+      markerref?.current.animateMarkerToCoordinate(
+        {
+          latitude: lat,
+          longitude: lng,
+          // latitude: position.coords.latitude,
+          // longitude: position.coords.longitude,
+        },
+        7000,
+      );
+    }
+  }
+
   useEffect(() => {
     requestLocationPermission();
 
@@ -107,15 +122,9 @@ export default function Screen_Maps({navigation}) {
           Location: position.coords,
         });
 
-        if (mapref.current != null) {
-          markerref?.current.animateMarkerToCoordinate(
-            {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-            },
-            7000,
-          );
-        }
+        
+      animateTheMarker(position.coords.latitude, position.coords.longitude)
+
         console.log(position);
         // moveToLocation(position?.coords?.latitude, position?.coords?.longitude)
       },
@@ -409,7 +418,7 @@ export default function Screen_Maps({navigation}) {
         {/* </View> */}
 
         <Pressable
-          // disabled={myLocation == undefined ? true : false}
+          // disabled={myLocation === undefined || null ? true : false}
           onPress={() => {
             if (myLocation != undefined) {
               getCurrentLocation(myLocation.latitude, myLocation.longitude);
@@ -418,16 +427,48 @@ export default function Screen_Maps({navigation}) {
             }
           }}
           style={{
-            width: 60,
-            backgroundColor: 'blue',
+            width:responsiveWidth(35),
+            backgroundColor: myLocation === undefined || null ? 'red' : 'green',
+            height: 40,
+            alignSelf: 'center',
+            position: 'absolute',
+            justifyContent: 'center',
+            alignItems: 'center',
+            bottom: 34,
+            left: 50,
+            borderRadius: 50
+          }}>
+          {/* {myLocation == undefined ? <ActivityIndicator size='large' color="#fff" /> : */}
+          <Text style={{color: 'white'}}>My Location</Text>
+          {/* } */}
+        </Pressable>
+
+        <Pressable
+          // disabled={myLocation === undefined || null ? true : false}
+          onPress={() => {
+            // if (myLocation != undefined) {
+            //   getCurrentLocation(myLocation.latitude, myLocation.longitude);
+            // } else {
+            //   console.log('waitin for myLocxation');
+            // }
+            animateTheMarker(myLocation.latitude, myLocation.longitude)
+            console.log("animateTheMarker Clicked!!!")
+          }}
+          style={{
+            width: responsiveWidth(35),
+            backgroundColor: markerref == undefined || null ? 'red': 'green',
             height: 40,
             alignSelf: 'center',
             position: 'absolute',
             bottom: 34,
+            right: 50,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 50
           }}>
-          {/* {myLocation == undefined ? <ActivityIndicator size='large' color="#fff" /> : */}
-          <Text style={{color: 'white'}}>Current Location</Text>
-          {/* } */}
+          {myLocation == undefined || null ? <ActivityIndicator size='large' color="#fff" /> : 
+          <Text style={{color: 'white'}}>Status</Text>
+          }
         </Pressable>
       </View>
     </>
