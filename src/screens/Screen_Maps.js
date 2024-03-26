@@ -95,20 +95,22 @@ export default function Screen_Maps({navigation}) {
     }
   };
 
-  const animateTheMarker = async(lat,lng)=>{
-    if (mapref.current != null) {
+  const animateTheMarker = async (lat, lng) => {
+    if (mapref.current !== null) {
       // console.log("animateTheMarker clicked!")
-      markerref?.current.animateMarkerToCoordinate(
-        {
-          latitude: lat,
-          longitude: lng,
-          // latitude: position.coords.latitude,
-          // longitude: position.coords.longitude,
-        },
-        7000,
-      );
+      if (markerref.current !== undefined && markerref.current !== null) {
+        markerref?.current.animateMarkerToCoordinate(
+          {
+            latitude: lat,
+            longitude: lng,
+            // latitude: position.coords.latitude,
+            // longitude: position.coords.longitude,
+          },
+          7000,
+        );
+      }
     }
-  }
+  };
 
   useEffect(() => {
     requestLocationPermission();
@@ -122,8 +124,7 @@ export default function Screen_Maps({navigation}) {
           Location: position.coords,
         });
 
-        
-      animateTheMarker(position.coords.latitude, position.coords.longitude)
+        animateTheMarker(position.coords.latitude, position.coords.longitude);
 
         console.log(position);
         // moveToLocation(position?.coords?.latitude, position?.coords?.longitude)
@@ -427,7 +428,7 @@ export default function Screen_Maps({navigation}) {
             }
           }}
           style={{
-            width:responsiveWidth(35),
+            width: responsiveWidth(35),
             backgroundColor: myLocation === undefined || null ? 'red' : 'green',
             height: 40,
             alignSelf: 'center',
@@ -436,7 +437,7 @@ export default function Screen_Maps({navigation}) {
             alignItems: 'center',
             bottom: 34,
             left: 50,
-            borderRadius: 50
+            borderRadius: 50,
           }}>
           {/* {myLocation == undefined ? <ActivityIndicator size='large' color="#fff" /> : */}
           <Text style={{color: 'white'}}>My Location</Text>
@@ -451,12 +452,12 @@ export default function Screen_Maps({navigation}) {
             // } else {
             //   console.log('waitin for myLocxation');
             // }
-            animateTheMarker(myLocation.latitude, myLocation.longitude)
-            console.log("animateTheMarker Clicked!!!")
+            animateTheMarker(myLocation.latitude, myLocation.longitude);
+            console.log('animateTheMarker Clicked!!!');
           }}
           style={{
             width: responsiveWidth(35),
-            backgroundColor: markerref == undefined || null ? 'red': 'green',
+            backgroundColor: markerref == undefined || null ? 'red' : 'green',
             height: 40,
             alignSelf: 'center',
             position: 'absolute',
@@ -464,11 +465,13 @@ export default function Screen_Maps({navigation}) {
             right: 50,
             justifyContent: 'center',
             alignItems: 'center',
-            borderRadius: 50
+            borderRadius: 50,
           }}>
-          {myLocation == undefined || null ? <ActivityIndicator size='large' color="#fff" /> : 
-          <Text style={{color: 'white'}}>Status</Text>
-          }
+          {myLocation == undefined || null ? (
+            <ActivityIndicator size="large" color="#fff" />
+          ) : (
+            <Text style={{color: 'white'}}>Status</Text>
+          )}
         </Pressable>
       </View>
     </>

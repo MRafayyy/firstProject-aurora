@@ -91,14 +91,16 @@ export default function Screen_MapTracking({navigation, route}) {
       setmyLocation(data.Location);
       if (mapref.current != null) {
         console.log('entered: ' + data.Location.latitude);
+        if(markerref.current !== undefined && markerref.current !== null){
 
-        markerref?.current.animateMarkerToCoordinate(
-          {
-            latitude: data.latitude,
-            longitude: data.longitude,
-          },
-          7000,
-        );
+          markerref?.current.animateMarkerToCoordinate(
+            {
+              latitude: data.latitude,
+              longitude: data.longitude,
+            },
+            7000,
+            );
+          }
       }
     });
 
