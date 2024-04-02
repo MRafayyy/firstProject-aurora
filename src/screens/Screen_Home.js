@@ -34,7 +34,7 @@ import socket from "../components/SocketService";
 // import { getSocket } from "../components/sockets";
 
 export default function Screen_Home({ navigation, route }) {
- 
+ console.log("Screen_Home rendered")
     const isConnected = useConnectionStatus();
     const [onlineUsersCount, setOnlineUsersCount] = useState(0);
     const [presentMembers, setpresentMembers] = useState([])
@@ -43,7 +43,7 @@ export default function Screen_Home({ navigation, route }) {
 
 
     const { userId, setUserId } = useContext(UserIdContext)
-    console.log(userId + "huraaa")
+    // console.log(userId + "huraaa")
 
 
 useEffect(()=>{

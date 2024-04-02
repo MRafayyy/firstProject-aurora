@@ -29,7 +29,7 @@ import {
 import {ActivityIndicator} from 'react-native-paper';
 import storage from '@react-native-firebase/storage';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import UserIdContext from '../UserIdContext';
+import UserIdContext, { LocationsContext } from '../UserIdContext';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -42,6 +42,7 @@ import useLocationUpdates from '../components/useLocationUpdates';
 
 export default function Screen_Home({navigation, route}) {
     
+  console.log('Screen_Home2 rendered');
       const {userId, setUserId} = useContext(UserIdContext);
     
     function handleBackButtonClick() {
@@ -54,7 +55,6 @@ export default function Screen_Home({navigation, route}) {
           stopLocationUpdates } = useLocationUpdates();
 
     useEffect(() => {
-        console.log('Screen_Home2 rendered');
         checkPermission();
         
         BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
@@ -69,6 +69,7 @@ export default function Screen_Home({navigation, route}) {
         const StartMyLocation = () => {
     // const watchId = StartSharingMyLocation();
     startLocationUpdates();
+    console.log("issue here")
     // console.log(watchId)
   };
 

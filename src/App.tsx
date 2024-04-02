@@ -50,6 +50,7 @@ import {useConnectionStatus} from './components/NoInternet'
 
 
 import UserIdContext, { UserIdProvider } from './UserIdContext'
+import { LocationProvider } from './LocationContext';
 
 // import { connectToSocket } from './components/SocketService';
 
@@ -128,14 +129,15 @@ useEffect(() => {
     {/* {isConnectedtoSocket? <Text>hey</Text>:  */}
     <UserIdProvider>
 
+
          <NavigationContainer>
         <Stack.Navigator initialRouteName='Screen_Splash' screenOptions={{ animationEnabled: true, animationTypeForReplace: 'push', ...TransitionPresets.RevealFromBottomAndroid }}  >
           <Stack.Screen name="Screen_Splash" component={Screen_Splash} options={{headerShown: false}}/>
           <Stack.Screen name="Screen_Decider" component={Screen_Decider} options={{headerShown: false}} />
           <Stack.Screen name="Screen_Login" component={Screen_Login} options={{ headerShown: false
             //  ...TransitionPresets.RevealFromBottomAndroid
-    // transitionSpec: {
-    //   open: TransitionSpecs.BottomSheetSlideInSpec,
+            // transitionSpec: {
+              //   open: TransitionSpecs.BottomSheetSlideInSpec,
     //   close: TransitionSpecs.ScaleFromCenterAndroidSpec,
     // },
   }} />
@@ -144,9 +146,11 @@ useEffect(() => {
             // ...TransitionPresets.RevealFromBottomAndroid
           }} />
           <Stack.Screen name="Screen_ForgotPassword" component={Screen_ForgotPassword} options={{headerShown: false}} />
+             
           <Stack.Screen name="HomeTabs" component={HomeTabs} options={{
             headerShown: false
           }}/>
+
         </Stack.Navigator>
       </NavigationContainer>
           </UserIdProvider>

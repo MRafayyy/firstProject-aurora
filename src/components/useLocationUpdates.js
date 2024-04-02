@@ -2,27 +2,32 @@
 import {useContext, useEffect, useState} from 'react';
 import Geolocation from 'react-native-geolocation-service';
 import socket from './SocketService'; // Assuming you have a socket instance
-import UserIdContext from '../UserIdContext';
+import UserIdContext, { LocationsContext } from '../UserIdContext';
+
 
 const useLocationUpdates = () => {
   const {userId, setUserId} = useContext(UserIdContext);
+  const {mLocation, setmLocation} = useContext(LocationsContext)
   const [myLocation, setmyLocation] = useState(null);
   const [error, setError] = useState(null);
   const [watchId, setWatchId] = useState(null);
   const [isActive, setIsActive] = useState(false);
+  const UID = userId.userId;
+  const MID = userId.mongoId
 
   const startLocationUpdates = () => {
 
     if (!isActive) {
       const id = Geolocation.watchPosition(
         position => {
-          //   const coords = position.coords;
+        
           setmyLocation(position.coords);
-          setUserId({myLocation: position.coords});
+          setmLocation({loc:position.coords});
+         
 
           socket.emit('shareCoordinates', {
-            userId: userId.userId,
-            mongoId: userId.mongoId,
+            userId: UID,
+            mongoId: MID,
             Location: position.coords,
           });
         },
@@ -50,6 +55,15 @@ const useLocationUpdates = () => {
     }
   };
 
+  // useEffect(() => {
+  //   if (myLocation) {
+  //     socket.emit('shareCoordinates', {
+  //       userId: userId.userId,
+  //       mongoId: userId.mongoId,
+  //       Location: myLocation,
+  //     });
+  //   }
+  // }, [myLocation, userId]);
 
   useEffect(() => {
     return () => {

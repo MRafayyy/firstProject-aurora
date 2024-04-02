@@ -17,6 +17,9 @@ import {
 import socket from '../components/SocketService';
 
 export default function Screen_Settings({navigation}) {
+
+console.log("Screen_Settings rendered")
+
   function handleBackButtonClick() {
     navigation.navigate('Screen_Home');
     return true;

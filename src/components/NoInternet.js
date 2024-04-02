@@ -16,8 +16,8 @@ export const useConnectionStatus = () => {
 
         const unsubscribe = NetInfo.addEventListener((state) => {
             // console.log(state);
-            console.log("Connection type", state.type);
-            console.log("Is connected?", state.isConnected);
+            // console.log("Connection type", state.type);
+            // console.log("Is connected?", state.isConnected);
             setisConnected(state.isConnected)
         });
         return () => {
