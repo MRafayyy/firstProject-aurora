@@ -36,10 +36,10 @@ const useLocationUpdates = () => {
         },
         {
           enableHighAccuracy: true,
-          timeout: 20000,
+          timeout: 5000,
           maximumAge: 0,
-          // interval: 1000,
-          distanceFilter: 1,
+          interval: 1000,
+          // distanceFilter: 5,
           // Other options as needed
         },
       );
@@ -49,21 +49,15 @@ const useLocationUpdates = () => {
   };
 
   const stopLocationUpdates = () => {
-    if (isActive && watchId) {
+    // if (isActive && watchId) {
+    if (watchId!==null) {
+      console.log(watchId)
       Geolocation.clearWatch(watchId);
       setIsActive(false);
     }
   };
 
-  // useEffect(() => {
-  //   if (myLocation) {
-  //     socket.emit('shareCoordinates', {
-  //       userId: userId.userId,
-  //       mongoId: userId.mongoId,
-  //       Location: myLocation,
-  //     });
-  //   }
-  // }, [myLocation, userId]);
+  
 
   useEffect(() => {
     return () => {

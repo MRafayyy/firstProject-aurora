@@ -29,7 +29,7 @@ import {
 import {ActivityIndicator} from 'react-native-paper';
 import storage from '@react-native-firebase/storage';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import UserIdContext, { LocationsContext } from '../UserIdContext';
+import UserIdContext, {LocationsContext} from '../UserIdContext';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -41,37 +41,51 @@ import useLocationUpdates from '../components/useLocationUpdates';
 // import { Image } from "react-native-paper/lib/typescript/components/Avatar/Avatar";
 
 export default function Screen_Home({navigation, route}) {
-    
   console.log('Screen_Home2 rendered');
-      const {userId, setUserId} = useContext(UserIdContext);
-    
-    function handleBackButtonClick() {
-        navigation.navigate('Screen_Home');
-        return true;
-    }
-    
-    const { myLocation, error, isActive,
-         startLocationUpdates,
-          stopLocationUpdates } = useLocationUpdates();
+  const {userId, setUserId} = useContext(UserIdContext);
 
-    useEffect(() => {
-        checkPermission();
-        
-        BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
-        return () => {
-            BackHandler.removeEventListener(
-                'hardwareBackPress',
-                handleBackButtonClick,
-                );
-            };
-        }, []);
-        
-        const StartMyLocation = () => {
-    // const watchId = StartSharingMyLocation();
+  function handleBackButtonClick() {
+    navigation.navigate('Screen_Home');
+    return true;
+  }
+
+  const {
+    myLocation,
+    error,
+    isActive,
+    startLocationUpdates,
+    stopLocationUpdates,
+  } = useLocationUpdates();
+
+  
+  const StartMyLocation = () => {
+
     startLocationUpdates();
-    console.log("issue here")
-    // console.log(watchId)
+    console.log('issue here');
+    // console.log(myLocation)
   };
+  
+  const StopMyLocation = () => {
+    console.log('no issue here');
+    stopLocationUpdates();
+  };
+
+  useEffect(()=>{
+    requestLocationPermission();
+  },[])
+
+
+  useEffect(() => {
+    checkPermission();
+
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener(
+        'hardwareBackPress',
+        handleBackButtonClick,
+      );
+    };
+  }, []);
 
   let intervalId;
   const [UploadStatus, setUploadStatus] = useState('Rescue');
@@ -83,6 +97,37 @@ export default function Screen_Home({navigation, route}) {
   const [RescueButtonClicked, setRescueButtonClicked] = useState(false);
   const [VideoData, setVideoData] = useState('');
   const [takeVideoClicked, settakeVideoClicked] = useState(false);
+
+
+
+// -----------------------------------------location Permission start
+const requestLocationPermission = async () => {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: 'Location Permission',
+        message: 'Please allow location permissions to continue...',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('Location permission granted');
+      // setPermissionGranted(true);
+    } else {
+      console.log('Location permission denied');
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+};
+// -----------------------------------------location Permission end
+
+
+
+
 
 
   const camera = useRef(null);
@@ -321,8 +366,6 @@ export default function Screen_Home({navigation, route}) {
     // }, 1000)
   };
 
-
-
   if (device == null) return <ActivityIndicator />;
   return (
     <>
@@ -399,10 +442,6 @@ export default function Screen_Home({navigation, route}) {
               {'\n'}
               Sends your location to security agencies and trusted contacts.
               {'\n'}
-              {'\n'}- Emergency Alert:
-              {'\n'}
-              Notifies nearby security agencies with your situation details.
-              {'\n'}
               {'\n'}- Alerts Close Contacts:
               {'\n'}
               Tells your close contacts about the emergency and where you are.
@@ -439,6 +478,32 @@ export default function Screen_Home({navigation, route}) {
                   textAlign: 'center',
                 }}>
                 {UploadStatus}
+              </Text>
+            </Pressable>
+            {/* -----------------another btn--------------- */}
+
+            <Pressable
+              onPress={() => {
+                StopMyLocation();
+              }}
+              // disabled={UploadinProgress}
+              style={{
+                width: '75%',
+                height: 50,
+                backgroundColor: '#0662bf',
+                borderWidth: 1,
+                marginTop: responsiveHeight(1),
+                borderRadius: 10,
+                alignSelf: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: responsiveFontSize(2.2),
+                  color: 'white',
+                  textAlign: 'center',
+                }}>
+                Stop location sharing
               </Text>
             </Pressable>
           </View>

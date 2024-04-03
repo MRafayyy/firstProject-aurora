@@ -37,7 +37,7 @@ console.log("yuhu: "+myLocation)
   const {userId} = useContext(UserIdContext);
   const {mLocation, setmLocation} = useContext(LocationsContext)
   // const [userId.mLocation.loc, setuserId.mLocation.loc] = useState();
-  const [PermissionGranted, setPermissionGranted] = useState(false);
+  // const [PermissionGranted, setPermissionGranted] = useState(false);
   const [origin, setOrigin] = useState();
   const [destination, setDestination] = useState();
   const [AnotherUsersLocation, setAnotherUsersLocation] = useState();
@@ -82,47 +82,27 @@ console.log("yuhu: "+myLocation)
   //   })
   // },[])
 
-  const requestLocationPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: 'Cool Location Permission',
-          message: 'Please allow location permissions to continue...',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        setPermissionGranted(true);
-      } else {
-        console.log('Location permission denied');
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  };
+
 
   const animateTheMarker = async (lat, lng) => {
     if (mapref.current !== null) {
       // console.log("animateTheMarker clicked!")
       if (markerref.current !== undefined && markerref.current !== null) {
-        markerref?.current.animateMarkerToCoordinate(
+        markerref.current.animateMarkerToCoordinate(
           {
             latitude: lat,
             longitude: lng,
             // latitude: position.coords.latitude,
             // longitude: position.coords.longitude,
           },
-          7000,
+          10000,
         );
       }
     }
   };
 
   useEffect(() => {
-    requestLocationPermission();
+    // requestLocationPermission();
 
 
     animateTheMarker(mLocation.loc.latitude, mLocation.loc.longitude);
@@ -173,7 +153,7 @@ console.log("yuhu: "+myLocation)
   };
 
   const getCurrentLocation = (latitude, longitude) => {
-    if (PermissionGranted) {
+    // if (PermissionGranted) {
       // Geolocation.getCurrentPosition(
       //   position => {
       //     console.log(position);
@@ -192,7 +172,7 @@ console.log("yuhu: "+myLocation)
 
       // console.log('entered get location method');
       moveToLocation(latitude, longitude);
-    }
+    // }
   };
 
   // if (!PermissionGranted) { return <View><Text style={{ color: 'black' }}>Please allow location permissions</Text></View> }
