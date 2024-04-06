@@ -2,7 +2,6 @@ import React, {
   useState,
   useEffect,
   useRef,
-  PropsWithChildren,
   useContext,
 } from 'react';
 
@@ -19,8 +18,6 @@ import {
   Alert,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
-import Video from 'react-native-video';
-import * as Keychain from 'react-native-keychain';
 import {
   Camera,
   useCameraDevice,
@@ -33,59 +30,19 @@ import UserIdContext, {LocationsContext} from '../UserIdContext';
 import {
   responsiveFontSize,
   responsiveHeight,
+  responsiveScreenWidth,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import ip from './IPaddress';
-import StartSharingMyLocation from '../components/StartSharingMyLocation';
 import useLocationUpdates from '../components/useLocationUpdates';
-// import { Image } from "react-native-paper/lib/typescript/components/Avatar/Avatar";
+import CustomModalComponent from '../components/CustomModalComponent';
+import imageNames from '../../assets/imageNames/imageNames';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {TouchableOpacity} from 'react-native';
 
 export default function Screen_Home({navigation, route}) {
   console.log('Screen_Home2 rendered');
   const {userId, setUserId} = useContext(UserIdContext);
-
-  function handleBackButtonClick() {
-    navigation.navigate('Screen_Home');
-    return true;
-  }
-
-  const {
-    myLocation,
-    error,
-    isActive,
-    startLocationUpdates,
-    stopLocationUpdates,
-  } = useLocationUpdates();
-
-  
-  const StartMyLocation = () => {
-
-    startLocationUpdates();
-    console.log('issue here');
-    // console.log(myLocation)
-  };
-  
-  const StopMyLocation = () => {
-    console.log('no issue here');
-    stopLocationUpdates();
-  };
-
-  useEffect(()=>{
-    requestLocationPermission();
-  },[])
-
-
-  useEffect(() => {
-    checkPermission();
-
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
-    return () => {
-      BackHandler.removeEventListener(
-        'hardwareBackPress',
-        handleBackButtonClick,
-      );
-    };
-  }, []);
 
   let intervalId;
   const [UploadStatus, setUploadStatus] = useState('Rescue');
@@ -98,37 +55,106 @@ export default function Screen_Home({navigation, route}) {
   const [VideoData, setVideoData] = useState('');
   const [takeVideoClicked, settakeVideoClicked] = useState(false);
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [wantToAdd, setWantToAdd] = useState(false);
+
+  const {
+    myLocation,
+    error,
+    isActive,
+    setIsActive,
+    startLocationUpdates,
+    stopLocationUpdates,
+  } = useLocationUpdates();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={() => {}}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: responsiveScreenWidth(4),
+            paddingHorizontal: 9,
+          }}>
+          <MaterialCommunityIcons
+            name="map"
+            size={28}
+            color={isActive === false ? 'red' : 'green'}
+            onPress={() => {
+              if (isActive === true) {
+                console.log('what the hell');
+                navigation.navigate('Screen_Maps');
+              } else {
+                console.log('this bad: isActive is' + isActive);
+                setModalVisible(true);
+              }
+            }}
+          />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, isActive]);
 
 
-// -----------------------------------------location Permission start
-const requestLocationPermission = async () => {
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      {
-        title: 'Location Permission',
-        message: 'Please allow location permissions to continue...',
-        buttonNeutral: 'Ask Me Later',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'OK',
-      },
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log('Location permission granted');
-      // setPermissionGranted(true);
-    } else {
-      console.log('Location permission denied');
-    }
-  } catch (err) {
-    console.warn(err);
+  const StartMyLocation = () => {
+    startLocationUpdates();
+    console.log('Home2: Start location clicked');
+  };
+
+  const StopMyLocation = () => {
+    stopLocationUpdates();
+    console.log('Home2: Stop location clicked');
+  };
+
+  const getAllpermissions = async () => {
+    await requestLocationPermission();
+    await checkPermission();
+  };
+
+  function handleBackButtonClick() {
+    navigation.navigate('Screen_Home');
+    return true;
   }
-};
-// -----------------------------------------location Permission end
 
+  useEffect(() => {
+    getAllpermissions();
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener(
+        'hardwareBackPress',
+        handleBackButtonClick,
+      );
+    };
+  }, []);
 
+  // -----------------------------------------location Permission start
+  const requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Location Permission',
+          message: 'Please allow location permissions to continue...',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Location permission granted');
+        // setPermissionGranted(true);
+      } else {
+        console.log('Location permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+  // -----------------------------------------location Permission end
 
-
-
+  // -----------------------------------------------------------
 
   const camera = useRef(null);
   // const devices = Camera.getAvailableCameraDevices()
@@ -148,12 +174,6 @@ const requestLocationPermission = async () => {
   // const device = useCameraDevice('back');
   // const device = useCameraDevices
   // const device = devices.back;
-
-  // useEffect(() => {
-  //     checkPermission();
-  //     console.log("Screen_Home2 rendered");
-  //     // hasAndroidPermission();
-  // }, [])
 
   async function hasAndroidPermission() {
     const getCheckPermissionPromise = () => {
@@ -360,10 +380,6 @@ const requestLocationPermission = async () => {
 
   const RecordingInitiation = () => {
     setRescueButtonClicked(true);
-
-    // const intervalId = setInterval(() => {
-    //     setCounter(Counter + 1);
-    // }, 1000)
   };
 
   if (device == null) return <ActivityIndicator />;
@@ -413,100 +429,120 @@ const requestLocationPermission = async () => {
               ]}></Pressable>
           </View>
         ) : (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'flex-start',
-              gap: responsiveHeight(3),
-              alignItems: 'center',
-              marginTop: responsiveHeight(5),
-            }}>
-            {/* <Text style={{ textAlign: 'center', fontSize: responsiveFontSize(5), fontWeight: '900', marginTop: responsiveHeight(4), color: 'black' }}>Rescue Button</Text> */}
-            <Text
-              style={{
-                textAlign: 'left',
-                fontSize: responsiveFontSize(2),
-                paddingHorizontal: responsiveWidth(10),
-                color: 'black',
-              }}>
-              Tap the Rescue Button when you need urgent help.
-              {'\n'}
-              {'\n'}
-              Here's what it does:
-              {'\n'}
-              {'\n'}- Record Video & Sound:
-              {'\n'}
-              Starts recording what's happening around you.
-              {'\n'}
-              {'\n'}- Share Your Location:
-              {'\n'}
-              Sends your location to security agencies and trusted contacts.
-              {'\n'}
-              {'\n'}- Alerts Close Contacts:
-              {'\n'}
-              Tells your close contacts about the emergency and where you are.
-              {'\n'}
-              {'\n'}- Stay Connected:
-              {'\n'}
-              Keeps sharing updates until you confirm you're safe.
-            </Text>
-            {/* <Video resizeMode={'cover'} source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/aurora-51db1.appspot.com/o/Rafay%2Fvideo-2024-01-29%2009%3A16%20AM.mov?alt=media&token=57793d02-6512-4eec-a440-772e37917d9c'}} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "30%" }} /> */}
-            <Progress.Bar progress={progress} width={200} />
-            {/* {ImageData !== '' && <Image source={{ uri: 'file://' + ImageData }} style={{ width: '90%', height: '10%' }} />} */}
-            {/* <Video resizeMode={'cover'} source={{ uri: 'file://' + VideoData }} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "90%" }} /> */}
-            <Pressable
-              onPress={() => {
-                // RecordingInitiation();
-                StartMyLocation();
-                // const watchId = StartSharingMyLocation()
-              }}
-              disabled={UploadinProgress}
-              style={{
-                width: '75%',
-                height: 50,
-                backgroundColor: '#0662bf',
-                borderWidth: 1,
-                marginTop: responsiveHeight(1),
-                borderRadius: 10,
-                alignSelf: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize: responsiveFontSize(2.2),
-                  color: 'white',
-                  textAlign: 'center',
-                }}>
-                {UploadStatus}
-              </Text>
-            </Pressable>
-            {/* -----------------another btn--------------- */}
+          <>
+            <CustomModalComponent
+              modalVisible={modalVisible}
+              setModalVisible={setModalVisible}
+              wantToAdd={wantToAdd}
+              setWantToAdd={setWantToAdd}
+              submissionDataTitle={'You cannot access google maps!'}
+              submissionDataBody={`Map will be accessible after enabling location updates via rescue button`}
+              submissionDataImage={imageNames.blackError}
+              // modalRightBtnText={'Save Changes'}
+              // modalRightBtnFunc={()=>{
 
-            <Pressable
-              onPress={() => {
-                StopMyLocation();
-              }}
-              // disabled={UploadinProgress}
+              // }}
+              // modalRightBtnFunc={onModalRightBtnPressHandler}
+              // modalLeftBtnText={'Ok, Cancel'}
+              // modalLeftBtnFunc={onModalLeftBtnPressHandler}
+              oneBtnOnly={true}
+            />
+
+            <View
               style={{
-                width: '75%',
-                height: 50,
-                backgroundColor: '#0662bf',
-                borderWidth: 1,
-                marginTop: responsiveHeight(1),
-                borderRadius: 10,
-                alignSelf: 'center',
-                justifyContent: 'center',
+                flex: 1,
+                justifyContent: 'flex-start',
+                gap: responsiveHeight(3),
+                alignItems: 'center',
+                marginTop: responsiveHeight(5),
               }}>
+              {/* <Text style={{ textAlign: 'center', fontSize: responsiveFontSize(5), fontWeight: '900', marginTop: responsiveHeight(4), color: 'black' }}>Rescue Button</Text> */}
               <Text
                 style={{
-                  fontSize: responsiveFontSize(2.2),
-                  color: 'white',
-                  textAlign: 'center',
+                  textAlign: 'left',
+                  fontSize: responsiveFontSize(2),
+                  paddingHorizontal: responsiveWidth(10),
+                  color: 'black',
                 }}>
-                Stop location sharing
+                Tap the Rescue Button when you need urgent help.
+                {'\n'}
+                {'\n'}
+                Here's what it does:
+                {'\n'}
+                {'\n'}- Record Video & Sound:
+                {'\n'}
+                Starts recording what's happening around you.
+                {'\n'}
+                {'\n'}- Share Your Location:
+                {'\n'}
+                Sends your location to security agencies and trusted contacts.
+                {'\n'}
+                {'\n'}- Alerts Close Contacts:
+                {'\n'}
+                Tells your close contacts about the emergency and where you are.
+                {'\n'}
+                {'\n'}- Stay Connected:
+                {'\n'}
+                Keeps sharing updates until you confirm you're safe.
               </Text>
-            </Pressable>
-          </View>
+              {/* <Video resizeMode={'cover'} source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/aurora-51db1.appspot.com/o/Rafay%2Fvideo-2024-01-29%2009%3A16%20AM.mov?alt=media&token=57793d02-6512-4eec-a440-772e37917d9c'}} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "30%" }} /> */}
+              <Progress.Bar progress={progress} width={200} />
+              {/* {ImageData !== '' && <Image source={{ uri: 'file://' + ImageData }} style={{ width: '90%', height: '10%' }} />} */}
+              {/* <Video resizeMode={'cover'} source={{ uri: 'file://' + VideoData }} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "90%" }} /> */}
+              <Pressable
+                onPress={() => {
+                  RecordingInitiation();
+                  StartMyLocation();
+         
+                }}
+                disabled={UploadinProgress}
+                style={{
+                  width: '75%',
+                  height: 50,
+                  backgroundColor: '#0662bf',
+                  borderWidth: 1,
+                  marginTop: responsiveHeight(1),
+                  borderRadius: 10,
+                  alignSelf: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontSize: responsiveFontSize(2.2),
+                    color: 'white',
+                    textAlign: 'center',
+                  }}>
+                  {UploadStatus}
+                </Text>
+              </Pressable>
+              {/* -----------------another btn--------------- */}
+
+              <Pressable
+                onPress={() => {
+                  StopMyLocation();
+                }}
+                // disabled={UploadinProgress}
+                style={{
+                  width: '75%',
+                  height: 50,
+                  backgroundColor: '#0662bf',
+                  borderWidth: 1,
+                  marginTop: responsiveHeight(1),
+                  borderRadius: 10,
+                  alignSelf: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontSize: responsiveFontSize(2.2),
+                    color: 'white',
+                    textAlign: 'center',
+                  }}>
+                  Stop location sharing
+                </Text>
+              </Pressable>
+            </View>
+          </>
         )}
       </View>
     </>
