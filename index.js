@@ -28,7 +28,26 @@ PushNotification.configure({
   
   // (required) Called when a remote is received or opened, or local notification is opened
 onNotification: function (notification) {
-console.log("NOTIFICATION:", notification);
+console.log("NOTIFICATION:::::", notification);
+
+PushNotification.localNotification({
+  largeIconUrl: notification.data.icon,
+  channelId: "test-channel",
+  channelName: "Test Channel",
+  title: notification.data.title,
+  // message: remoteMessage.notification?.body,
+  message: notification.data.body,
+  // bigText: "well well famous chinese dish",
+  foreground: true,
+  showWhen: true,
+  color: 'red',
+  smallIcon: notification.data.imageUrl,
+  priority: 'max',
+  usesChronometer: true,
+  
+})
+
+
 
 // process the notification
 
@@ -36,9 +55,34 @@ console.log("NOTIFICATION:", notification);
 // notification.finish(PushNotificationIOS.FetchResult.NoData);
 },
 
+
+ // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
+ onAction: function (notification) {
+  console.log("ACTION:", notification.action);
+  console.log("NOTIFICATION: actionnn");
+
+  // process the action
+},
+
+
 //   * - if you are not using remote notification or do not have Firebase installed, use this:
   requestPermissions: Platform.OS === 'ios'
 })
+
+// const hey = async()=>{
+
+//   PushNotification.localNotification({
+//     channelId: "test-channel2",
+//     channelName: "Test Channel2",
+//     title: "You clicked on test notif button",
+//     message: "remoteMessage",
+//     bigText: "Yuhu is name of the famous chinese dish",
+//     foreground: true,
+//     showWhen: true,
+//     color: 'red',
+//     largeIconUrl: 'https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg',
+// })
+// }
 
 
 
@@ -67,27 +111,31 @@ console.log("NOTIFICATION:", notification);
 // })
 
 
+// messaging().getInitialNotification(hey)
 messaging().getInitialNotification(async remoteMessage => {
   console.log('Message handled in kill mode!', remoteMessage);
 })
 
 
-
-messaging().setBackgroundMessageHandler(async remoteMessage => {
+//local notif work if data only message and app running in background
+messaging().setBackgroundMessageHandler(
+  async remoteMessage => {console.log("background here")
+    console.log(remoteMessage.data);
 //   PushNotification.localNotification({
-//     // largeIconUrl: "https://www.example.tld/picture.jpg",
+//     largeIconUrl: "https://www.example.tld/picture.jpg",
 //     channelId: "test-channel",
 //     channelName: "Test Channel",
-//     // title: remoteMessage.notification?.title,
-//     title: remoteMessage.notification?.title,
+//     title: remoteMessage.data.title,
 //     // message: remoteMessage.notification?.body,
-//     message: remoteMessage.notification?.body,
-//     // bigText: "Yuhu is name of the famous chinese dish",
-//     // foreground: true,
+//     message: remoteMessage.data.body,
+//     // bigText: "well well famous chinese dish",
+//     foreground: true,
 //     showWhen: true,
-//     color: 'red'
+//     color: 'red',
+//     smallIcon: remoteMessage.data.imageUrl
 // })
-  });
+  }
+  );
 
 
 

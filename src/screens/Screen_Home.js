@@ -175,7 +175,8 @@ useEffect(()=>{
             bigText: "Yuhu is name of the famous chinese dish",
             foreground: true,
             showWhen: true,
-            color: 'red'
+            color: 'red',
+            largeIconUrl: 'https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg'
         })
 
         PushNotification.localNotificationSchedule({

@@ -43,6 +43,9 @@ const useLocationUpdates = () => {
       );
       setWatchId(id);
       setIsActive(true);
+
+      
+
     }
   };
 
@@ -71,7 +74,7 @@ const useLocationUpdates = () => {
     setIsActive,
     startLocationUpdates,
     stopLocationUpdates,
-    
+
   };
 };
 

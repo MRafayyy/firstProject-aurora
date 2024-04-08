@@ -3,13 +3,14 @@ import React, {
   useEffect,
   useRef,
   useContext,
+  useCallback,
 } from 'react';
 
 import {
   StyleSheet,
   Text,
   View,
-  Pressable,
+  TouchableOpacity,
   PermissionsAndroid,
   // TextInput,
   Image,
@@ -38,10 +39,10 @@ import useLocationUpdates from '../components/useLocationUpdates';
 import CustomModalComponent from '../components/CustomModalComponent';
 import imageNames from '../../assets/imageNames/imageNames';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {TouchableOpacity} from 'react-native';
+import fontFamily from '../../assets/fontFamily/fontFamily';
+import colors from '../utils/color';
 
 export default function Screen_Home({navigation, route}) {
-  console.log('Screen_Home2 rendered');
   const {userId, setUserId} = useContext(UserIdContext);
 
   let intervalId;
@@ -62,10 +63,11 @@ export default function Screen_Home({navigation, route}) {
     myLocation,
     error,
     isActive,
-    setIsActive,
     startLocationUpdates,
     stopLocationUpdates,
   } = useLocationUpdates();
+
+  console.log('Screen_Home2 rendered');
 
   useEffect(() => {
     navigation.setOptions({
@@ -97,15 +99,96 @@ export default function Screen_Home({navigation, route}) {
     });
   }, [navigation, isActive]);
 
-
-  const StartMyLocation = () => {
+  const StartMyLocation = useCallback(async () => {
     startLocationUpdates();
-    console.log('Home2: Start location clicked');
-  };
 
-  const StopMyLocation = () => {
+    try {
+      const {formattedTime, formattedDay} = getFormattedTimeandDay();
+
+      if (!isActive) {
+        const object = {
+          timeWhenRescueButtonPressed: formattedTime,
+          dateWhenRescueButtonPressed: formattedDay,
+          locationWhereRescuePressed: {
+            latitude: myLocation.latitude,
+            longitude: myLocation.longitude,
+          },
+          safeButtonPressed: false,
+        };
+
+        let response = await fetch(
+          `${ip}/pressedRescueButton/${userId.mongoId}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(object),
+          },
+        );
+
+        response = await response.json();
+        console.log('api working' + response);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    console.log('Home2: Start location clicked');
+  }, [startLocationUpdates]);
+
+  const StopMyLocation = useCallback(async () => {
     stopLocationUpdates();
+    try {
+      const {formattedTime, formattedDay} = getFormattedTimeandDay();
+      const object = {
+        safeButtonPressed: true,
+        timeWhenSafeButtonPressed: formattedTime,
+        dateWhenSafeButtonPressed: formattedDay,
+        locationWhereSafeButtonPressed: {
+          latitude: myLocation.latitude,
+          longitude: myLocation.longitude,
+        },
+      };
+
+      let response = await fetch(`${ip}/pressedSafeButton/${userId.mongoId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(object),
+      });
+
+      response = await response.json();
+      console.log('api working' + response);
+    } catch (error) {
+      console.log(error);
+    }
+
     console.log('Home2: Stop location clicked');
+  }, [stopLocationUpdates]);
+
+  const getFormattedTimeandDay = () => {
+    const timestamp = Date.now();
+    const date = new Date(timestamp);
+
+    // Get hours and minutes
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    // Convert hours to 12-hour format
+    hours = hours % 12 || 12;
+
+    const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes
+      .toString()
+      .padStart(2, '0')} ${ampm}`;
+
+    const formattedDay = `${date.getFullYear()}-${(date.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+
+    return {formattedTime, formattedDay};
   };
 
   const getAllpermissions = async () => {
@@ -127,7 +210,7 @@ export default function Screen_Home({navigation, route}) {
         handleBackButtonClick,
       );
     };
-  }, []);
+  }, [navigation]);
 
   // -----------------------------------------location Permission start
   const requestLocationPermission = async () => {
@@ -144,7 +227,6 @@ export default function Screen_Home({navigation, route}) {
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('Location permission granted');
-        // setPermissionGranted(true);
       } else {
         console.log('Location permission denied');
       }
@@ -393,10 +475,6 @@ export default function Screen_Home({navigation, route}) {
               onInitialized={() => {
                 console.log('initialized cam');
                 startRecording();
-                const intervalId = setInterval(() => {
-                  // setCounter(Counter++);
-                  setCounter(prevCounter => prevCounter + 1);
-                }, 1000);
               }}
               style={StyleSheet.absoluteFill}
               device={device}
@@ -408,25 +486,21 @@ export default function Screen_Home({navigation, route}) {
               format={format}
             />
 
-            <Pressable
+            <TouchableOpacity
               onPress={() => {
                 console.log('stop recording clicked here');
                 stopRecording();
               }}
-              style={({pressed}) => [
-                pressed
-                  ? {opacity: 0.8}
-                  : {
-                      width: 60,
-                      height: 70,
-                      position: 'absolute',
-                      backgroundColor: 'yellow',
-                      borderRadius: 30,
-                      bottom: 25,
-                      alignSelf: 'center',
-                      justifyContent: 'center',
-                    },
-              ]}></Pressable>
+              style={{
+                width: responsiveWidth(20),
+                height: responsiveHeight(20 / 2),
+                position: 'absolute',
+                backgroundColor: 'yellow',
+                borderRadius: 100,
+                bottom: 25,
+                alignSelf: 'center',
+                justifyContent: 'center',
+              }}></TouchableOpacity>
           </View>
         ) : (
           <>
@@ -462,6 +536,7 @@ export default function Screen_Home({navigation, route}) {
                   textAlign: 'left',
                   fontSize: responsiveFontSize(2),
                   paddingHorizontal: responsiveWidth(10),
+                  fontFamily: fontFamily.Bold,
                   color: 'black',
                 }}>
                 Tap the Rescue Button when you need urgent help.
@@ -489,20 +564,21 @@ export default function Screen_Home({navigation, route}) {
               <Progress.Bar progress={progress} width={200} />
               {/* {ImageData !== '' && <Image source={{ uri: 'file://' + ImageData }} style={{ width: '90%', height: '10%' }} />} */}
               {/* <Video resizeMode={'cover'} source={{ uri: 'file://' + VideoData }} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "90%" }} /> */}
-              <Pressable
+              <TouchableOpacity
                 onPress={() => {
                   RecordingInitiation();
                   StartMyLocation();
-         
                 }}
                 disabled={UploadinProgress}
                 style={{
                   width: '75%',
                   height: 50,
-                  backgroundColor: '#0662bf',
+                  // backgroundColor: '#0662bf',
+                  backgroundColor:
+                    isActive === false ? colors.red : colors.green,
                   borderWidth: 1,
                   marginTop: responsiveHeight(1),
-                  borderRadius: 10,
+                  borderRadius: 30,
                   alignSelf: 'center',
                   justifyContent: 'center',
                 }}>
@@ -514,21 +590,24 @@ export default function Screen_Home({navigation, route}) {
                   }}>
                   {UploadStatus}
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
               {/* -----------------another btn--------------- */}
 
-              <Pressable
+              <TouchableOpacity
                 onPress={() => {
                   StopMyLocation();
                 }}
+                disabled={!isActive}
                 // disabled={UploadinProgress}
                 style={{
                   width: '75%',
                   height: 50,
-                  backgroundColor: '#0662bf',
+                  // backgroundColor: '#0662bf',
+                  backgroundColor:
+                    isActive === true ? colors.red : colors.green,
                   borderWidth: 1,
                   marginTop: responsiveHeight(1),
-                  borderRadius: 10,
+                  borderRadius: 30,
                   alignSelf: 'center',
                   justifyContent: 'center',
                 }}>
@@ -537,10 +616,11 @@ export default function Screen_Home({navigation, route}) {
                     fontSize: responsiveFontSize(2.2),
                     color: 'white',
                     textAlign: 'center',
+                    fontFamily: fontFamily.Bold,
                   }}>
-                  Stop location sharing
+                  I am Safe
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </>
         )}
