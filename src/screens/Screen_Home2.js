@@ -5,7 +5,7 @@ import React, {
   useContext,
   useCallback,
 } from 'react';
-
+import Geolocation from 'react-native-geolocation-service';
 import {
   StyleSheet,
   Text,
@@ -58,6 +58,7 @@ export default function Screen_Home({navigation, route}) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [wantToAdd, setWantToAdd] = useState(false);
+  const [Done, setDone] = useState(true)
 
   const {
     myLocation,
@@ -99,71 +100,170 @@ export default function Screen_Home({navigation, route}) {
     });
   }, [navigation, isActive]);
 
-  const StartMyLocation = useCallback(async () => {
+// below function works fine too
+// useEffect(()=>{
+  
+//   const alertsCloseContactsandStoreToDB = async()=>{
+//     if(isActive==true && myLocation.latitude!==null && Done===true){
+
+//       try {
+//         console.log("clicked start loc and so myLocation here: "+myLocation)
+//         console.log("isActive is "+isActive)
+//         const {formattedTime, formattedDay} = getFormattedTimeandDay();
+        
+//         const object = {
+//           timeWhenRescueButtonPressed: formattedTime,
+//           dateWhenRescueButtonPressed: formattedDay,
+//           locationWhereRescuePressed: {
+//             latitude: myLocation.latitude,
+//             longitude: myLocation.longitude,
+//           },
+//           safeButtonPressed: false,
+//         };
+    
+//         let response = await fetch(
+//           `${ip}/pressedRescueButton/${userId.mongoId}`,
+//           {
+//             method: 'POST',
+//             headers: {
+//               'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify(object),
+//           },
+//           );
+          
+//           response = await response.json();
+//           console.log('api working' + response);
+//         } catch (error) {
+//         console.log('api error');
+//         // Alert.alert("api error", error.message)
+//         console.log(error);
+//       } 
+//   }
+//   setDone(false)
+// }
+  
+
+//     alertsCloseContactsandStoreToDB()
+
+
+ 
+
+// },[myLocation])
+
+
+
+
+
+  const StartMyLocation =async () => {
     startLocationUpdates();
 
-    try {
-      const {formattedTime, formattedDay} = getFormattedTimeandDay();
+  
 
-      if (!isActive) {
-        const object = {
-          timeWhenRescueButtonPressed: formattedTime,
-          dateWhenRescueButtonPressed: formattedDay,
-          locationWhereRescuePressed: {
-            latitude: myLocation.latitude,
-            longitude: myLocation.longitude,
-          },
-          safeButtonPressed: false,
-        };
-
-        let response = await fetch(
-          `${ip}/pressedRescueButton/${userId.mongoId}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
+  
+    
+    Geolocation.getCurrentPosition(
+      async(position) => {
+          try {
+          const {formattedTime, formattedDay} = getFormattedTimeandDay();
+          
+          const object = {
+            timeWhenRescueButtonPressed: formattedTime,
+            dateWhenRescueButtonPressed: formattedDay,
+            locationWhereRescuePressed: {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
             },
-            body: JSON.stringify(object),
-          },
-        );
+            safeButtonPressed: false,
+          };
+      
+          let response = await fetch(
+            `${ip}/pressedRescueButton/${userId.mongoId}`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(object),
+            },
+            );
+            
+            response = await response.json();
+            console.log('api working' + response);
+          } catch (error) {
+            console.log('api error');
+          // Alert.alert("api error", error.message)
+          console.log(error);
+        } 
 
-        response = await response.json();
-        console.log('api working' + response);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+
+
+
+        },
+        error => {
+          console.log(error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0,
+        },
+      );
+
+  
+
+
+
 
     console.log('Home2: Start location clicked');
-  }, [startLocationUpdates]);
-
+  }
+  // , [startLocationUpdates]);
+  
   const StopMyLocation = useCallback(async () => {
     stopLocationUpdates();
-    try {
-      const {formattedTime, formattedDay} = getFormattedTimeandDay();
-      const object = {
-        safeButtonPressed: true,
-        timeWhenSafeButtonPressed: formattedTime,
-        dateWhenSafeButtonPressed: formattedDay,
-        locationWhereSafeButtonPressed: {
-          latitude: myLocation.latitude,
-          longitude: myLocation.longitude,
-        },
-      };
 
-      let response = await fetch(`${ip}/pressedSafeButton/${userId.mongoId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(object),
-      });
 
-      response = await response.json();
-      console.log('api working' + response);
-    } catch (error) {
-      console.log(error);
-    }
+      Geolocation.getCurrentPosition(
+        async(position) => {
+
+          try {
+            const {formattedTime, formattedDay} = getFormattedTimeandDay();
+            const object = {
+              safeButtonPressed: true,
+              timeWhenSafeButtonPressed: formattedTime,
+              dateWhenSafeButtonPressed: formattedDay,
+              locationWhereSafeButtonPressed: {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+              },
+            };
+      
+            let response = await fetch(`${ip}/pressedSafeButton/${userId.mongoId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(object),
+            });
+      
+            response = await response.json();
+            console.log('api working' + response);
+          } catch (error) {
+            console.log(error);
+          }
+
+
+        },
+        error => {
+          console.log(error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 1000,
+        },
+      );
+
 
     console.log('Home2: Stop location clicked');
   }, [stopLocationUpdates]);
@@ -565,11 +665,18 @@ export default function Screen_Home({navigation, route}) {
               {/* {ImageData !== '' && <Image source={{ uri: 'file://' + ImageData }} style={{ width: '90%', height: '10%' }} />} */}
               {/* <Video resizeMode={'cover'} source={{ uri: 'file://' + VideoData }} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "90%" }} /> */}
               <TouchableOpacity
-                onPress={() => {
+                onPress={async () => {
+                  setDone(true)
+                 await StartMyLocation();
                   RecordingInitiation();
-                  StartMyLocation();
                 }}
-                disabled={UploadinProgress}
+                disabled={
+                  isActive === true
+                    ? true
+                    : UploadinProgress === true
+                    ? true
+                    : false
+                }
                 style={{
                   width: '75%',
                   height: 50,

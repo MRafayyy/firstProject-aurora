@@ -3,6 +3,7 @@ import {useContext, useEffect, useState} from 'react';
 import Geolocation from 'react-native-geolocation-service';
 import socket from './SocketService'; // Assuming you have a socket instance
 import UserIdContext, {LocationsContext} from '../UserIdContext';
+import ip from '../screens/IPaddress';
 
 const useLocationUpdates = () => {
   const {userId, setUserId} = useContext(UserIdContext);
@@ -14,15 +15,21 @@ const useLocationUpdates = () => {
   const UID = userId.userId;
   const MID = userId.mongoId;
 
-  const startLocationUpdates = () => {
+  const startLocationUpdates = async() => {
     if (!isActive) {
+
+
+
+      
+      
+      
       const id = Geolocation.watchPosition(
         position => {
           setmyLocation(position.coords);
           setmLocation({loc: position.coords});
 
           console.log('i AM THE HOOK');
-
+          
           socket.emit('shareCoordinates', {
             userId: UID,
             mongoId: MID,
@@ -40,9 +47,11 @@ const useLocationUpdates = () => {
           // distanceFilter: 5,
           // Other options as needed
         },
-      );
-      setWatchId(id);
-      setIsActive(true);
+        );
+        setWatchId(id);
+        setIsActive(true);
+
+        
 
       
 
@@ -76,6 +85,30 @@ const useLocationUpdates = () => {
     stopLocationUpdates,
 
   };
+};
+
+
+const getFormattedTimeandDay = () => {
+  const timestamp = Date.now();
+  const date = new Date(timestamp);
+
+  // Get hours and minutes
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+
+  // Convert hours to 12-hour format
+  hours = hours % 12 || 12;
+
+  const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes
+    .toString()
+    .padStart(2, '0')} ${ampm}`;
+
+  const formattedDay = `${date.getFullYear()}-${(date.getMonth() + 1)
+    .toString()
+    .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+
+  return {formattedTime, formattedDay};
 };
 
 export default useLocationUpdates;

@@ -5,7 +5,7 @@
  * @format
  */
 // import 'react-native-gesture-handler'; --no needed only npm se krna tha
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { useEffect, useState } from 'react';
 // import { Icon } from 'react-native-vector-icons/Icon';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -28,8 +28,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import { Header, createStackNavigator } from '@react-navigation/stack';
 
-const Stack = createStackNavigator()
 
+
+const Stack = createStackNavigator()
 
 
 
@@ -55,17 +56,18 @@ import { LocationProvider } from './LocationContext';
 // import { connectToSocket } from './components/SocketService';
 
 
-function App() {
-
+export default function App() {
+  const navigationRef = useRef(null);
+  
   // const {setUserId} = useContext(UserIdContext)
 
-const [isLoggedIn, setisLoggedIn] = useState(false)
-
-    // const [isConnected, setisConnected] = useState(false)
-    const isConnected = useConnectionStatus();
-
-
-    // const socket = connectToSocket();
+  const [isLoggedIn, setisLoggedIn] = useState(false)
+  
+  // const [isConnected, setisConnected] = useState(false)
+  const isConnected = useConnectionStatus();
+  
+  
+  // const socket = connectToSocket();
 
 
     
@@ -130,7 +132,7 @@ useEffect(() => {
     <UserIdProvider>
 
 
-         <NavigationContainer>
+         <NavigationContainer ref={navigationRef}>
         <Stack.Navigator initialRouteName='Screen_Splash' screenOptions={{ animationEnabled: true, animationTypeForReplace: 'push', ...TransitionPresets.RevealFromBottomAndroid }}  >
           <Stack.Screen name="Screen_Splash" component={Screen_Splash} options={{headerShown: false}}/>
           <Stack.Screen name="Screen_Decider" component={Screen_Decider} options={{headerShown: false}} />
@@ -177,7 +179,9 @@ const styles = StyleSheet.create({
  
 });
 
-export default App;
+// export default App;
+
+// export {navigationRef};
 
 
 
