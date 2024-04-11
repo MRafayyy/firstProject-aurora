@@ -5,34 +5,30 @@
  * @format
  */
 // import 'react-native-gesture-handler'; --no needed only npm se krna tha
-import React, { useContext, useRef } from 'react';
-import { useEffect, useState } from 'react';
+import React, {useContext, useRef} from 'react';
+import {useEffect, useState} from 'react';
 // import { Icon } from 'react-native-vector-icons/Icon';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-import NetInfo from "@react-native-community/netinfo";
-import { addEventListener } from "@react-native-community/netinfo";
-
-import messaging from '@react-native-firebase/messaging'
-
-import { TransitionPresets } from '@react-navigation/stack';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import NetInfo from '@react-native-community/netinfo';
 
 
+import messaging from '@react-native-firebase/messaging';
+
+import {TransitionPresets} from '@react-navigation/stack';
+
+import {StyleSheet} from 'react-native';
 import {
-  StyleSheet,
-
-} from 'react-native';
-import { NavigationContainer, DefaultTheme, DarkTheme, } from '@react-navigation/native';
+  NavigationContainer,
+  DefaultTheme,
+  DarkTheme,
+} from '@react-navigation/native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { Header, createStackNavigator } from '@react-navigation/stack';
+import {Header, createStackNavigator} from '@react-navigation/stack';
 
-
-
-const Stack = createStackNavigator()
-
-
+const Stack = createStackNavigator();
 
 import Screen_Login from './screens/Screen_Login';
 import Screen_NadraVerification from './screens/Screen_NadraVerification';
@@ -42,75 +38,57 @@ import Screen_Splash from './screens/Screen_Splash';
 
 import Screen_ForgotPassword from './screens/Screen_ForgotPassword';
 
-import PushNotification from "react-native-push-notification";
+import PushNotification from 'react-native-push-notification';
 import Screen_Decider from './screens/Screen_Decider';
 
 import HomeTabs from './HomeTabs';
 
-import {useConnectionStatus} from './components/NoInternet'
+import {useConnectionStatus} from './components/NoInternet';
 
-
-import UserIdContext, { UserIdProvider } from './UserIdContext'
-import { LocationProvider } from './LocationContext';
+import UserIdContext, {UserIdProvider} from './UserIdContext';
+import {LocationProvider} from './LocationContext';
 
 // import { connectToSocket } from './components/SocketService';
-
-
+import { navigationRef } from './RootNavigation';
 export default function App() {
-  const navigationRef = useRef(null);
-  
+
   // const {setUserId} = useContext(UserIdContext)
 
-  const [isLoggedIn, setisLoggedIn] = useState(false)
-  
+  const [isLoggedIn, setisLoggedIn] = useState(false);
+
   // const [isConnected, setisConnected] = useState(false)
   const isConnected = useConnectionStatus();
-  
-  
+
   // const socket = connectToSocket();
 
-
-    
-
-
-
-  useEffect(()=>{
-    getDeviceToken()
-  },[])
-  
-  const getDeviceToken =async() =>{
-
-    await messaging().registerDeviceForRemoteMessages();
-    const token = await messaging().getToken();
-    let serverKey = 'AAAADz1-KfI:APA91bGJ-sKa3F15DexhEXHxHp_XWl4dEoC6HChxD6cJF42ad9RzvTj0K0KfxwCLLeAA54nWSGHwxN8ZYd2EIbBHztsXGu57ZG7jt-QKT8peIQYvyhMEWj03oX1kO2I0AYR8KVbs09gO'
-    let dvT = 'c8KHnyMrRTyXNXB9tVglFM:APA91bGVoYH4vYpKUsETdY_RxbAMZ3vXe2u4wLWhDFrya87IyuTyyStgiaypiOCfZgO5HLuMSpnIvZ4LL7gcFzWfk5_zZbT-hodd-D6RMvtkJPKaSIytPKowKcI5HgO3viZWtHFNBlOX'
-  }
-
-
-
-useEffect(() => {
-
-
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      // setUserId({notificationArrived: true})
-      PushNotification.localNotification({
-        ticker: "My Notification Ticker",
-        channelId: "test-channel",
-        channelName: "Test Channel",
-        // title: remoteMessage.notification?.title,
-        title: remoteMessage.notification?.title,
-        // message: remoteMessage.notification?.body,
-        message: remoteMessage.notification?.body,
-        // bigText: "Yuhu is name of the famous chinese dish",
-        // foreground: true,
-        showWhen: true,
-        color: 'red'
-    })
-    });
-
-    return unsubscribe;
+  useEffect(() => {
+    getDeviceToken();
   }, []);
 
+  const getDeviceToken = async () => {
+    await messaging().registerDeviceForRemoteMessages();
+    const token = await messaging().getToken();
+    let serverKey =
+      'AAAADz1-KfI:APA91bGJ-sKa3F15DexhEXHxHp_XWl4dEoC6HChxD6cJF42ad9RzvTj0K0KfxwCLLeAA54nWSGHwxN8ZYd2EIbBHztsXGu57ZG7jt-QKT8peIQYvyhMEWj03oX1kO2I0AYR8KVbs09gO';
+    let dvT =
+      'c8KHnyMrRTyXNXB9tVglFM:APA91bGVoYH4vYpKUsETdY_RxbAMZ3vXe2u4wLWhDFrya87IyuTyyStgiaypiOCfZgO5HLuMSpnIvZ4LL7gcFzWfk5_zZbT-hodd-D6RMvtkJPKaSIytPKowKcI5HgO3viZWtHFNBlOX';
+  };
+
+  useEffect(() => {
+    // const unsubscribe = messaging().onMessage(async remoteMessage => {
+    //   PushNotification.localNotification({
+    //     ticker: 'My Notification Ticker',
+    //     channelId: 'test-channel',
+    //     channelName: 'Test Channel',
+    //     title: remoteMessage.notification?.title,
+    //     message: remoteMessage.notification?.body,
+    //     showWhen: true,
+    //     color: 'red',
+    //   });
+    // });
+
+    // return unsubscribe;
+  }, []);
 
   const config = {
     animation: 'spring',
@@ -124,104 +102,93 @@ useEffect(() => {
     },
   };
 
-
   return (
     <>
+      {/* {isConnectedtoSocket? <Text>hey</Text>:  */}
+      <UserIdProvider>
+        <NavigationContainer ref={navigationRef}>
+          <Stack.Navigator
+            initialRouteName="Screen_Splash"
+            screenOptions={{
+              animationEnabled: true,
+              animationTypeForReplace: 'push',
+              ...TransitionPresets.RevealFromBottomAndroid,
+            }}>
+            <Stack.Screen
+              name="Screen_Splash"
+              component={Screen_Splash}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Screen_Decider"
+              component={Screen_Decider}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Screen_Login"
+              component={Screen_Login}
+              options={{
+                headerShown: false,
+                //  ...TransitionPresets.RevealFromBottomAndroid
+                // transitionSpec: {
+                //   open: TransitionSpecs.BottomSheetSlideInSpec,
+                //   close: TransitionSpecs.ScaleFromCenterAndroidSpec,
+                // },
+              }}
+            />
+            <Stack.Screen
+              name="Screen_NadraVerification"
+              component={Screen_NadraVerification}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Screen_Registration"
+              component={Screen_Registration}
+              options={{
+                headerShown: false,
+                // ...TransitionPresets.RevealFromBottomAndroid
+              }}
+            />
+            <Stack.Screen
+              name="Screen_ForgotPassword"
+              component={Screen_ForgotPassword}
+              options={{headerShown: false}}
+            />
 
-    {/* {isConnectedtoSocket? <Text>hey</Text>:  */}
-    <UserIdProvider>
+            <Stack.Screen
+              name="HomeTabs"
+              component={HomeTabs}
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </UserIdProvider>
 
-
-         <NavigationContainer ref={navigationRef}>
-        <Stack.Navigator initialRouteName='Screen_Splash' screenOptions={{ animationEnabled: true, animationTypeForReplace: 'push', ...TransitionPresets.RevealFromBottomAndroid }}  >
-          <Stack.Screen name="Screen_Splash" component={Screen_Splash} options={{headerShown: false}}/>
-          <Stack.Screen name="Screen_Decider" component={Screen_Decider} options={{headerShown: false}} />
-          <Stack.Screen name="Screen_Login" component={Screen_Login} options={{ headerShown: false
-            //  ...TransitionPresets.RevealFromBottomAndroid
-            // transitionSpec: {
-              //   open: TransitionSpecs.BottomSheetSlideInSpec,
-    //   close: TransitionSpecs.ScaleFromCenterAndroidSpec,
-    // },
-  }} />
-          <Stack.Screen name="Screen_NadraVerification" component={Screen_NadraVerification} options={{headerShown: false}} />
-          <Stack.Screen name="Screen_Registration" component={Screen_Registration} options={{headerShown: false
-            // ...TransitionPresets.RevealFromBottomAndroid
-          }} />
-          <Stack.Screen name="Screen_ForgotPassword" component={Screen_ForgotPassword} options={{headerShown: false}} />
-             
-          <Stack.Screen name="HomeTabs" component={HomeTabs} options={{
-            headerShown: false
-          }}/>
-
-        </Stack.Navigator>
-      </NavigationContainer>
-          </UserIdProvider>
-
-           {/* }  */}
-</>
-           
-)}
+      {/* }  */}
+    </>
+  );
+}
 
 const styles = StyleSheet.create({
   body: {
-          flex: 1,
-          backgroundColor: 'black',
-          alignItems: 'center',
-          justifyContent: 'center'
-        },
+    flex: 1,
+    backgroundColor: 'black',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   text: {
-          margin: 10,
-          fontSize: 25,
-          fontWeight: '600',
-          color: 'white',
-       
-        }
- 
+    margin: 10,
+    fontSize: 25,
+    fontWeight: '600',
+    color: 'white',
+  },
 });
 
 // export default App;
 
 // export {navigationRef};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // <View style={styles.body}>
 
@@ -338,37 +305,6 @@ const styles = StyleSheet.create({
 
 // export default App;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // const [Items, setItems] = useState([
 //   { name: 'Item-1' },
 //   { name: 'Item-2' },
@@ -418,9 +354,9 @@ const styles = StyleSheet.create({
 //     title: `title-${keyNo}`,
 //     data: [`item ${keyNo}-1`, `item ${keyNo}-2`]
 //   }])
-  
+
 //   setRefreshing(false);
-//   // keyNo = keyNo+1; 
+//   // keyNo = keyNo+1;
 //   // setItems([...Items, { name: `Item-${keyNo}` }]);
 //   // keyNo++;
 // }
@@ -441,7 +377,7 @@ const styles = StyleSheet.create({
 //           onRefresh={onRefreshHandler}
 //         />
 //       }
-      
+
 //       renderSectionHeader={({section})=>(
 //         <View style={styles.view1}>
 //         <Text style={styles.text}>{section.title}</Text>
@@ -449,8 +385,7 @@ const styles = StyleSheet.create({
 //       )}
 //       />
 
-
-//     {/* <FlatList style={styles.body} 
+//     {/* <FlatList style={styles.body}
 //     keyExtractor={(item, index)=> index.toString()}
 //     data={Items}
 
@@ -465,7 +400,6 @@ const styles = StyleSheet.create({
 //     onRefresh={onRefreshHandler}
 //     />
 //     }>
-
 
 //     </FlatList> */}
 //   </>
@@ -493,7 +427,6 @@ const styles = StyleSheet.create({
 
 // },
 
-
 // text: {
 //   fontSize: 30,
 //   fontWeight: '600',
@@ -505,84 +438,56 @@ const styles = StyleSheet.create({
 
 // export default App;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // function App() {
 
 //   const [submitted, setSubmitted] = useState(false)
 //   const [text, setText] = useState('')
-  
+
 //   const DisplayImg = ()=>{
 //     if(text.length > 5){
-  
+
 //       setSubmitted(true)
 //       Keyboard.dismiss();
 //     }
 //     else{
 //       setSubmitted(false)
 //       Keyboard.dismiss();
-  
+
 //     }
 //   }
-  
-  
+
 //     return (
 //       <>
-   
-  
+
 //     <ImageBackground
 //     source={{uri: 'https://w0.peakpx.com/wallpaper/287/741/HD-wallpaper-gradient-background-gradient-background-blue-lockscreen.jpg'}}
 //     style={styles.body}>
-  
+
 //   <Text style={styles.text}>What is your name?</Text>
 //   <TextInput style={[styles.input,{color: 'white'}]} editable placeholder='e.g: Harry' placeholderTextColor={'white'} onChangeText={(value)=>setText(value)}></TextInput>
-   
+
 //    <MashButton displayImg={DisplayImg} style={{marginTop: 20}} bgcolor={'red'} />
 //    <MashButton displayImg={DisplayImg} style={{margin: 30 }} bgcolor={'green'}/>
-  
-//     {submitted? 
+
+//     {submitted?
 //   <View>
 //     <Text style={styles.text}>Good</Text>
 //     <Image resizeMode='center' style={styles.image} source={{uri: 'https://images.pexels.com/photos/1102912/pexels-photo-1102912.jpeg?cs=srgb&dl=pexels-johannes-plenio-1102912.jpg&fm=jpg'}}></Image>
-//   </View>  
+//   </View>
 //   :
 //   <View>
 //     <Text style={styles.text}>bad</Text>
 //     <Image resizeMode='stretch' style={styles.image} source={{uri: 'https://themepack.me/i/c/749x467/media/g/679/dark-theme-np17.jpg'}}></Image>
-//   </View> 
+//   </View>
 //   }
 //     </ImageBackground>
-  
-  
+
 //       </>
 //     );
 //   }
-  
+
 //   const styles = StyleSheet.create({
-  
+
 //     body: {
 //       flex: 1,
 //       backgroundColor: 'black',
@@ -594,7 +499,7 @@ const styles = StyleSheet.create({
 //       width: 400,
 //       height: 400
 //     },
-  
+
 //     input:{
 //       width: '80%',
 //       height: 50,
@@ -604,7 +509,7 @@ const styles = StyleSheet.create({
 //       fontSize: 25,
 //       textAlign: 'center',
 //     },
-  
+
 //     view1: {
 //       // flex: 1,
 //       width: '100%',
@@ -613,10 +518,9 @@ const styles = StyleSheet.create({
 //       alignItems: 'center',
 //       backgroundColor: 'cyan',
 //       margin: 10
-  
+
 //     },
-  
-  
+
 //     text: {
 //       margin: 10,
 //       fontSize: 25,
@@ -624,7 +528,7 @@ const styles = StyleSheet.create({
 //       color: 'white',
 //       // marginBottom: 20
 //     }
-  
+
 //   });
-  
+
 //   export default App;

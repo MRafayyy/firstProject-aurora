@@ -81,7 +81,7 @@ export default function Screen_Splash({ navigation, route }) {
                             
                             // }
                 
-                    }, 3000)
+                    }, 2000)
                 }
 
             } catch (error) {
@@ -93,7 +93,7 @@ export default function Screen_Splash({ navigation, route }) {
                         
                         // }
             
-                }, 3000)
+                }, 1000)
             }
         }
         Logged();

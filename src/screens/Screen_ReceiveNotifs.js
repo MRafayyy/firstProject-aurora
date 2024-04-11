@@ -227,7 +227,7 @@ export default function Screen_ReceiveNotifs() {
     // Function to format the date
     function formatDate(date) {
       const today = moment().tz('Asia/Karachi');
-      console.log(today);
+      // console.log(today);
       const yesterday = moment().tz('Asia/Karachi').subtract(1, 'day');
 
       const dateFormatOptions = {
@@ -241,7 +241,7 @@ export default function Screen_ReceiveNotifs() {
       } else if (date.isSame(yesterday, 'day')) {
         return 'Yesterday';
       } else {
-        console.log(date.format('Do MMMM YYYY'));
+        // console.log(date.format('Do MMMM YYYY'));
         return date.format('Do MMMM YYYY');
       }
     }
