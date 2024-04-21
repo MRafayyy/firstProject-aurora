@@ -4,8 +4,12 @@ import Geolocation from 'react-native-geolocation-service';
 import socket from './SocketService'; // Assuming you have a socket instance
 import UserIdContext, {LocationsContext} from '../UserIdContext';
 import ip from '../screens/IPaddress';
+import BackgroundService from 'react-native-background-actions';
+const sleep = time => new Promise(resolve => setTimeout(() => resolve(), time));
+
 
 const useLocationUpdates = () => {
+  
   const {userId, setUserId} = useContext(UserIdContext);
   const {mLocation, setmLocation} = useContext(LocationsContext);
   const [myLocation, setmyLocation] = useState(null);

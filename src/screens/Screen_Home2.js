@@ -668,7 +668,7 @@ export default function Screen_Home({navigation, route}) {
                 onPress={async () => {
                   setDone(true)
                  await StartMyLocation();
-                  RecordingInitiation();
+                  // RecordingInitiation();
                 }}
                 disabled={
                   isActive === true

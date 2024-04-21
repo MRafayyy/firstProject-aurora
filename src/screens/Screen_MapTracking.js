@@ -27,8 +27,9 @@ import socket from '../components/SocketService';
 export default function Screen_MapTracking({navigation, route}) {
   // const userId = route.params.item;
   const mongoId = route.params.item;
+  const receivedLocation = route.params.receivedLocation
   // console.log(userId)
-  console.log(mongoId)
+  console.log(mongoId);
 
   const [showMap, setShowMap] = useState(false);
   const mapref = useRef(null);
@@ -54,108 +55,47 @@ export default function Screen_MapTracking({navigation, route}) {
     };
   }, []);
 
-  const requestLocationPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: 'Cool Location Permission',
-          message: 'Please allow location permissions to continue...',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
+
+  const animateTheMarker = async (lat, lng) => {
+    if (mapref.current !== null) {
+      // console.log("animateTheMarker clicked!")
+      if (markerref.current !== undefined && markerref.current !== null) {
+        markerref.current.animateMarkerToCoordinate(
+          {
+            latitude: lat,
+            longitude: lng,
+            // latitude: position.coords.latitude,
+            // longitude: position.coords.longitude,
+          },
+          10000,
         );
-        console.log(granted)
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        setPermissionGranted(true);
-        // getCurrentLocation();
-      } else {
-        console.log('Location permission denied');
       }
-    } catch (err) {
-      console.warn(err);
-      console.log('demnit');
     }
   };
 
   useEffect(() => {
-    requestLocationPermission();
-
-    // socket.on(userId, data => {
-    // socket.on('bd', data => {
-    socket.on(mongoId, data => {
-      console.log("hey"+mongoId)
-      setShowMap(true);
-      console.log('receiving user coordinates');
+    console.log("receivedLocation here")
+    // console.log(route.params.receivedLocation)
+        setmyLocation(route.params.receivedLocation)
+    
+// socket.on(userId, data => {
+  socket.on(mongoId, data => {
+    console.log('hey' + mongoId);
+    console.log('receiving user coordinates');
+    if(data.Location!==null ||data.Location!==undefined){
       setmyLocation(data.Location);
-      if (mapref.current != null) {
-        console.log('entered: ' + data.Location.latitude);
-        if(markerref.current !== undefined && markerref.current !== null){
-
-          markerref?.current.animateMarkerToCoordinate(
-            {
-              latitude: data.latitude,
-              longitude: data.longitude,
-            },
-            7000,
-            );
-          }
-      }
+    }
+    // else{
+    //     setmyLocation(route.params.receivedLocation)
+    //   }
     });
+    
+    console.log("back here")
 
     return () => {
       socket.off(mongoId);
     };
   }, []);
-
-  // useEffect(() => {
-
-  //   socket.on('bd', data => {
-  //     console.log('sooo');
-  //   });
-
-  //   requestLocationPermission();
-
-  //   const watchId = Geolocation.watchPosition(
-  //     position => {
-  //       // setTimeout(()=>{
-  //       if (mapref.current != null) {
-  //         setmyLocation(position.coords);
-
-  //         // const socket= connectToSocket();
-  //         socket.emit('shareCoordinates', {hey: position.coords});
-
-  //         markerref?.current.animateMarkerToCoordinate(
-  //           {
-  //             latitude: position.coords.latitude,
-  //             longitude: position.coords.longitude,
-  //           },
-  //           7000,
-  //         );
-  //       }
-  //       console.log(position);
-
-  //       // moveToLocation(position?.coords?.latitude, position?.coords?.longitude)
-  //     },
-  //     error => {
-  //       console.log(error);
-  //     },
-  //     {
-  //       enableHighAccuracy: true,
-  //       // fastestInterval: 5000,
-  //       timeout: 20000,
-  //       maximumAge: 0,
-  //       // interval: 1000,
-  //       distanceFilter: 1,
-  //     },
-  //   );
-  //   return () => {
-  //     Geolocation.clearWatch(watchId);
-  //     // socket.disconnect();
-  //     // socket.close();
-  //   };
-  // }, []);
 
   const moveToLocation = async (latitude, longitude) => {
     console.log('full full' + latitude + '  ' + longitude);
@@ -171,44 +111,24 @@ export default function Screen_MapTracking({navigation, route}) {
   };
 
   const getCurrentLocation = (latitude, longitude) => {
-    // console.log('entering get location method');
     if (PermissionGranted) {
-      // Geolocation.getCurrentPosition(
-      //   position => {
-      //     console.log(position);
-      //     setmyLocation(position.coords);
-      //     moveToLocation(position.coords.latitude, position.coords.longitude);
-      //   },
-      //   error => {
-      //     console.log(error);
-      //   },
-      //   {
-      //     enableHighAccuracy: true,
-      //     timeout: 15000,
-      //     maximumAge: 1000,
-      //   },
-      // );
-
-      // console.log('entered get location method');
       moveToLocation(latitude, longitude);
     }
   };
-  if (showMap === false) {
-    console.log("why shomap false")
-   
-    return(
-      <View style={styles.body}>
-      <ActivityIndicator size='large' color="#00000" style={{justifyContent:'center', alignItems:'center'}} />
-      </View>
-    )
-    // return (
-    //   <View>
-    //     <Text style={{color: 'black'}}>No tracking available</Text>
-    //   </View>
-    // );
-  }
-  else
 
+  // if (showMap === false) {
+  //   console.log('why shomap false');
+
+  //   return (
+  //     <View style={styles.body}>
+  //       <ActivityIndicator
+  //         size="large"
+  //         color="#00000"
+  //         style={{justifyContent: 'center', alignItems: 'center'}}
+  //       />
+  //     </View>
+  //   );
+  // } else
   return (
     <>
       <View style={styles.container}>
@@ -246,7 +166,7 @@ export default function Screen_MapTracking({navigation, route}) {
                   longitude: details.geometry.location.lng,
                 };
                 setOrigin(origin);
-                console.log(JSON.stringify(data));
+                // console.log(JSON.stringify(data));
                 console.log(
                   JSON.stringify(
                     'Latitude: ' +
@@ -318,7 +238,6 @@ export default function Screen_MapTracking({navigation, route}) {
         </View>
 
         <MapView
-        
           ref={mapref}
           style={styles.map}
           region={{
@@ -382,26 +301,58 @@ export default function Screen_MapTracking({navigation, route}) {
         {/* </View> */}
 
         <Pressable
-          disabled={myLocation == undefined ? true : false}
+          // disabled={userId.mLocation.loc === undefined || null ? true : false}
           onPress={() => {
             if (myLocation != undefined) {
-              getCurrentLocation(myLocation.latitude, myLocation.longitude);
+              moveToLocation(myLocation.latitude, myLocation.longitude);
             } else {
-              console.log('waitin for myLocxation');
+              console.log('waitin for user Location');
             }
           }}
           style={{
-            width: 60,
-            backgroundColor: 'blue',
+            width: responsiveWidth(35),
+            backgroundColor: myLocation === undefined || null ? 'red' : 'green',
+            height: 40,
+            alignSelf: 'center',
+            position: 'absolute',
+            justifyContent: 'center',
+            alignItems: 'center',
+            bottom: 34,
+            left: 50,
+            borderRadius: 50,
+          }}>
+          {/* {userId.mLocation.loc == undefined ? <ActivityIndicator size='large' color="#fff" /> : */}
+          <Text style={{color: 'white'}}>User Location</Text>
+          {/* } */}
+        </Pressable>
+
+        <Pressable
+          // disabled={userId.mLocation.loc === undefined || null ? true : false}
+          onPress={() => {
+            // if (userId.mLocation.loc != undefined) {
+            //   getCurrentLocation(userId.mLocation.loc.latitude, userId.mLocation.loc.longitude);
+            // } else {
+            //   console.log('waitin for myLocxation');
+            // }
+            animateTheMarker(myLocation.latitude, myLocation.longitude);
+            console.log('animateTheMarker Clicked!!!');
+          }}
+          style={{
+            width: responsiveWidth(35),
+            backgroundColor: markerref == undefined || null ? 'red' : 'green',
             height: 40,
             alignSelf: 'center',
             position: 'absolute',
             bottom: 34,
+            right: 50,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 50,
           }}>
-          {myLocation == undefined ? (
+          {myLocation == undefined || null ? (
             <ActivityIndicator size="large" color="#fff" />
           ) : (
-            <Text style={{color: 'white'}}>Get Current Location</Text>
+            <Text style={{color: 'white'}}>Status</Text>
           )}
         </Pressable>
       </View>
@@ -427,9 +378,33 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   body: {
-    flex:1,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'black'
-  }
+    backgroundColor: 'black',
+  },
 });
+
+// const requestLocationPermission = async () => {
+//   try {
+//     const granted = await PermissionsAndroid.request(
+//       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+//       {
+//         title: 'Cool Location Permission',
+//         message: 'Please allow location permissions to continue...',
+//         buttonNeutral: 'Ask Me Later',
+//         buttonNegative: 'Cancel',
+//         buttonPositive: 'OK',
+//       },
+//     );
+//     console.log(granted);
+//     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+//       setPermissionGranted(true);
+//     } else {
+//       console.log('Location permission denied');
+//     }
+//   } catch (err) {
+//     console.warn(err);
+//     console.log('demnit');
+//   }
+// };

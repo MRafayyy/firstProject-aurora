@@ -18,45 +18,41 @@ PushNotification.configure({
   onNotification: function (notification) {
     console.log('NOTIFICATION when arrive:::::', notification);
 
-if(notification.userInteraction){
-  console.log("user clicked on it")
-}
-else{
-
-  
-  PushNotification.localNotification({
-      largeIconUrl: notification.data.icon, //displated on the right side and when notif pops
-      // bigLargeIconUrl: notification.data.topRightPicUrl, //display on top right when notif arrow down
-      channelId: 'test-channel',
-      channelName: 'Test Channel',
-      title: notification.data.title,
-      visibility: 'public',
-      userInfo: notification.data,
-      // message: remoteMessage.notification?.body,
-      message: notification.data.body,
-      // bigText: "well well famous chinese dish",
-      foreground: true,
-      showWhen: true,
-      when: new Date().getTime(),
-      color: 'red',
-      allowWhileIdle: true,
-      // smallIcon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqz60t_G-CME75wZtq5x3iXR3-5BtNgJ1C6Vxrm30riQ&s',
-      priority: 'max',
-      smallIcon: 100,
-      invokeApp: true, //default true
-      // picture: notification.data.imageUrl, //displayed below message
-    });
-  }
-    RootNavigation.navigate(notification.data.screen, {userName: 'Lucy'});
-    console.log("heyyyyyyyyyyyyy")
+    if (notification.userInteraction) {
+      RootNavigation.navigate(notification.data.screen, {userName: 'Lucy'});
+      console.log('user clicked on it');
+    } else {
+      PushNotification.localNotification({
+        largeIconUrl: notification.data.icon, //displated on the right side and when notif pops
+        // bigLargeIconUrl: notification.data.topRightPicUrl, //display on top right when notif arrow down
+        channelId: 'test-channel',
+        channelName: 'Test Channel',
+        title: notification.data.title,
+        visibility: 'public',
+        userInfo: notification.data,
+        // message: remoteMessage.notification?.body,
+        message: notification.data.body,
+        // bigText: "well well famous chinese dish",
+        foreground: true,
+        showWhen: true,
+        when: new Date().getTime(),
+        color: 'red',
+        allowWhileIdle: true,
+        // smallIcon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqz60t_G-CME75wZtq5x3iXR3-5BtNgJ1C6Vxrm30riQ&s',
+        priority: 'max',
+        smallIcon: 100,
+        invokeApp: true, //default true
+        // picture: notification.data.imageUrl, //displayed below message
+      });
+    }
+ 
   },
 
   // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
-  // onAction: function (notification) {
-  //   // console.log('ACTION:', notification.action);
-  //   console.log('NOTIFICATION: actionnn');
-  //   // NavigationService.navigate(HomeTabs, { screen: Screen_Home })
-  // },
+  onAction: function (notification) {
+    console.log('ACTION:', notification.action);
+
+  },
 
   //   * - if you are not using remote notification or do not have Firebase installed, use this:
   requestPermissions: Platform.OS === 'ios',
