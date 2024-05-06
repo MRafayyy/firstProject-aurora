@@ -1,279 +1,231 @@
-import React, { useEffect, useState, useContext, useCallback } from "react";
-
-import { View, Pressable, StyleSheet, BackHandler, FlatList, RefreshControl, refreshing, TextInput, Image } from 'react-native'
-
-// import EncryptedStorage from 'react-native-encrypted-storage'
-
+import React, {useEffect, useState, useContext, useCallback} from 'react';
 import {
-    responsiveHeight,
-    responsiveWidth,
-    responsiveFontSize
-} from "react-native-responsive-dimensions";
-// import * as Keychain from 'react-native-keychain';
-import ip from './IPaddress'
+  View,
+  Pressable,
+  StyleSheet,
+  BackHandler,
+  FlatList,
+  RefreshControl,
+  refreshing,
+  TextInput,
+  Image,
+} from 'react-native';
+import {
+  responsiveHeight,
+  responsiveWidth,
+  responsiveFontSize,
+  responsiveScreenWidth,
+} from 'react-native-responsive-dimensions';
 
-// import {getSocket} from '../components/sockets'
-import UserDisplay from "../components/UserDisplay";
-import UserIdContext from "../UserIdContext";
+import ip from './IPaddress';
 
+import UserDisplay from '../components/UserDisplay';
+import UserIdContext from '../UserIdContext';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import fontFamily from '../../assets/fontFamily/fontFamily';
+import colors from '../utils/color';
 
+export default function Screen_SearchContacts({navigation}) {
+  const {userId} = useContext(UserIdContext);
+  const [searchText, setSearchText] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+  const [AllUsers, setAllUsers] = useState([]);
+  const [AllUsers2, setAllUsers2] = useState([]);
+  const [requestSent, setrequestSent] = useState({});
 
+  const fetchUsers = async () => {
+    try {
+      const mongoId = userId.mongoId;
 
-export default function Screen_SearchContacts({ navigation }) {
+      let response = await fetch(`${ip}/users/${mongoId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-    const { userId } = useContext(UserIdContext)
-    // const navigation = useNavigation();
-    const [searchText, setSearchText] = useState('')
-    const [onlineUsersCount, setOnlineUsersCount] = useState(0);
-    const [refreshing, setRefreshing] = useState(false);
-
-    const [AllUsers, setAllUsers] = useState([]);
-    const [AllUsers2, setAllUsers2] = useState([]);
-    const [requestSent, setrequestSent] = useState({})
-
-
-
-    const fetchUsers = async () => {
-        try {
-
-            const mongoId = userId.mongoId;
-
-            let response = await fetch(`${ip}/users/${mongoId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-
-            response = await response.json();
-            setAllUsers(response)
-            setAllUsers2(response)
-
-
-        } catch (error) {
-            console.log("error here ")
-            console.log(error)
-        }
+      response = await response.json();
+      setAllUsers(response);
+      setAllUsers2(response);
+    } catch (error) {
+      console.log('error here ');
+      console.log(error);
     }
+  };
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', e => {
+      fetchUsers();
+    });
 
+    return unsubscribe;
+  }, [navigation]);
 
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', (e) => {
-            fetchUsers()
-        });
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
-        return unsubscribe;
-    }, [navigation]);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+    fetchUsers();
+  }, []);
 
+  function handleBackButtonClick() {
+    navigation.navigate('Screen_Home');
+    return true;
+  }
 
-    useEffect(() => {
-        fetchUsers()
-    }, [])
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener(
+        'hardwareBackPress',
+        handleBackButtonClick,
+      );
+    };
+  }, []);
 
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
-        setTimeout(() => {
-            setRefreshing(false);
-        }, 2000);
-        fetchUsers()
+  const handleOnChangeText = text => {
+    setSearchText(text);
+  };
 
-    }, []);
-
-    // useEffect(()=>{
-    //     const socket = getSocket();
-
-    //     const getOnlineUserCount = async()=>{
-    //         socket.on('getOnlineUsers',(data)=>{
-    //             console.log(data.userId+" is online")
-    //             setOnlineUsersCount(data.count)
-    //         })
-
-    //         socket.on('getOfflineUsers',(data)=>{
-    //             console.log(data.userId+" is offline")
-    //             setOnlineUsersCount(data.count)
-    //         })
-    //     }
-
-    //     getOnlineUserCount();
-    // },[])
-
-
-    function handleBackButtonClick() {
-        navigation.navigate('Screen_Home');
-        return true;
-    }
-
-    useEffect(() => {
-        BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
-        return () => {
-            BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
-        };
-    }, []);
-
-
-    const handleOnChangeText = (text) => {
-        setSearchText(text)
-    }
-
-
-    const onSearch = (text)=>{
-
-
-        const searchText = text.trim().toLowerCase();
+  const onSearch = text => {
+    const searchText = text.trim().toLowerCase();
 
     // Debugging: Log the search text
     // console.log("Search text:", searchText);
 
     if (searchText === '') {
-        // If the search text is empty, reset to the original list
-        setAllUsers(AllUsers2);
+      // If the search text is empty, reset to the original list
+      setAllUsers(AllUsers2);
     } else {
-        
-        let tempList = AllUsers2.filter((item) => {
-            if (item.name && typeof item.name === 'string') {
-                return item.name.toLowerCase().startsWith(searchText);
-                // return item.name.toLowerCase().includes(searchText);
-                            // return (item.name.toLowerCase()).indexOf(text.trim().toLowerCase()) > -1;
-            }
-            return false;
-        });
+      let tempList = AllUsers2.filter(item => {
+        if (item.name && typeof item.name === 'string') {
+          return item.name.toLowerCase().startsWith(searchText);
+        }
+        return false;
+      });
 
-        // Debugging: Log the filtered list
-        // console.log("Filtered list:", tempList);
-
-        setAllUsers(tempList);
+      setAllUsers(tempList);
     }
     // ------------------------------------
+  };
 
-        // let tempList = AllUsers.filter((item)=>{
-        //     const searchText = text.trim().toLowerCase();
-        //     // if(item.name!==undefined){
+  return (
+    <>
+      <View style={styles.body}>
+        <View style={styles.headerContainer}>
+          <Ionicons
+            name="chatbox-ellipses-outline"
+            size={24}
+            color={'black'}
+            onPress={() => navigation.navigate('Screen_MyFriends')}
+          />
+          <MaterialCommunityIcons
+            name="account-multiple"
+            size={28}
+            color={'black'}
+            onPress={() => navigation.navigate('Screen_Friends')}
+          />
+        </View>
 
-        //         // return (item.name.toLowerCase()).indexOf(text.trim().toLowerCase()) > -1;
-        //         if (item.name && typeof item.name === 'string') {
-        //     return item.name.toLowerCase().includes(searchText);
-        // }
-        //     // }
-        // })
-        // setAllUsers(tempList)
+        <Pressable style={styles.searchContainer}>
+          <Image
+            source={require('../../assets/images/icons8search50.png')}
+            style={styles.searchIcon}
+          />
+          <TextInput
+            style={styles.textInputStyle}
+            value={searchText}
+            onChangeText={text => {
+              handleOnChangeText(text);
+              onSearch(text);
+            }}
+            // placeholderTextColor={}
+            
+            placeholder="search name here..."></TextInput>
+        </Pressable>
 
-        // if(text.trim()===''){
-        //     setAllUsers(AllUsers2)
-        // }
+        {
+          <FlatList
+            contentContainerStyle={{
+              marginTop: responsiveHeight(2),
+              paddingBottom: responsiveHeight(10),
+            }}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            data={AllUsers}
+            renderItem={({item}) => {
+              return (
+                <UserDisplay
+                  item={item}
+                  requestSent={requestSent}
+                  setrequestSent={setrequestSent}
+                />
+              );
+            }}
+            keyExtractor={(item, index) => index}
+          />
+        }
+        {/* </View> */}
+      </View>
 
-
-
-    }
-
-
-
-
-    return (
-        <>
-
-            <View style={styles.body}>
-
-
-                <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: responsiveHeight(3) }}>
-                    <Pressable style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' ,width: responsiveWidth(89), height: responsiveHeight(6), borderWidth: 1, paddingHorizontal: responsiveWidth(3), borderColor: 'gray', borderRadius: 20 }}><Image source={require('../../assets/images/icons8-search-50.png')} style={{marginRight: responsiveWidth(1) ,width:responsiveWidth(6), height: responsiveWidth(6)}} /><TextInput style={{color: 'black', fontSize: responsiveFontSize(2)}} value={searchText} onChangeText={(text) => { handleOnChangeText(text); onSearch(text) }} placeholder="search name here..."></TextInput></Pressable>
-                </View>
-
-
-                {/* <View style={{ justifyContent: 'center', alignItems: 'center',width: responsiveWidth(95) }}> */}
-
-
-                {
-                    <FlatList style={{ marginTop: responsiveHeight(4), paddingBottom: responsiveHeight(10) }}
-                        refreshControl={
-                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                        }
-                        data={AllUsers}
-                        renderItem={({ item }) => {
-                            return (
-                                <UserDisplay item={item} requestSent={requestSent} setrequestSent={setrequestSent} />
-                            )
-                        }}
-                        keyExtractor={(item, index) => index}
-                    />
-
-                }
-                {/* </View> */}
-
-            </View >
-
-            {/* </ScrollView> */}
-        </>
-    )
+      {/* </ScrollView> */}
+    </>
+  );
 }
 
-
 const styles = StyleSheet.create({
-    body: {
-        flex: 1,
-        backgroundColor: 'white',
-       
-        // alignItems: 'center',
-        // justifyContent: 'flex-start'
-    },
-    text: {
-        margin: 5,
-        fontSize: 15,
-        // fontWeight: '600',
-        color: 'black',
-        textAlign: 'left'
-    },
+  body: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  text: {
+    margin: 5,
+    fontSize: 15,
+    color: 'black',
+    textAlign: 'left',
+  },
 
-    UsernameInputBox: {
-        width: responsiveWidth(80),
-        height: responsiveHeight(6),
-        fontSize: responsiveFontSize(2),
-        backgroundColor: 'white',
-        color: 'black',
-        borderColor: 'black',
-        borderTopWidth: 0,
-        borderRightWidth: 0,
-        borderLeftWidth: 0,
-        borderBottomWidth: 3,
-    },
-
+  headerContainer: {
+    marginTop: responsiveHeight(2),
+    alignSelf: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: responsiveScreenWidth(4),
+    paddingHorizontal: 9,
+  },
+  searchContainer: {
+    alignSelf: 'center',
+    marginTop: responsiveHeight(3),
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: responsiveWidth(89),
+    height: responsiveHeight(6),
+    borderWidth: 1,
+    paddingHorizontal: responsiveWidth(3),
+    borderColor: 'gray',
+    borderRadius: 20,
+  },
+  searchIcon: {
+    alignSelf: 'center',
+    marginRight: responsiveWidth(1),
+    width: responsiveWidth(6),
+    height: responsiveWidth(6),
+  },
+  textInputStyle: {
+    paddingVertical: responsiveHeight(1),
+    width: '100%',
+    color: 'black',
+   fontSize: responsiveFontSize(2),
+  fontFamily: fontFamily.Regular,
+  lineHeight: responsiveHeight(2.6),
+  
+  },
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

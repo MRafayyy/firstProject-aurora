@@ -59,7 +59,7 @@ console.log("Screen_Settings rendered")
               height: responsiveHeight(30),
               resizeMode: 'cover',
             }}
-            source={require('../../assets/images/womenAvatar.jpg')}
+            source={require('../../assets/images/womenavatar.jpg')}
           />
         </View>
 

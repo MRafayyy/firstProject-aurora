@@ -1,5 +1,4 @@
 import React, { useState, PropsWithChildren, useEffect } from "react";
-// import type { PropsWithChildren } from 'react';
 import {
     StyleSheet,
     Text,
@@ -23,6 +22,7 @@ import {
 } from "react-native-responsive-dimensions";
 
 import { useConnectionStatus } from "../components/NoInternet";
+import GlobalStyles from "../utils/GlobalStyles";
 
 
 export default function Screen_NadraVerification({ navigation, route }) {
@@ -45,7 +45,6 @@ export default function Screen_NadraVerification({ navigation, route }) {
 
     const userId = route.params;
     const hmm = userId;
-    // console.log(userId);
     const [Loader, setLoader] = useState(false);
 
     const [nameText, setnameText] = useState('');
@@ -150,50 +149,41 @@ export default function Screen_NadraVerification({ navigation, route }) {
         }
     }
 
-    // useEffect(() => {
-    //     Verify();
-    // }, [])
-
-
-    // const [text, setText] = useState('');
-
-
     return (
         <>
             <KeyboardAvoidingView enabled behavior={Platform.OS === 'ios' ? 'padding' : 'null'} style={{ flex: 1 }} >
 
-                <View style={styles.body}>
-                    <Image source={require('../../assets/images/nadraV.jpg')} style={[{ width: responsiveWidth(80), height: responsiveHeight(35), resizeMode: 'contain', marginBottom: responsiveHeight(2) }]} />
-                    {/* <Text style={styles.welcome_text}>NADRA</Text> */}
+                <View style={[GlobalStyles.body, {justifyContent: 'flex-start'}]}>
+                    <Image source={require('../../assets/images/nadrav.jpg')} style={[{ width: responsiveWidth(80), height: responsiveHeight(35), resizeMode: 'contain', marginBottom: responsiveHeight(2) }]} />
+
 
                     <View style={styles.UsernameInputBoxView}>
-                        <TextInput onChangeText={(value) => onHandleNameChange(value)} style={[styles.UsernameInputBox, { color: 'black' }]} editable placeholder='Your name' placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
+                        <TextInput onChangeText={(value) => onHandleNameChange(value)} style={[GlobalStyles.UserPasswInputBox]} editable placeholder='Your name' placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
                         {nameError_msg.map((value, index) => (
-                            <Text style={{ color: 'red', marginTop: 2, fontSize: responsiveFontSize(1.2) }} key={index}>{value}</Text>
+                            <Text style={[GlobalStyles.TextInputBelowErrorTextStyle, GlobalStyles.errorFont]} key={index}>{value}</Text>
                         ))}
                     </View>
 
 
                     <View style={styles.UsernameInputBoxView}>
-                        <TextInput onChangeText={(value) => onHandleFathersNameChange(value)} style={[styles.UsernameInputBox, { color: 'black' }]} editable placeholder="Father's name" placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
+                        <TextInput onChangeText={(value) => onHandleFathersNameChange(value)} style={[GlobalStyles.UserPasswInputBox]} editable placeholder="Father's name" placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
                         {Fathers_nameError_msg.map((value, index) => (
-                            <Text style={{ color: 'red', marginTop: 2, fontSize: responsiveFontSize(1.2) }} key={index}>{value}</Text>
+                            <Text style={[GlobalStyles.TextInputBelowErrorTextStyle, GlobalStyles.errorFont]} key={index}>{value}</Text>
                         ))}
                     </View>
 
 
                     <View style={[styles.PasswordInputBoxView]}>
-                        <TextInput onChangeText={(value) => onHandleCnicChange(value)} style={[styles.PasswordInputBox, { color: 'black' }]} editable placeholder='CNIC' placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
+                        <TextInput onChangeText={(value) => onHandleCnicChange(value)} style={[GlobalStyles.UserPasswInputBox]} editable placeholder='CNIC' placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
                         {cnicError_msg.map((value, index) => (
-                            <Text style={{ color: 'red', marginTop: 2, fontSize: responsiveFontSize(1.2) }} key={index}>{value}</Text>
+                            <Text style={[GlobalStyles.TextInputBelowErrorTextStyle, GlobalStyles.errorFont]} key={index}>{value}</Text>
                         ))}
                     </View>
 
 
 
-
-                    <Pressable onPress={Verify} style={({ pressed }) => [pressed ? { opacity: 0.8 } : {}, styles.loginBtn, { borderRadius: 100 }]} disabled={Loader}>
-                        {Loader ? <ActivityIndicator size='large' color="#fff" /> : <Text style={[styles.btntext, { textAlign: 'center' }]}> Verify</Text>}
+                    <Pressable onPress={Verify} style={({ pressed }) => [pressed ? { opacity: 0.8 } : {}, GlobalStyles.loginBtn, {marginTop: responsiveHeight(6) }]} disabled={Loader}>
+                        {Loader ? <ActivityIndicator size='large' color="#fff" /> : <Text style={[GlobalStyles.btntext]}> Verify</Text>}
                     </Pressable>
 
 
@@ -209,91 +199,5 @@ export default function Screen_NadraVerification({ navigation, route }) {
 
 
 const styles = StyleSheet.create({
-    body: {
-        flex: 1,
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-
-    text: {
-        fontSize: responsiveFontSize(1.5),
-        color: 'black',
-        textAlign: 'left'
-    },
-    linkbeforetext: {
-        margin: 0,
-        fontSize: 20,
-        fontWeight: '600',
-        color: 'black',
-        textAlign: 'left'
-    },
-
-    btntext: {
-        fontSize: responsiveFontSize(2),
-        fontWeight: '400',
-        color: 'white',
-        textAlign: 'left'
-    },
-
-    UsernameInputBoxView: {
-        marginBottom: responsiveHeight(3),
-
-    },
-    PasswordInputBoxView: {
-        marginBottom: responsiveHeight(3),
-    },
-
-    UsernameInputBox: {
-        width: responsiveWidth(80),
-        height: responsiveHeight(6),
-        fontSize: responsiveFontSize(2),
-        backgroundColor: 'white',
-        color: 'black',
-        borderColor: 'black',
-        // borderTopWidth: 1,
-        borderRightWidth: 0,
-        borderLeftWidth: 0,
-        borderBottomWidth: 3,
-    },
-    PasswordInputBox: {
-        width: responsiveWidth(80),
-        height: responsiveHeight(6),
-        fontSize: responsiveFontSize(2),
-        backgroundColor: 'white',
-        color: 'black',
-        borderColor: 'black',
-        // borderTopWidth: 1,
-        borderRightWidth: 0,
-        borderLeftWidth: 0,
-        borderBottomWidth: 3,
-        // marginBottom: responsiveHeight(1),
-    },
-
-    loginBtn: {
-        width: responsiveWidth(80),
-        height: responsiveHeight(6),
-        color: 'white',
-        backgroundColor: '#0662bf',
-        borderRadius: 200,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: responsiveHeight(2),
-    },
-
-    bottomText: {
-        marginTop: responsiveHeight(2),
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row',
-        gap: 5,
-        alignSelf: '',
-
-    },
-    linkColor: {
-        color: 'red',
-        fontSize: responsiveFontSize(1.5),
-        textAlign: 'center'
-    }
 
 });

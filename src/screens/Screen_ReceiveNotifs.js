@@ -1,6 +1,8 @@
 import React, {useEffect, useState, useCallback, useContext} from 'react';
 import {useBackHandler} from '@react-native-community/hooks';
 import {useNavigation} from '@react-navigation/native';
+import {useWindowDimensions} from 'react-native';
+import {TabView, SceneMap} from 'react-native-tab-view';
 
 const moment = require('moment-timezone');
 import {
@@ -8,15 +10,7 @@ import {
   Text,
   View,
   Pressable,
-  TextInput,
-  Button,
-  PermissionsAndroid,
-  Platform,
   Image,
-  ScrollView,
-  KeyboardAvoidingView,
-  ActivityIndicator,
-  Keyboard,
   BackHandler,
   RefreshControl,
   FlatList,
@@ -33,8 +27,54 @@ import messaging from '@react-native-firebase/messaging';
 import UserIdContext from '../UserIdContext';
 import fontFamily from '../../assets/fontFamily/fontFamily';
 import colors from '../utils/color';
+import NotifComponent from '../components/notifComponent';
 
 export default function Screen_ReceiveNotifs() {
+
+
+  const FirstRoute = () => (
+    <FlatList
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+      data={Notifs}
+      renderItem={({item}) => {
+        return (
+          <NotifComponent item={item} checking={checking} />
+        );
+      }}
+      keyExtractor={(item, index) => index}
+    />
+  );
+
+  const SecondRoute = () => (
+    <FlatList
+    // initialNumToRender={6}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+      data={Notifs2}
+      renderItem={({item}) => {
+        return (
+     <NotifComponent item={item} checking={checking} />
+        );
+      }}
+      keyExtractor={(item, index) => index}
+    />
+  );
+
+  const renderScene = SceneMap({
+    first: FirstRoute,
+    second: SecondRoute,
+  });
+
+  const layout = useWindowDimensions();
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    {key: 'first', title: 'General'},
+    {key: 'second', title: 'Mine'},
+  ]);
+
   const navigation = useNavigation();
   const {userId} = useContext(UserIdContext);
   const [generalNotifs, setgeneralNotifs] = useState(true);
@@ -54,11 +94,11 @@ export default function Screen_ReceiveNotifs() {
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      // const UpdateNotifs = useCallback(() => {
+      const UpdateNotifs = useCallback(() => {
       fetchNotifs();
       fetchMyNotifs();
-      // }, []);
-      // UpdateNotifs()
+      }, []);
+      UpdateNotifs()
       navigation.setOptions({
         // tabBarBadge: () => { return (<Text>3</Text>) },
         tabBarBadge: () => {
@@ -94,18 +134,6 @@ export default function Screen_ReceiveNotifs() {
           return (
             <Text
               style={{
-                // position: 'absolute',
-                // top: 9,
-                // left: -25,
-                // // minWidth: responsiveWidth(0),
-                // // maxHeight: responsiveWidth(0),
-                // borderRadius: 7,
-                // fontSize: 10,
-                // lineHeight: 13,
-                // alignSelf: undefined,
-                // backgroundColor: 'red',
-                // color: 'red'
-
                 position: 'absolute',
                 top: height * 0.01, // 5% of screen height
                 left: width * -0.06, // 40% of screen width
@@ -132,30 +160,14 @@ export default function Screen_ReceiveNotifs() {
     navigation.setOptions({
       // tabBarBadge: () => { return (<Text>3</Text>) },
       tabBarBadge: () => {
-        return (
-          <Text
-            style={
-              {
-                // position: 'absolute',
-                // top: height * 0.01, // 5% of screen height
-                // left: width * -0.06, // 40% of screen width
-                // minWidth: width * 0.02, // 5% of screen width
-                // maxHeight: width * 0.02, // 5% of screen width
-                // borderRadius: width * 0.035, // 3.5% of screen width
-                // fontSize: width * 0.025, // 2.5% of screen width
-                // lineHeight: width * 0.04, // 4% of screen width
-                // alignSelf: undefined,
-                // backgroundColor: 'red',
-                // color: 'red'
-              }
-            }>
-            ""
-          </Text>
-        );
+        return <Text style={{}}>""</Text>;
       },
     });
+    // const UpdateNotifs = useCallback(() => {
     fetchNotifs();
     fetchMyNotifs();
+  // }, []);
+  // UpdateNotifs()
     BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
     return () => {
       BackHandler.removeEventListener(
@@ -184,7 +196,6 @@ export default function Screen_ReceiveNotifs() {
         },
       });
 
-   
       response = await response.json();
       // console.log(response)
       if (response.length === 0) {
@@ -208,7 +219,7 @@ export default function Screen_ReceiveNotifs() {
       });
 
       response2 = await response2.json();
- 
+
       // console.log(response)
       if (response2.length === 0) {
         setNoAlerts2(true);
@@ -296,32 +307,51 @@ export default function Screen_ReceiveNotifs() {
   return (
     <>
       <View style={styles.body}>
-        <Text
-          style={{
-            backgroundColor: '#0662bf',
-            color: 'white',
-            fontSize: responsiveFontSize(2.3),
-            padding: responsiveWidth(5),
-            borderBottomWidth: 1,
-            fontWeight: '700',
-            borderColor: 'transparent',
-            paddingLeft: responsiveWidth(12),
-          }}>
-          Notifications
-        </Text>
+        <Text style={styles.pageHeadingText}>Notifications</Text>
 
-        <View style={styles.notifType}>
-          <Text onPress={()=>{
-            setgeneralNotifs(true);
-            setmyNotifs(false);
-          }} style={[styles.notifEach, {borderBottomWidth: generalNotifs===true? 1: 0, color: generalNotifs? colors.black: colors.silver}]}>General</Text>
-          <Text onPress={()=>{
-            setgeneralNotifs(false);
-            setmyNotifs(true);
-          }} style={[styles.notifEach,{borderBottomWidth: myNotifs===true? 1:0,  color: myNotifs? colors.black: colors.silver}]}>Mine</Text>
-        </View>
+        <TabView
+          renderTabBar={props => (
+            <View style={styles.notifType}>
+              <Text
+                onPress={() => {
+                  setgeneralNotifs(true);
+                  setmyNotifs(false);
+                }}
+                style={[
+                  styles.notifEach,
+                  {
+                    // borderBottomWidth: generalNotifs === true ? 1 : 0,
+                    borderBottomWidth:
+                      props.navigationState.index === 0 ? 1 : 0,
+                    color: generalNotifs ? colors.black : colors.silver,
+                  },
+                ]}>
+                {props.navigationState.routes[0].title}
+              </Text>
+              <Text
+                onPress={() => {
+                  setgeneralNotifs(false);
+                  setmyNotifs(true);
+                }}
+                style={[
+                  styles.notifEach,
+                  {
+                    // borderBottomWidth: myNotifs === true ? 1 : 0,
+                    // borderBottomWidth: props.navigationState.index===0 ? 1 : 0,
+                    color: myNotifs ? colors.black : colors.silver,
+                  },
+                ]}>
+                {props.navigationState.routes[1].title}
+              </Text>
+            </View>
+          )}
+          navigationState={{index, routes}}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={{width: layout.width}}
+        />
 
-        {generalNotifs === true &&
+        {/* {generalNotifs === true &&
           (NoAlerts ? (
             <View
               style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -329,98 +359,9 @@ export default function Screen_ReceiveNotifs() {
                 No alerts to show
               </Text>
             </View>
-          ) : (
-            <FlatList
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }
-              data={Notifs}
-              renderItem={({item}) => {
-                return (
-                  <Pressable
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'flex-start',
-                      paddingTop: responsiveHeight(3),
-                      paddingBottom: responsiveHeight(3),
-                      paddingHorizontal: responsiveWidth(4.5),
-                      borderBottomWidth: 1,
-                      borderColor: 'gray',
-                      marginVertical: responsiveHeight(0),
-                    }}>
-                    <Image
-                      style={{
-                        alignSelf: 'flex-start',
-                        width: responsiveWidth(14),
-                        height: responsiveWidth(14),
-                        resizeMode: 'cover',
-                        borderRadius: responsiveWidth(100),
-                      }}
-                      source={require('../../assets/images/speakerw1.jpeg')}
-                    />
+          ) : )} */}
 
-                    <View
-                      style={{
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'flex-start',
-                        width: responsiveWidth(78),
-                      }}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          marginBottom: responsiveHeight(0.4),
-                        }}>
-                        <Text
-                          style={{
-                            flex: 1,
-                            fontSize: responsiveFontSize(2),
-                            textAlign: 'left',
-                            fontSize: responsiveFontSize(2),
-                            marginLeft: responsiveWidth(4),
-                            color: '#0a0a0a',
-                          }}>
-                          {item.title}
-                        </Text>
-                        <Text
-                          style={{
-                            textAlign: 'right',
-                            fontSize: responsiveFontSize(1.3),
-                            paddingHorizontal: 0,
-                            paddingTop: responsiveHeight(0.4),
-                            textAlign: 'right',
-                            color: '#7a7a7a',
-                            marginLeft: responsiveWidth(0),
-                            marginRight: responsiveWidth(0),
-                          }}>
-                          {checking(item.date, item.time)}
-                        </Text>
-                      </View>
-
-                      <Text
-                        style={{
-                          paddingRight: responsiveWidth(4),
-                          fontSize: responsiveFontSize(1.8),
-                          textAlign: 'left',
-                          marginLeft: responsiveWidth(4),
-                          color: '#7a7a7a',
-                        }}>
-                        {item.body}
-                      </Text>
-                    </View>
-                  </Pressable>
-                );
-              }}
-              keyExtractor={(item, index) => index}
-            />
-          ))}
-
-
-
-
-
-        {myNotifs === true &&
+        {/* {myNotifs === true &&
           (NoAlerts2 ? (
             <View
               style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -429,91 +370,8 @@ export default function Screen_ReceiveNotifs() {
               </Text>
             </View>
           ) : (
-            <FlatList
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }
-              data={Notifs2}
-              renderItem={({item}) => {
-                return (
-                  <Pressable
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'flex-start',
-                      paddingTop: responsiveHeight(3),
-                      paddingBottom: responsiveHeight(3),
-                      paddingHorizontal: responsiveWidth(4.5),
-                      borderBottomWidth: 1,
-                      borderColor: 'gray',
-                      marginVertical: responsiveHeight(0),
-                    }}>
-                    <Image
-                      style={{
-                        alignSelf: 'flex-start',
-                        width: responsiveWidth(14),
-                        height: responsiveWidth(14),
-                        resizeMode: 'cover',
-                        borderRadius: responsiveWidth(100),
-                      }}
-                      source={require('../../assets/images/speakerw1.jpeg')}
-                    />
-
-                    <View
-                      style={{
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'flex-start',
-                        width: responsiveWidth(78),
-                      }}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          marginBottom: responsiveHeight(0.4),
-                        }}>
-                        <Text
-                          style={{
-                            flex: 1,
-                            fontSize: responsiveFontSize(2),
-                            textAlign: 'left',
-                            fontSize: responsiveFontSize(2),
-                            marginLeft: responsiveWidth(4),
-                            color: '#0a0a0a',
-                          }}>
-                          {item.title}
-                        </Text>
-                        <Text
-                          style={{
-                            textAlign: 'right',
-                            fontSize: responsiveFontSize(1.3),
-                            paddingHorizontal: 0,
-                            paddingTop: responsiveHeight(0.4),
-                            textAlign: 'right',
-                            color: '#7a7a7a',
-                            marginLeft: responsiveWidth(0),
-                            marginRight: responsiveWidth(0),
-                          }}>
-                          {checking(item.date, item.time)}
-                        </Text>
-                      </View>
-
-                      <Text
-                        style={{
-                          paddingRight: responsiveWidth(4),
-                          fontSize: responsiveFontSize(1.8),
-                          textAlign: 'left',
-                          marginLeft: responsiveWidth(4),
-                          color: '#7a7a7a',
-                        }}>
-                        {item.body}
-                      </Text>
-                    </View>
-                  </Pressable>
-                );
-              }}
-              keyExtractor={(item, index) => index}
-            />
-          ))}
+           
+          ))} */}
         {/* </ScrollView> */}
       </View>
     </>
@@ -531,13 +389,71 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   notifEach: {
-    fontSize: responsiveFontSize(2.3),
-    fontFamily: fontFamily.Bold,
+    fontSize: responsiveFontSize(2.1),
+    fontFamily: fontFamily.SemiBold,
     padding: responsiveWidth(5),
     width: responsiveWidth(44),
     // borderBottomWidth: 1,
     textAlign: 'center',
     // color: colors.black,
     borderBottomColor: colors.blue,
+  },
+  notifContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: responsiveHeight(3),
+    paddingBottom: responsiveHeight(3),
+    paddingHorizontal: responsiveWidth(4.5),
+    borderBottomWidth: 1,
+    borderColor: 'gray',
+    marginVertical: responsiveHeight(0),
+  },
+  notifIcon: {
+    alignSelf: 'flex-start',
+    width: responsiveWidth(14),
+    height: responsiveWidth(14),
+    resizeMode: 'cover',
+    borderRadius: responsiveWidth(100),
+  },
+  pageHeadingText: {
+    fontFamily: fontFamily.Bold,
+    backgroundColor: colors.blue,
+    color: 'white',
+    fontSize: responsiveFontSize(2.3),
+    padding: responsiveWidth(5),
+    borderBottomWidth: 1,
+    borderColor: 'transparent',
+    paddingLeft: responsiveWidth(12),
+  },
+  notifCategoryTitleTextStyle: {},
+
+  notifHeadingText: {
+    flex: 1,
+    fontSize: responsiveFontSize(2),
+    textAlign: 'left',
+    marginLeft: responsiveWidth(4),
+    color: colors.black,
+    fontFamily: fontFamily.Regular,
+  },
+
+  notifBodyText: {
+    paddingRight: responsiveWidth(4),
+    fontSize: responsiveFontSize(1.8),
+    textAlign: 'left',
+    marginLeft: responsiveWidth(4),
+    color: '#7a7a7a',
+    fontFamily: fontFamily.Regular,
+  },
+  dateTimeText: {
+    textAlign: 'right',
+    fontSize: responsiveFontSize(1.3),
+    fontFamily: fontFamily.Regular,
+    paddingHorizontal: 0,
+    paddingTop: responsiveHeight(0.4),
+    textAlign: 'right',
+    color: '#7a7a7a',
+    marginLeft: responsiveWidth(0),
+    marginRight: responsiveWidth(0),
   },
 });

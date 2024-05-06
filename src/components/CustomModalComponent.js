@@ -217,12 +217,13 @@ const styles = StyleSheet.create({
     color: colors.black,
     marginBottom: responsiveHeight(1),
     textAlign: 'center',
+    fontSize: responsiveFontSize(2.1)
     // marginB
   },
   modalBodyText: {
     fontFamily: fontFamily.Regular,
     color: colors.silver,
-    fontSize: responsiveFontSize(1.4),
+    fontSize: responsiveFontSize(1.6),
     textAlign: 'center',
   },
 
@@ -241,10 +242,10 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.Regular,
     color: 'gray',
     lineHeight: responsiveHeight(3.25),
-    fontSize: responsiveFontSize(1.4),
+    fontSize: responsiveFontSize(1.6),
   },
   button: {
-    width: responsiveWidth(33),
+    width: responsiveWidth(38),
     height: responsiveHeight(5),
     borderRadius: 20,
     padding: responsiveWidth(2),

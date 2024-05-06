@@ -8,7 +8,7 @@ import {
     TextInput,
     BackHandler
 } from 'react-native';
-import GlobalStyle from "../utils/GlobalStyle";
+import GlobalStyle from "../utils/GlobalStyles";
 import * as Keychain from 'react-native-keychain';
 
 import ip from './IPaddress';
@@ -18,6 +18,7 @@ import Screen_Home from "./Screen_Home";
 import UserIdContext from "../UserIdContext";
 import EncryptedStorage from 'react-native-encrypted-storage'
 import { connectToSocket } from "../components/SocketService";
+import UserScreenNavigation from "../navigation/UserScreenNavigation";
 
 
 
@@ -68,7 +69,13 @@ export default function Screen_Splash({ navigation, route }) {
                     const mongoId =  await EncryptedStorage.getItem('user_session')
                     // credentials = JSON.parse(credentials.username)
                     setUserId({userId: credentials.username, mongoId})
-                    navigation.navigate(HomeTabs, { screen: Screen_Home, params: { userId: credentials.username}})
+                    // navigation.navigate(HomeTabs, { screen: Screen_Home, params: { userId: credentials.username}})
+                    // navigation.navigate(BottomTabScreens, { screen: Screen_Home, params: { userId: credentials.username}})
+                    navigation.navigate(UserScreenNavigation, {
+                        screen: Screen_Home,
+                        params: { userId: credentials.username},
+                      });
+                     
                    const socket = connectToSocket(credentials.username, mongoId)
                     socket.emit('LoggedIn',{ userId: credentials.username, mongoId: mongoId} )
                 }

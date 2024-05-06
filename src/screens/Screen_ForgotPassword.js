@@ -10,6 +10,7 @@ import {
 } from "react-native-responsive-dimensions";
 
 import { useConnectionStatus } from "../components/NoInternet";
+import GlobalStyles from '../utils/GlobalStyles';
 
 
 export default function Screen_ForgotPassword({ navigation, route }) {
@@ -107,46 +108,32 @@ export default function Screen_ForgotPassword({ navigation, route }) {
         <>
             <KeyboardAvoidingView enabled behavior={Platform.OS === 'ios' ? 'padding' : 'null'} style={{ flex: 1 }} >
                 {/* <ScrollView> */}
-                <View style={styles.body}>
+                <View style={[GlobalStyles.body, {justifyContent: 'flex-start'}]}>
 
                     <Image source={require('../../assets/images/forgotpassword.jpg')} style={[{ width: responsiveWidth(100), height: responsiveHeight(40), resizeMode: 'cover', marginBottom: responsiveHeight(6) }]} />
 
 
 
-                    <View style={styles.UsernameInputBoxView}>
-                        <TextInput onChangeText={(value) => onHandleEmailChange(value)} style={[styles.UsernameInputBox, { color: 'black' }]} editable placeholder='Enter your email' placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
+                    <View style={GlobalStyles.UserPassInputBoxView}>
+                        <TextInput onChangeText={(value) => onHandleEmailChange(value)} style={[GlobalStyles.UserPasswInputBox, { color: 'black' }]} editable placeholder='Enter your email' placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
                         {EmailError_msg.map((value, index) => (
                             <Text style={{ color: 'red', marginTop: 2, fontSize: responsiveFontSize(1.2) }} key={index}>{value}</Text>
                         ))}
                     </View>
 
-                    {/* <View style={styles.PasswordInputBoxView}>
-                    <TextInput onChangeText={(value) => onHandlePasswordChange(value)} style={[styles.PasswordInputBox, { color: 'black' }]} editable placeholder='Password' placeholderTextColor={'black'} onSubmitEditing={Keyboard.dismiss} ></TextInput>
-                    {PasswordError_msg.map((value, index) => (
-                        <Text style={{ color: 'red', marginTop: 2, fontSize: responsiveFontSize(1.2) }} key={index}>{value}</Text>
-                    ))}
-                    <Pressable onPress={goToForgotPasswordScreen} style={{ marginTop: 10 }}><Text style={[styles.text, { textAlign: 'right' }]}>Forgot password?</Text></Pressable>
-                </View> */}
 
 
 
-
-                    <Pressable onPress={forgotPassword} style={({ pressed }) => [pressed ? { opacity: 0.8 } : {}, styles.loginBtn, { borderRadius: 100, marginBottom: responsiveHeight(4) }]} disabled={Loader}>
-
-                        {Loader ? <ActivityIndicator size='large' color="#fff" /> : <Text style={[styles.btntext, { textAlign: 'center' }]}> Submit</Text>}
+                    <Pressable onPress={forgotPassword} style={({ pressed }) => [pressed ? { opacity: 0.8 } : {}, GlobalStyles.loginBtn, { borderRadius: 100, marginBottom: responsiveHeight(4) }]} disabled={Loader}>
+                        {Loader ? <ActivityIndicator size='large' color="#fff" /> : <Text style={[GlobalStyles.btntext, { textAlign: 'center' }]}> Submit</Text>}
                     </Pressable>
 
 
-                    <Pressable onPress={backToLogin} style={({ pressed }) => [pressed ? { opacity: 0.8 } : {}, styles.loginBtn, { borderRadius: 100 }]} disabled={Loader}>
-
-                        <Text style={[styles.btntext, { textAlign: 'center' }]}>Back to login</Text>
+                    <Pressable onPress={backToLogin} style={({ pressed }) => [pressed ? { opacity: 0.8 } : {}, GlobalStyles.loginBtn]} disabled={Loader}>
+                        <Text style={[GlobalStyles.btntext]}>Back to login</Text>
                     </Pressable>
 
 
-                    {/* <View style={styles.bottomText}>
-                    <Text style={[{ color: 'black', fontSize: responsiveFontSize(1.5) }]}>Don't have an account?</Text>
-                    <Pressable onPress={GoToRegistrationPage}><Text style={styles.linkColor}>Create an account</Text></Pressable>
-                </View> */}
 
 
                 </View>
@@ -162,89 +149,6 @@ export default function Screen_ForgotPassword({ navigation, route }) {
 
 const styles = StyleSheet.create({
 
-    body: {
-        flex: 1,
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'flex-start'
-    },
 
-    text: {
-        fontSize: responsiveFontSize(1.5),
-        color: 'black',
-        textAlign: 'left'
-    },
-    linkbeforetext: {
-        margin: 0,
-        fontSize: 20,
-        fontWeight: '600',
-        color: 'black',
-        textAlign: 'left'
-    },
-
-    btntext: {
-        fontSize: responsiveFontSize(2),
-        fontWeight: '400',
-        color: 'white',
-        textAlign: 'left'
-    },
-
-    UsernameInputBoxView: {
-        marginBottom: responsiveHeight(4),
-
-    },
-    PasswordInputBoxView: {
-        marginBottom: responsiveHeight(4),
-    },
-
-    UsernameInputBox: {
-        width: responsiveWidth(80),
-        height: responsiveHeight(6),
-        fontSize: responsiveFontSize(2),
-        backgroundColor: 'white',
-        color: 'black',
-        borderColor: 'black',
-        borderTopWidth: 0,
-        borderRightWidth: 0,
-        borderLeftWidth: 0,
-        borderBottomWidth: 3,
-    },
-    PasswordInputBox: {
-        width: responsiveWidth(80),
-        height: responsiveHeight(6),
-        fontSize: responsiveFontSize(2),
-        backgroundColor: 'white',
-        color: 'black',
-        borderColor: 'black',
-        borderTopWidth: 0,
-        borderRightWidth: 0,
-        borderLeftWidth: 0,
-        borderBottomWidth: 3,
-        // marginBottom: responsiveHeight(1),
-    },
-
-    loginBtn: {
-        width: responsiveWidth(80),
-        height: responsiveHeight(6),
-        color: 'white',
-        backgroundColor: '#0662bf',
-        borderRadius: 200,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: '7',
-    },
-
-    bottomText: {
-        marginTop: responsiveHeight(15),
-        alignItems: 'center',
-        flexDirection: 'row',
-        gap: 5,
-        alignSelf: '',
-
-    },
-    linkColor: {
-        color: 'red',
-        fontSize: responsiveFontSize(1.5)
-    }
 
 });

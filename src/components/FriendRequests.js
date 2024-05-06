@@ -3,6 +3,7 @@ import React, { useContext, useState } from 'react'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import ip from '../screens/IPaddress'
 import UserIdContext from '../UserIdContext'
+import fontFamily from '../../assets/fontFamily/fontFamily'
 
 const FriendRequests = ({ item, friendRequests, setFriendRequests, Accepted, setAccepted }) => {
     // const [Accepted, setAccepted] = useState(false)
@@ -42,9 +43,9 @@ try {
     return (
         <Pressable style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: responsiveHeight(2), backgroundColor: 'white' }}>
 
-            <Image style={{ width: responsiveWidth(14), height: responsiveWidth(14), borderRadius: 30 }} source={require('../../assets/images/womenAvatar.jpg')} resizeMode='cover' />
+            <Image style={{ width: responsiveWidth(14), height: responsiveWidth(14), borderRadius: 30 }} source={require('../../assets/images/womenavatar.jpg')} resizeMode='cover' />
 
-           <Text style={{textAlign: 'left' , fontSize: responsiveFontSize(2), marginLeft: responsiveWidth(5), paddingRight: responsiveWidth(2), flex: 1, color: 'black' }}>{item?.name} sent you a friend request</Text>
+           <Text style={{ fontFamily: fontFamily.Regular,textAlign: 'left' , fontSize: responsiveFontSize(2), marginLeft: responsiveWidth(5), paddingRight: responsiveWidth(2), flex: 1, color: 'black' }}>{item?.name} sent you a friend request</Text>
 
             <Pressable onPress={()=>acceptRequest(item._id)} style={{ borderColor: '#0662bf',borderWidth:1, padding: responsiveWidth(2), borderRadius: responsiveWidth(2), width: responsiveWidth(20) }}><Text style={{ textAlign: 'center', color: '#0662bf' }}>{Accepted[item._id]? 'Accepted': 'Accept'}</Text></Pressable>
         </Pressable>

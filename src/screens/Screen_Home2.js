@@ -58,7 +58,7 @@ export default function Screen_Home({navigation, route}) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [wantToAdd, setWantToAdd] = useState(false);
-  const [Done, setDone] = useState(true)
+  const [Done, setDone] = useState(true);
 
   const {
     myLocation,
@@ -70,103 +70,14 @@ export default function Screen_Home({navigation, route}) {
 
   console.log('Screen_Home2 rendered');
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          onPress={() => {}}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: responsiveScreenWidth(4),
-            paddingHorizontal: 9,
-          }}>
-          <MaterialCommunityIcons
-            name="map"
-            size={28}
-            color={isActive === false ? 'red' : 'green'}
-            onPress={() => {
-              if (isActive === true) {
-                console.log('what the hell');
-                navigation.navigate('Screen_Maps');
-              } else {
-                console.log('this bad: isActive is' + isActive);
-                setModalVisible(true);
-              }
-            }}
-          />
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation, isActive]);
-
-// below function works fine too
-// useEffect(()=>{
-  
-//   const alertsCloseContactsandStoreToDB = async()=>{
-//     if(isActive==true && myLocation.latitude!==null && Done===true){
-
-//       try {
-//         console.log("clicked start loc and so myLocation here: "+myLocation)
-//         console.log("isActive is "+isActive)
-//         const {formattedTime, formattedDay} = getFormattedTimeandDay();
-        
-//         const object = {
-//           timeWhenRescueButtonPressed: formattedTime,
-//           dateWhenRescueButtonPressed: formattedDay,
-//           locationWhereRescuePressed: {
-//             latitude: myLocation.latitude,
-//             longitude: myLocation.longitude,
-//           },
-//           safeButtonPressed: false,
-//         };
-    
-//         let response = await fetch(
-//           `${ip}/pressedRescueButton/${userId.mongoId}`,
-//           {
-//             method: 'POST',
-//             headers: {
-//               'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify(object),
-//           },
-//           );
-          
-//           response = await response.json();
-//           console.log('api working' + response);
-//         } catch (error) {
-//         console.log('api error');
-//         // Alert.alert("api error", error.message)
-//         console.log(error);
-//       } 
-//   }
-//   setDone(false)
-// }
-  
-
-//     alertsCloseContactsandStoreToDB()
-
-
- 
-
-// },[myLocation])
-
-
-
-
-
-  const StartMyLocation =async () => {
+  const StartMyLocation = async () => {
     startLocationUpdates();
 
-  
-
-  
-    
     Geolocation.getCurrentPosition(
-      async(position) => {
-          try {
+      async position => {
+        try {
           const {formattedTime, formattedDay} = getFormattedTimeandDay();
-          
+
           const object = {
             timeWhenRescueButtonPressed: formattedTime,
             dateWhenRescueButtonPressed: formattedDay,
@@ -176,7 +87,7 @@ export default function Screen_Home({navigation, route}) {
             },
             safeButtonPressed: false,
           };
-      
+
           let response = await fetch(
             `${ip}/pressedRescueButton/${userId.mongoId}`,
             {
@@ -186,84 +97,73 @@ export default function Screen_Home({navigation, route}) {
               },
               body: JSON.stringify(object),
             },
-            );
-            
-            response = await response.json();
-            console.log('api working' + response);
-          } catch (error) {
-            console.log('api error');
+          );
+
+          response = await response.json();
+          console.log('api working' + response);
+        } catch (error) {
+          console.log('api error');
           // Alert.alert("api error", error.message)
           console.log(error);
-        } 
-
-
-
-
-        },
-        error => {
-          console.log(error);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 15000,
-          maximumAge: 0,
-        },
-      );
-
-  
-
-
-
+        }
+      },
+      error => {
+        console.log(error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0,
+      },
+    );
 
     console.log('Home2: Start location clicked');
-  }
+  };
   // , [startLocationUpdates]);
-  
+
   const StopMyLocation = useCallback(async () => {
     stopLocationUpdates();
 
+    Geolocation.getCurrentPosition(
+      async position => {
+        try {
+          const {formattedTime, formattedDay} = getFormattedTimeandDay();
+          const object = {
+            safeButtonPressed: true,
+            timeWhenSafeButtonPressed: formattedTime,
+            dateWhenSafeButtonPressed: formattedDay,
+            locationWhereSafeButtonPressed: {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            },
+          };
 
-      Geolocation.getCurrentPosition(
-        async(position) => {
-
-          try {
-            const {formattedTime, formattedDay} = getFormattedTimeandDay();
-            const object = {
-              safeButtonPressed: true,
-              timeWhenSafeButtonPressed: formattedTime,
-              dateWhenSafeButtonPressed: formattedDay,
-              locationWhereSafeButtonPressed: {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-              },
-            };
-      
-            let response = await fetch(`${ip}/pressedSafeButton/${userId.mongoId}`, {
+          let response = await fetch(
+            `${ip}/pressedSafeButton/${userId.mongoId}`,
+            {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify(object),
-            });
-      
-            response = await response.json();
-            console.log('api working' + response);
-          } catch (error) {
-            console.log(error);
-          }
+            },
+          );
 
-
-        },
-        error => {
+          response = await response.json();
+          console.log('api working' + response);
+        } catch (error) {
           console.log(error);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 15000,
-          maximumAge: 1000,
-        },
-      );
-
+        }
+      },
+      error => {
+        console.log(error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 1000,
+      },
+    );
 
     console.log('Home2: Stop location clicked');
   }, [stopLocationUpdates]);
@@ -591,16 +491,7 @@ export default function Screen_Home({navigation, route}) {
                 console.log('stop recording clicked here');
                 stopRecording();
               }}
-              style={{
-                width: responsiveWidth(20),
-                height: responsiveHeight(20 / 2),
-                position: 'absolute',
-                backgroundColor: 'yellow',
-                borderRadius: 100,
-                bottom: 25,
-                alignSelf: 'center',
-                justifyContent: 'center',
-              }}></TouchableOpacity>
+              style={styles.stopRecordingBtn}></TouchableOpacity>
           </View>
         ) : (
           <>
@@ -612,33 +503,26 @@ export default function Screen_Home({navigation, route}) {
               submissionDataTitle={'You cannot access google maps!'}
               submissionDataBody={`Map will be accessible after enabling location updates via rescue button`}
               submissionDataImage={imageNames.blackError}
-              // modalRightBtnText={'Save Changes'}
-              // modalRightBtnFunc={()=>{
-
-              // }}
-              // modalRightBtnFunc={onModalRightBtnPressHandler}
-              // modalLeftBtnText={'Ok, Cancel'}
-              // modalLeftBtnFunc={onModalLeftBtnPressHandler}
               oneBtnOnly={true}
             />
 
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'flex-start',
-                gap: responsiveHeight(3),
-                alignItems: 'center',
-                marginTop: responsiveHeight(5),
-              }}>
-              {/* <Text style={{ textAlign: 'center', fontSize: responsiveFontSize(5), fontWeight: '900', marginTop: responsiveHeight(4), color: 'black' }}>Rescue Button</Text> */}
-              <Text
-                style={{
-                  textAlign: 'left',
-                  fontSize: responsiveFontSize(2),
-                  paddingHorizontal: responsiveWidth(10),
-                  fontFamily: fontFamily.Bold,
-                  color: 'black',
-                }}>
+            <View style={styles.customHeaderStyle}>
+              <TouchableOpacity onPress={() => {}} style={styles.openmapBtn}>
+                <MaterialCommunityIcons
+                  name="map"
+                  size={32}
+                  color={isActive === false ? 'red' : 'green'}
+                  onPress={() => {
+                    if (isActive === true) {
+                      navigation.navigate('Screen_Maps');
+                    } else {
+                      setModalVisible(true);
+                    }
+                  }}
+                />
+              </TouchableOpacity>
+
+              <Text style={styles.guidelineText}>
                 Tap the Rescue Button when you need urgent help.
                 {'\n'}
                 {'\n'}
@@ -666,8 +550,8 @@ export default function Screen_Home({navigation, route}) {
               {/* <Video resizeMode={'cover'} source={{ uri: 'file://' + VideoData }} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "90%" }} /> */}
               <TouchableOpacity
                 onPress={async () => {
-                  setDone(true)
-                 await StartMyLocation();
+                  setDone(true);
+                  await StartMyLocation();
                   // RecordingInitiation();
                 }}
                 disabled={
@@ -677,26 +561,14 @@ export default function Screen_Home({navigation, route}) {
                     ? true
                     : false
                 }
-                style={{
-                  width: '75%',
-                  height: 50,
-                  // backgroundColor: '#0662bf',
-                  backgroundColor:
-                    isActive === false ? colors.red : colors.green,
-                  borderWidth: 1,
-                  marginTop: responsiveHeight(1),
-                  borderRadius: 30,
-                  alignSelf: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text
-                  style={{
-                    fontSize: responsiveFontSize(2.2),
-                    color: 'white',
-                    textAlign: 'center',
-                  }}>
-                  {UploadStatus}
-                </Text>
+                style={[
+                  {
+                    backgroundColor:
+                      isActive === false ? colors.red : colors.green,
+                  },
+                  styles.rescueBtn,
+                ]}>
+                <Text style={styles.rescueBtnText}>{UploadStatus}</Text>
               </TouchableOpacity>
               {/* -----------------another btn--------------- */}
 
@@ -706,27 +578,14 @@ export default function Screen_Home({navigation, route}) {
                 }}
                 disabled={!isActive}
                 // disabled={UploadinProgress}
-                style={{
-                  width: '75%',
-                  height: 50,
-                  // backgroundColor: '#0662bf',
-                  backgroundColor:
-                    isActive === true ? colors.red : colors.green,
-                  borderWidth: 1,
-                  marginTop: responsiveHeight(1),
-                  borderRadius: 30,
-                  alignSelf: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text
-                  style={{
-                    fontSize: responsiveFontSize(2.2),
-                    color: 'white',
-                    textAlign: 'center',
-                    fontFamily: fontFamily.Bold,
-                  }}>
-                  I am Safe
-                </Text>
+                style={[
+                  {
+                    backgroundColor:
+                      isActive === true ? colors.red : colors.green,
+                  },
+                  styles.rescueBtn,
+                ]}>
+                <Text style={styles.rescueBtnText}>I am Safe</Text>
               </TouchableOpacity>
             </View>
           </>
@@ -746,8 +605,55 @@ const styles = StyleSheet.create({
   text: {
     margin: 10,
     fontSize: 20,
-    // fontWeight: '600',
     color: 'black',
     textAlign: 'left',
+  },
+  stopRecordingBtn: {
+    width: responsiveWidth(20),
+    height: responsiveHeight(20 / 2),
+    position: 'absolute',
+    backgroundColor: 'yellow',
+    borderRadius: 100,
+    bottom: 25,
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
+  customHeaderStyle: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    gap: responsiveHeight(3),
+    alignItems: 'center',
+    marginTop: responsiveHeight(2),
+  },
+  openmapBtn: {
+    alignSelf: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: responsiveScreenWidth(4),
+    paddingHorizontal: 9,
+  },
+  guidelineText: {
+    textAlign: 'left',
+    fontSize: responsiveFontSize(2.1),
+    paddingHorizontal: responsiveWidth(8),
+    fontFamily: fontFamily.Regular,
+    color: 'black',
+  },
+  rescueBtn: {
+    width: '75%',
+    height: 50,
+    borderWidth: 1,
+    marginTop: responsiveHeight(1),
+    borderRadius: 30,
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
+  rescueBtnText: {
+    fontSize: responsiveFontSize(2.1),
+    color: 'white',
+    textAlign: 'center',
+    fontFamily: fontFamily.SemiBold,
+    lineHeight: responsiveHeight(3),
   },
 });

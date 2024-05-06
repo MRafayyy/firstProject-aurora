@@ -4,62 +4,45 @@
  *
  * @format
  */
-// import 'react-native-gesture-handler'; --no needed only npm se krna tha
+import 'react-native-gesture-handler'; //no needed only npm se krna tha
 import React, {useContext, useRef} from 'react';
 import {useEffect, useState} from 'react';
 // import { Icon } from 'react-native-vector-icons/Icon';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import NetInfo from '@react-native-community/netinfo';
-
-
 import messaging from '@react-native-firebase/messaging';
-
 import {TransitionPresets} from '@react-navigation/stack';
-
 import {StyleSheet} from 'react-native';
 import {
   NavigationContainer,
-  DefaultTheme,
-  DarkTheme,
 } from '@react-navigation/native';
-
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import {Header, createStackNavigator} from '@react-navigation/stack';
-
-const Stack = createStackNavigator();
-
 import Screen_Login from './screens/Screen_Login';
 import Screen_NadraVerification from './screens/Screen_NadraVerification';
 import Screen_Registration from './screens/Screen_Registration';
-
 import Screen_Splash from './screens/Screen_Splash';
-
 import Screen_ForgotPassword from './screens/Screen_ForgotPassword';
-
-import PushNotification from 'react-native-push-notification';
 import Screen_Decider from './screens/Screen_Decider';
-
-import HomeTabs from './HomeTabs';
-
-import {useConnectionStatus} from './components/NoInternet';
-
 import UserIdContext, {UserIdProvider} from './UserIdContext';
-import {LocationProvider} from './LocationContext';
 
-// import { connectToSocket } from './components/SocketService';
 import { navigationRef } from './RootNavigation';
+import UserScreenNavigation from './navigation/UserScreenNavigation';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import Screen_MapTracking from './screens/Screen_MapTracking';
+import Screen_FriendProfile from './screens/Screen_FriendProfile';
+import Screen_Maps from './screens/Screen_Maps';
+import Screen_MyFriends from './screens/Screen_MyFriends';
+import Screen_Friends from './screens/Screen_Friends';
+import fontFamily from '../assets/fontFamily/fontFamily';
+import colors from './utils/color';
+import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
+
+
+const Stack = createStackNavigator();
+const Tab = createMaterialTopTabNavigator();
+
 export default function App() {
-
-  // const {setUserId} = useContext(UserIdContext)
-
-  const [isLoggedIn, setisLoggedIn] = useState(false);
-
-  // const [isConnected, setisConnected] = useState(false)
-  const isConnected = useConnectionStatus();
-
-  // const socket = connectToSocket();
 
   useEffect(() => {
     getDeviceToken();
@@ -74,21 +57,7 @@ export default function App() {
       'c8KHnyMrRTyXNXB9tVglFM:APA91bGVoYH4vYpKUsETdY_RxbAMZ3vXe2u4wLWhDFrya87IyuTyyStgiaypiOCfZgO5HLuMSpnIvZ4LL7gcFzWfk5_zZbT-hodd-D6RMvtkJPKaSIytPKowKcI5HgO3viZWtHFNBlOX';
   };
 
-  useEffect(() => {
-    // const unsubscribe = messaging().onMessage(async remoteMessage => {
-    //   PushNotification.localNotification({
-    //     ticker: 'My Notification Ticker',
-    //     channelId: 'test-channel',
-    //     channelName: 'Test Channel',
-    //     title: remoteMessage.notification?.title,
-    //     message: remoteMessage.notification?.body,
-    //     showWhen: true,
-    //     color: 'red',
-    //   });
-    // });
 
-    // return unsubscribe;
-  }, []);
 
   const config = {
     animation: 'spring',
@@ -108,8 +77,13 @@ export default function App() {
       <UserIdProvider>
         <NavigationContainer ref={navigationRef}>
           <Stack.Navigator
+          
             initialRouteName="Screen_Splash"
+            
             screenOptions={{
+            
+            headerTitleStyle: {fontFamily: fontFamily.Regular},
+              // headerBackTitleStyle: {fontFamily: fontFamily.Regular} ,
               animationEnabled: true,
               animationTypeForReplace: 'push',
               ...TransitionPresets.RevealFromBottomAndroid,
@@ -129,11 +103,6 @@ export default function App() {
               component={Screen_Login}
               options={{
                 headerShown: false,
-                //  ...TransitionPresets.RevealFromBottomAndroid
-                // transitionSpec: {
-                //   open: TransitionSpecs.BottomSheetSlideInSpec,
-                //   close: TransitionSpecs.ScaleFromCenterAndroidSpec,
-                // },
               }}
             />
             <Stack.Screen
@@ -155,14 +124,77 @@ export default function App() {
               options={{headerShown: false}}
             />
 
-            <Stack.Screen
+            {/* <Stack.Screen
               name="HomeTabs"
               component={HomeTabs}
               options={{
                 headerShown: false,
               }}
-            />
+            /> */}
+            
+            
+
+      {/* <Stack.Navigator
+        // initialRouteName="Screen_Splash"
+        screenOptions={{
+          animationEnabled: true,
+          animationTypeForReplace: 'push',
+          ...TransitionPresets.RevealFromBottomAndroid,
+        }}> */}
+        <Stack.Screen
+          name="Screen_Friends"
+          component={Screen_Friends}
+          options={{
+            headerShown: true,
+            headerTitle: 'Friend Requests',
+          }}
+        />
+
+        <Stack.Screen
+          name="Screen_MyFriends"
+          component={Screen_MyFriends}
+          options={{
+            headerShown: true,
+            headerTitle: 'Friends',
+          }}
+        />
+
+        <Stack.Screen
+          name="Screen_FriendProfile"
+          component={Screen_FriendProfile}
+          options={{
+            headerShown: true,
+            headerTitle: 'Info',
+          }}
+        />
+
+        <Stack.Screen
+          name="Screen_MapTracking"
+          component={Screen_MapTracking}
+          options={{
+            headerShown: false,
+            headerTitle: '',
+          }}
+        />
+
+        <Stack.Screen
+          name="Screen_Maps"
+          component={Screen_Maps}
+          options={{
+            headerShown: false,
+            headerTitle: 'Maps',
+          }}
+        />
+      {/* </Stack.Navigator> */}
+          {/* <Stack.Screen name='HomeTabs' component={HomeTabs} options={{headerShown: false}}/> */}
+
+            <Stack.Screen options={{headerShown: false}} name='UserScreenNavigation' component={UserScreenNavigation} />
+          
           </Stack.Navigator>
+          
+
+
+
         </NavigationContainer>
       </UserIdProvider>
 
@@ -179,11 +211,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
-    margin: 10,
-    fontSize: 25,
-    fontWeight: '600',
-    color: 'white',
+    // margin: 10,
+    // fontSize: 25,
+    color: colors.black,
+    // fontFamily: fontFamily. Regular,
   },
+  headerTitleStyle:  {
+    fontFamily: fontFamily.Regular,
+    lineHeight: responsiveHeight(7.25),
+    fontSize: responsiveFontSize(1.7),
+  }
 });
 
 // export default App;
