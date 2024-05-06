@@ -20,6 +20,7 @@ import { StyleSheet } from 'react-native';
   verylightgrey: '#fbfbf8',
   lightgrey: '#f7f6f0',
   silver: 'silver',
+  darksilver: '#5e5e5e',
   lightsilver: '#f1f2f4',
   mediumLightGrey: '#edece6',
   red: 'red',

@@ -32,41 +32,6 @@ import NotifComponent from '../components/notifComponent';
 export default function Screen_ReceiveNotifs() {
 
 
-  const FirstRoute = () => (
-    <FlatList
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-      data={Notifs}
-      renderItem={({item}) => {
-        return (
-          <NotifComponent item={item} checking={checking} />
-        );
-      }}
-      keyExtractor={(item, index) => index}
-    />
-  );
-
-  const SecondRoute = () => (
-    <FlatList
-    // initialNumToRender={6}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-      data={Notifs2}
-      renderItem={({item}) => {
-        return (
-     <NotifComponent item={item} checking={checking} />
-        );
-      }}
-      keyExtractor={(item, index) => index}
-    />
-  );
-
-  const renderScene = SceneMap({
-    first: FirstRoute,
-    second: SecondRoute,
-  });
 
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
@@ -94,11 +59,11 @@ export default function Screen_ReceiveNotifs() {
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      const UpdateNotifs = useCallback(() => {
-      fetchNotifs();
-      fetchMyNotifs();
-      }, []);
-      UpdateNotifs()
+      // const UpdateNotifs = useCallback(() => {
+        fetchNotifs();
+        fetchMyNotifs();
+      // }, []);
+      // UpdateNotifs();
       navigation.setOptions({
         // tabBarBadge: () => { return (<Text>3</Text>) },
         tabBarBadge: () => {
@@ -106,8 +71,8 @@ export default function Screen_ReceiveNotifs() {
             <Text
               style={{
                 position: 'absolute',
-                top: height * 0.01, // 5% of screen height
-                left: width * -0.06, // 40% of screen width
+                top: height * 0.017, // 5% of screen height
+                left: width * -0.082, // 40% of screen width
                 minWidth: width * 0.02, // 5% of screen width
                 maxHeight: width * 0.02, // 5% of screen width
                 borderRadius: width * 0.035, // 3.5% of screen width
@@ -135,18 +100,18 @@ export default function Screen_ReceiveNotifs() {
             <Text
               style={{
                 position: 'absolute',
-                top: height * 0.01, // 5% of screen height
-                left: width * -0.06, // 40% of screen width
+                top: height * 0.017, // 5% of screen height
+                left: width * -0.082, // 40% of screen width
                 minWidth: width * 0, // 5% of screen width
                 maxHeight: width * 0, // 5% of screen width
                 borderRadius: width * 0.035, // 3.5% of screen width
                 fontSize: width * 0.025, // 2.5% of screen width
                 lineHeight: width * 0.04, // 4% of screen width
                 alignSelf: undefined,
-                backgroundColor: 'red',
+                // backgroundColor: 'red',
                 color: 'red',
               }}>
-              ""
+              {/* "" */}
             </Text>
           );
         },
@@ -166,8 +131,8 @@ export default function Screen_ReceiveNotifs() {
     // const UpdateNotifs = useCallback(() => {
     fetchNotifs();
     fetchMyNotifs();
-  // }, []);
-  // UpdateNotifs()
+    // }, []);
+    // UpdateNotifs()
     BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
     return () => {
       BackHandler.removeEventListener(
@@ -304,6 +269,43 @@ export default function Screen_ReceiveNotifs() {
     }
   };
 
+
+
+  const FirstRoute = () => (
+    <FlatList
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+      initialNumToRender={7}
+      data={Notifs}
+      renderItem={useCallback(({item}) => {
+        return <NotifComponent item={item} checking={checking} />;
+      },[setNotifs])}
+      keyExtractor={(item, index) => index}
+    />
+  );
+  
+  const SecondRoute = () => (
+    <FlatList
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+      initialNumToRender={7}
+      data={Notifs2}
+      renderItem={useCallback(({item}) => {
+        return <NotifComponent item={item} checking={checking} />;
+      },[setNotifs2])}
+      keyExtractor={(item, index) => index}
+    />
+  );
+
+  const renderScene = SceneMap({
+    first: FirstRoute,
+    second: SecondRoute,
+  });
+
+
+
   return (
     <>
       <View style={styles.body}>
@@ -430,7 +432,7 @@ const styles = StyleSheet.create({
 
   notifHeadingText: {
     flex: 1,
-    fontSize: responsiveFontSize(2),
+    fontSize: responsiveFontSize(1.8),
     textAlign: 'left',
     marginLeft: responsiveWidth(4),
     color: colors.black,
@@ -439,7 +441,7 @@ const styles = StyleSheet.create({
 
   notifBodyText: {
     paddingRight: responsiveWidth(4),
-    fontSize: responsiveFontSize(1.8),
+    fontSize: responsiveFontSize(1.7),
     textAlign: 'left',
     marginLeft: responsiveWidth(4),
     color: '#7a7a7a',
@@ -451,7 +453,6 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.Regular,
     paddingHorizontal: 0,
     paddingTop: responsiveHeight(0.4),
-    textAlign: 'right',
     color: '#7a7a7a',
     marginLeft: responsiveWidth(0),
     marginRight: responsiveWidth(0),

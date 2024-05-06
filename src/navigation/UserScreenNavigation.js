@@ -19,6 +19,8 @@ import Screen_MyFriends from '../screens/Screen_MyFriends';
 import Screen_Friends from '../screens/Screen_Friends';
 import Screen_Maps from '../screens/Screen_Maps';
 import Screen_Settings from '../screens/Screen_Settings';
+import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import colors from '../utils/color';
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
 
@@ -32,13 +34,17 @@ export default function UserScreenNavigation() {
         initialLayout={{
           width: Dimensions.get('window').width,
         }}
+        
         screenOptions={({route}) => ({
           tabBarShowLabel: false,
-          tabBarLabelStyle: {fontSize: 10},
+          // tabBarLabelStyle: {fontSize: 10},
           tabBarShowIcon: true,
           swipeEnabled: true,
           tabBarActiveTintColor: '#007cff',
           tabBarInactiveTintColor: 'gray',
+          tabBarStyle:{borderWidth:0, borderColor: colors.red, justifyContent: 'space-evenly', padding:0},
+          tabBarIconStyle: { height: responsiveHeight(4), width: 'auto'},
+          tabBarIndicator: ()=> null
         })}>
         <Tab.Screen
           name="Screen_Home"
@@ -47,7 +53,8 @@ export default function UserScreenNavigation() {
             tabBarLabel: 'Home',
 
             tabBarIcon: ({color}) => (
-              <MaterialCommunityIcons name="home" color={color} size={25} />
+              // <MaterialCommunityIcons name="home-outline" color={color} size={30} />
+              <Ionicons name="home-outline" color={color} size={30} />
             ),
             // tabBarStyle: {display:'none'}
           })}
@@ -60,26 +67,7 @@ export default function UserScreenNavigation() {
             // tabBarBadge:()=> { return (  <Text>3</Text> ) },
             tabBarLabel: 'Notifs',
             tabBarIcon: ({color}) => (
-              <MaterialCommunityIcons
-                name="bell-outline"
-                color={color}
-                size={25}
-              />
-            ),
-          }}
-        />
-
-        <Tab.Screen
-          name="Screen_FirebaseNotif"
-          component={Screen_FirebaseNotif}
-          options={{
-            tabBarLabel: 'Notifs',
-            tabBarIcon: ({color}) => (
-              <MaterialCommunityIcons
-                name="bell-outline"
-                color={color}
-                size={25}
-              />
+              <Ionicons name="notifications-circle-outline" color={color} size={33} />
             ),
           }}
         />
@@ -90,7 +78,8 @@ export default function UserScreenNavigation() {
           options={({navigation}) => ({
             tabBarLabel: 'Rescue',
             tabBarIcon: ({color}) => (
-              <MaterialCommunityIcons name="security" color={color} size={25} />
+              // <MaterialCommunityIcons name="security" color={color} size={30} />
+              <Ionicons name="shield-half-outline" color={color} size={30} />
             ),
           })}
         />
@@ -104,7 +93,8 @@ export default function UserScreenNavigation() {
           options={{
             tabBarLabel: 'Contacts',
             tabBarIcon: ({color}) => (
-              <MaterialCommunityIcons name="magnify" color={color} size={25} />
+              // <MaterialCommunityIcons name="magnify" color={color} size={30} />
+              <Ionicons name="search-outline" color={color} size={30} />
             ),
           }}
         />
@@ -115,7 +105,8 @@ export default function UserScreenNavigation() {
           options={{
             tabBarLabel: 'Settings',
             tabBarIcon: ({color}) => (
-              <MaterialCommunityIcons name="tune" color={color} size={25} />
+              // <MaterialCommunityIcons name="tune" color={color} size={30} />
+              <Ionicons name="settings-outline" color={color} size={30} />
             ),
           }}
         />

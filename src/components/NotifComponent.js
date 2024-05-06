@@ -1,5 +1,5 @@
 import {View, Text, StyleSheet, Image, Pressable} from 'react-native';
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -8,7 +8,7 @@ import {
 import fontFamily from '../../assets/fontFamily/fontFamily';
 import colors from '../utils/color';
 
-export default function NotifComponent(props) {
+ function NotifComponent(props) {
   const {item, checking} = props;
 
   return (
@@ -40,6 +40,8 @@ export default function NotifComponent(props) {
     </Pressable>
   );
 }
+
+export default useMemo(NotifComponent)
 
 const styles = StyleSheet.create({
   body: {

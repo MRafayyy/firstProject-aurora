@@ -15,10 +15,14 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import socket from '../components/SocketService';
+import MyProfileComponent from '../components/MyProfileComponent';
+import colors from '../utils/color';
+import fontFamily from '../../assets/fontFamily/fontFamily';
+import SettingsComponent from '../components/SettingsComponent';
+import imageNames from '../../assets/imageNames/imageNames';
 
 export default function Screen_Settings({navigation}) {
-
-console.log("Screen_Settings rendered")
+  console.log('Screen_Settings rendered');
 
   function handleBackButtonClick() {
     navigation.navigate('Screen_Home');
@@ -59,95 +63,15 @@ console.log("Screen_Settings rendered")
               height: responsiveHeight(30),
               resizeMode: 'cover',
             }}
-            source={require('../../assets/images/womenavatar.jpg')}
+            source={imageNames.womenavatar}
           />
         </View>
 
-        <Pressable
-          style={{
-            backgroundColor: 'white',
-            borderColor: '#0662bf',
-            borderTopWidth: 0,
-            borderBottomWidth: 1,
-          }}>
-          <Text
-            style={{
-              margin: responsiveHeight(3),
-              fontSize: responsiveFontSize(2),
-              color: '#0662bf',
-            }}>
-            My profile
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={{
-            backgroundColor: 'white',
-            borderColor: '#0662bf',
-            borderTopWidth: 0,
-            borderBottomWidth: 1,
-          }}>
-          <Text
-            style={{
-              margin: responsiveHeight(3),
-              fontSize: responsiveFontSize(2),
-              color: '#0662bf',
-            }}>
-            History
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={{
-            backgroundColor: 'white',
-            borderColor: '#0662bf',
-            borderTopWidth: 0,
-            borderBottomWidth: 1,
-          }}>
-          <Text
-            style={{
-              margin: responsiveHeight(3),
-              fontSize: responsiveFontSize(2),
-              color: '#0662bf',
-            }}>
-            Help & support
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={{
-            backgroundColor: 'white',
-            borderColor: '#0662bf',
-            borderTopWidth: 0,
-            borderBottomWidth: 1,
-          }}>
-          <Text
-            style={{
-              margin: responsiveHeight(3),
-              fontSize: responsiveFontSize(2),
-              color: '#0662bf',
-            }}>
-            Settings and privacy
-          </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={Logout}
-          style={{
-            backgroundColor: 'white',
-            borderColor: '#0662bf',
-            borderTopWidth: 0,
-            borderBottomWidth: 1,
-          }}>
-          <Text
-            style={{
-              margin: responsiveHeight(3),
-              fontSize: responsiveFontSize(2),
-              color: '#0662bf',
-            }}>
-            Logout
-          </Text>
-        </Pressable>
+        <SettingsComponent title={'My Profile'} />
+        <SettingsComponent title={'History'} />
+        <SettingsComponent title={'Help & support'} />
+        <SettingsComponent title={'Settings and privacy'} />
+        <SettingsComponent title={'Log out'} onPress={Logout} />
       </View>
     </>
   );

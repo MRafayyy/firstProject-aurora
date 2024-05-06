@@ -41,6 +41,7 @@ import imageNames from '../../assets/imageNames/imageNames';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import fontFamily from '../../assets/fontFamily/fontFamily';
 import colors from '../utils/color';
+import CustomBtn from '../components/CustomBtn';
 
 export default function Screen_Home({navigation, route}) {
   const {userId, setUserId} = useContext(UserIdContext);
@@ -234,13 +235,9 @@ export default function Screen_Home({navigation, route}) {
       console.warn(err);
     }
   };
-  // -----------------------------------------location Permission end
-
-  // -----------------------------------------------------------
+  // -----------------------------------------location Permission end // -----------------------------------------------------------
 
   const camera = useRef(null);
-  // const devices = Camera.getAvailableCameraDevices()
-  // const device = devices.find((d) => d.position === 'back')
 
   const device = useCameraDevice('back');
   const format = useCameraFormat(device, [
@@ -253,9 +250,7 @@ export default function Screen_Home({navigation, route}) {
   ]);
 
   // width: 3048, height: 2160
-  // const device = useCameraDevice('back');
-  // const device = useCameraDevices
-  // const device = devices.back;
+
 
   async function hasAndroidPermission() {
     const getCheckPermissionPromise = () => {
@@ -465,10 +460,10 @@ export default function Screen_Home({navigation, route}) {
   };
 
   if (device == null) return <ActivityIndicator />;
+
   return (
     <>
-      <View
-        style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
+      <View style={styles.container}>
         {RescueButtonClicked ? (
           <View style={{flex: 1}}>
             <Camera
@@ -486,12 +481,13 @@ export default function Screen_Home({navigation, route}) {
               format={format}
             />
 
-            <TouchableOpacity
+            <CustomBtn
               onPress={() => {
                 console.log('stop recording clicked here');
                 stopRecording();
               }}
-              style={styles.stopRecordingBtn}></TouchableOpacity>
+              btnStyle={styles.stopRecordingBtn}
+            />
           </View>
         ) : (
           <>
@@ -548,7 +544,8 @@ export default function Screen_Home({navigation, route}) {
               <Progress.Bar progress={progress} width={200} />
               {/* {ImageData !== '' && <Image source={{ uri: 'file://' + ImageData }} style={{ width: '90%', height: '10%' }} />} */}
               {/* <Video resizeMode={'cover'} source={{ uri: 'file://' + VideoData }} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "90%" }} /> */}
-              <TouchableOpacity
+
+              <CustomBtn
                 onPress={async () => {
                   setDone(true);
                   await StartMyLocation();
@@ -561,32 +558,32 @@ export default function Screen_Home({navigation, route}) {
                     ? true
                     : false
                 }
-                style={[
+                btnStyle={[
                   {
                     backgroundColor:
                       isActive === false ? colors.red : colors.green,
                   },
                   styles.rescueBtn,
-                ]}>
-                <Text style={styles.rescueBtnText}>{UploadStatus}</Text>
-              </TouchableOpacity>
+                ]}
+                btnText={UploadStatus}
+              />
+
               {/* -----------------another btn--------------- */}
 
-              <TouchableOpacity
+              <CustomBtn
                 onPress={() => {
                   StopMyLocation();
                 }}
                 disabled={!isActive}
-                // disabled={UploadinProgress}
-                style={[
+                btnStyle={[
                   {
                     backgroundColor:
                       isActive === true ? colors.red : colors.green,
                   },
                   styles.rescueBtn,
-                ]}>
-                <Text style={styles.rescueBtnText}>I am Safe</Text>
-              </TouchableOpacity>
+                ]}
+                btnText={'I am Safe'}
+              />
             </View>
           </>
         )}
@@ -596,6 +593,7 @@ export default function Screen_Home({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
+  container: {flex: 1, justifyContent: 'center', backgroundColor: 'white'},
   body: {
     flex: 1,
     backgroundColor: 'white',

@@ -1,4 +1,13 @@
 export default {
+
+
+
+womenavatar: require('../images/womenavatar.jpg'),
+
+
+
+
+
     man : require('../images/man.png'),
     // rightArrow : require('../images/icons8arrow50.png'),
     lessThanSign: require('../images/iconslessthan50.png'),

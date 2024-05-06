@@ -120,17 +120,25 @@ export default function Screen_SearchContacts({navigation}) {
       <View style={styles.body}>
         <View style={styles.headerContainer}>
           <Ionicons
-            name="chatbox-ellipses-outline"
-            size={24}
-            color={'black'}
+            name="people-circle"
+            // name="chatbox-ellipses"
+            size={30}
+            color={colors.blue}
             onPress={() => navigation.navigate('Screen_MyFriends')}
+            />
+          <Ionicons
+            // name="person-add"
+            name="person-add"
+            size={30}
+            color={colors.blue}
+            onPress={() => navigation.navigate('Screen_Friends')}
           />
-          <MaterialCommunityIcons
+          {/* <MaterialCommunityIcons
             name="account-multiple"
             size={28}
             color={'black'}
             onPress={() => navigation.navigate('Screen_Friends')}
-          />
+          /> */}
         </View>
 
         <Pressable style={styles.searchContainer}>
@@ -197,8 +205,9 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: responsiveScreenWidth(4),
+    gap: responsiveWidth(7),
     paddingHorizontal: 9,
+    paddingRight: responsiveWidth(6),
   },
   searchContainer: {
     alignSelf: 'center',

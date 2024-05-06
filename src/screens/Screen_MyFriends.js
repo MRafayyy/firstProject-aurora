@@ -10,6 +10,7 @@ import UserIdContext from "../UserIdContext";
 import FriendRequests from "../components/FriendRequests";
 import { responsiveWidth } from "react-native-responsive-dimensions";
 import MyFriends from "../components/MyFriends";
+import NothinToShow from "../components/NothinToShow";
 
 export default function Screen_MyFriends({navigation}) {
 
@@ -95,7 +96,9 @@ export default function Screen_MyFriends({navigation}) {
                     keyExtractor={(item, index) => index}
                 />
 
-                : null}
+                : 
+                <NothinToShow msg={'No Friends'}/>
+                }
         </View>
     );
 }
