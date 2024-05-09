@@ -35,7 +35,7 @@ import {connectToSocket} from '../components/SocketService';
 import fontFamily from '../../assets/fontFamily/fontFamily';
 import GlobalStyles from '../utils/GlobalStyles';
 import colors from '../utils/color';
-import UserScreenNavigation from '../navigation/UserScreenNavigation';
+import UserScreenNavigation from '../navigation/Women/MaterialBottomTabsNavigation';
 
 export default function Screen_Login({navigation, route}) {
   const {userId, setUserId} = useContext(UserIdContext);
@@ -296,7 +296,8 @@ export default function Screen_Login({navigation, route}) {
             onPress={Login}
             style={({pressed}) => [
               pressed ? {opacity: 0.8} : {},
-              styles.loginBtn
+              GlobalStyles.loginBtn,
+              
               
             ]}
             disabled={Loader}>

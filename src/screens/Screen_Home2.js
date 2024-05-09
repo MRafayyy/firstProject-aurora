@@ -524,21 +524,21 @@ export default function Screen_Home({navigation, route}) {
                 {'\n'}
                 Here's what it does:
                 {'\n'}
-                {'\n'}- Record Video & Sound:
+                {/* {'\n'}- Record Video & Sound: */}
                 {'\n'}
-                Starts recording what's happening around you.
+                - Starts recording what's happening around you.
                 {'\n'}
-                {'\n'}- Share Your Location:
+                {/* {'\n'}- Share Your Location: */}
                 {'\n'}
-                Sends your location to security agencies and trusted contacts.
+                - Sends your location to security agencies and trusted contacts.
                 {'\n'}
-                {'\n'}- Alerts Close Contacts:
+                {/* {'\n'}- Alerts Close Contacts: */}
                 {'\n'}
-                Tells your close contacts about the emergency and where you are.
+                - Tells your close contacts about the emergency and where you are.
                 {'\n'}
-                {'\n'}- Stay Connected:
+                {/* {'\n'}- Stay Connected: */}
                 {'\n'}
-                Keeps sharing updates until you confirm you're safe.
+                - Keeps sharing updates until you confirm you're safe.
               </Text>
               {/* <Video resizeMode={'cover'} source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/aurora-51db1.appspot.com/o/Rafay%2Fvideo-2024-01-29%2009%3A16%20AM.mov?alt=media&token=57793d02-6512-4eec-a440-772e37917d9c'}} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "30%" }} /> */}
               <Progress.Bar progress={progress} width={200} />

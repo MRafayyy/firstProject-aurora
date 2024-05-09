@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React,{useContext, useEffect} from 'react';
 import {useBackHandler} from '@react-native-community/hooks'
 
 
@@ -25,10 +25,12 @@ import {
     responsiveWidth,
     responsiveFontSize
 } from "react-native-responsive-dimensions";
+import UserIdContext from '../UserIdContext';
 
 
 export default function Screen_Decider({navigation}){
 
+    const {userId, setUserId} = useContext(UserIdContext)
 
 
     // useBackHandler(() => {
@@ -55,7 +57,10 @@ export default function Screen_Decider({navigation}){
 
 
     const GoToLogin = () => {
+
+        // setUserId({a: 'good'})
         navigation.navigate('Screen_Login')
+        // navigation.navigate('SignUp')
     }
     const GoToSignup = () => {
         navigation.navigate('Screen_Registration')

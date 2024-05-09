@@ -41,7 +41,7 @@ import colors from '../utils/color';
   );
 }
 
-export default useMemo(NotifComponent)
+export default NotifComponent
 
 const styles = StyleSheet.create({
   body: {

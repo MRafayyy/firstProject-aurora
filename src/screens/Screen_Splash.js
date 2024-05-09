@@ -18,7 +18,7 @@ import Screen_Home from "./Screen_Home";
 import UserIdContext from "../UserIdContext";
 import EncryptedStorage from 'react-native-encrypted-storage'
 import { connectToSocket } from "../components/SocketService";
-import UserScreenNavigation from "../navigation/UserScreenNavigation";
+import UserScreenNavigation from "../navigation/Women/MaterialBottomTabsNavigation";
 
 
 

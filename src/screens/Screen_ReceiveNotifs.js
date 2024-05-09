@@ -2,7 +2,7 @@ import React, {useEffect, useState, useCallback, useContext} from 'react';
 import {useBackHandler} from '@react-native-community/hooks';
 import {useNavigation} from '@react-navigation/native';
 import {useWindowDimensions} from 'react-native';
-import {TabView, SceneMap} from 'react-native-tab-view';
+import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 
 const moment = require('moment-timezone');
 import {
@@ -27,11 +27,9 @@ import messaging from '@react-native-firebase/messaging';
 import UserIdContext from '../UserIdContext';
 import fontFamily from '../../assets/fontFamily/fontFamily';
 import colors from '../utils/color';
-import NotifComponent from '../components/notifComponent';
+import NotifComponent from '../components/NotifComponent';
 
 export default function Screen_ReceiveNotifs() {
-
-
 
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
@@ -203,7 +201,7 @@ export default function Screen_ReceiveNotifs() {
     // Function to format the date
     function formatDate(date) {
       const today = moment().tz('Asia/Karachi');
-      // console.log(today);
+
       const yesterday = moment().tz('Asia/Karachi').subtract(1, 'day');
 
       const dateFormatOptions = {
@@ -231,34 +229,6 @@ export default function Screen_ReceiveNotifs() {
     const formattedDate = formatDate(parsedDate);
     const formattedTime = formatTime(fetchedTime);
 
-    // const parsedDate = new Date(fetchedDate);
-
-    // function formatDate(date) {
-    //     const today = new Date();
-    //     const yesterday = new Date(today);
-    //     yesterday.setDate(yesterday.getDate() - 1);
-
-    //     const dateFormatOptions = {
-    //         year: 'numeric',
-    //         month: '2-digit',
-    //         day: '2-digit'
-    //     };
-    //     console.log(date.toDateString())
-    //     if (date.toDateString() === today.toDateString()) {
-    //         return 'Today';
-    //     } else if (date.toDateString() === yesterday.toDateString()) {
-    //         return 'Yesterday';
-    //     } else {
-    //         return date.toLocaleDateString('en-US', dateFormatOptions);
-    //     }
-    // }
-
-    // function formatTime(time) {
-    //     return time;
-    // }
-
-    // const formattedDate = formatDate(parsedDate);
-    // const formattedTime = formatTime(fetchedTime);
 
     if (formattedDate === 'Yesterday') {
       return 'Yesterday';
@@ -287,6 +257,7 @@ export default function Screen_ReceiveNotifs() {
   
   const SecondRoute = () => (
     <FlatList
+  
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
@@ -305,6 +276,61 @@ export default function Screen_ReceiveNotifs() {
   });
 
 
+  // props => (
+  //   <View style={styles.notifType}>
+  //     <Text
+  //       onPress={() => {
+  //         setgeneralNotifs(true);
+  //         setmyNotifs(false);
+  //       }}
+  //       style={[
+  //         styles.notifEach,
+  //         {
+  //           // borderBottomWidth: generalNotifs === true ? 1 : 0,
+  //           borderBottomWidth:
+  //             props.navigationState.index === 0 ? 1 : 0,
+  //           color: generalNotifs ? colors.black : colors.silver,
+  //         },
+  //       ]}>
+  //       {props.navigationState.routes[0].title}
+  //     </Text>
+  //     <Text
+  //       onPress={() => {
+  //         setgeneralNotifs(false);
+  //         setmyNotifs(true);
+  //       }}
+  //       style={[
+  //         styles.notifEach,
+  //         {
+  //           // borderBottomWidth: myNotifs === true ? 1 : 0,
+  //           // borderBottomWidth: props.navigationState.index===0 ? 1 : 0,
+  //           color: myNotifs ? colors.black : colors.silver,
+  //         },
+  //       ]}>
+  //       {props.navigationState.routes[1].title}
+  //     </Text>
+  //   </View>
+  // )
+
+
+
+  const renderTabBar = (props) => (
+    <TabBar
+        {...props}
+        // pressColor={colors.blue}
+        indicatorStyle={{ backgroundColor: colors.blue}}
+        style={{paddingVertical: responsiveHeight(0), backgroundColor: colors.white}}
+        labelStyle={styles.notifEach}
+        activeColor={colors.blue}
+        inactiveColor="#666"
+        renderLabel={({ route, focused, color }) => (
+            <Text style={[styles.notifEach, { color }]}>
+                {route.title.split(' ').map((word) => word[0].toUpperCase() + word.substring(1).toLowerCase()).join(' ')}
+            </Text>
+        )}
+    />
+);
+
 
   return (
     <>
@@ -312,41 +338,7 @@ export default function Screen_ReceiveNotifs() {
         <Text style={styles.pageHeadingText}>Notifications</Text>
 
         <TabView
-          renderTabBar={props => (
-            <View style={styles.notifType}>
-              <Text
-                onPress={() => {
-                  setgeneralNotifs(true);
-                  setmyNotifs(false);
-                }}
-                style={[
-                  styles.notifEach,
-                  {
-                    // borderBottomWidth: generalNotifs === true ? 1 : 0,
-                    borderBottomWidth:
-                      props.navigationState.index === 0 ? 1 : 0,
-                    color: generalNotifs ? colors.black : colors.silver,
-                  },
-                ]}>
-                {props.navigationState.routes[0].title}
-              </Text>
-              <Text
-                onPress={() => {
-                  setgeneralNotifs(false);
-                  setmyNotifs(true);
-                }}
-                style={[
-                  styles.notifEach,
-                  {
-                    // borderBottomWidth: myNotifs === true ? 1 : 0,
-                    // borderBottomWidth: props.navigationState.index===0 ? 1 : 0,
-                    color: myNotifs ? colors.black : colors.silver,
-                  },
-                ]}>
-                {props.navigationState.routes[1].title}
-              </Text>
-            </View>
-          )}
+          renderTabBar={renderTabBar}
           navigationState={{index, routes}}
           renderScene={renderScene}
           onIndexChange={setIndex}
@@ -393,7 +385,7 @@ const styles = StyleSheet.create({
   notifEach: {
     fontSize: responsiveFontSize(2.1),
     fontFamily: fontFamily.SemiBold,
-    padding: responsiveWidth(5),
+    padding: responsiveWidth(1),
     width: responsiveWidth(44),
     // borderBottomWidth: 1,
     textAlign: 'center',

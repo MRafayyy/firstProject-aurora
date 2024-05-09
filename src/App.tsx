@@ -7,46 +7,39 @@
 import 'react-native-gesture-handler'; //no needed only npm se krna tha
 import React, {useContext, useRef} from 'react';
 import {useEffect, useState} from 'react';
-// import { Icon } from 'react-native-vector-icons/Icon';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
 import messaging from '@react-native-firebase/messaging';
-import {TransitionPresets} from '@react-navigation/stack';
+
 import {StyleSheet} from 'react-native';
-import {
-  NavigationContainer,
-} from '@react-navigation/native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {NavigationContainer} from '@react-navigation/native';
+
 import {Header, createStackNavigator} from '@react-navigation/stack';
-import Screen_Login from './screens/Screen_Login';
-import Screen_NadraVerification from './screens/Screen_NadraVerification';
-import Screen_Registration from './screens/Screen_Registration';
-import Screen_Splash from './screens/Screen_Splash';
-import Screen_ForgotPassword from './screens/Screen_ForgotPassword';
-import Screen_Decider from './screens/Screen_Decider';
+
 import UserIdContext, {UserIdProvider} from './UserIdContext';
 
-import { navigationRef } from './RootNavigation';
-import UserScreenNavigation from './navigation/UserScreenNavigation';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import Screen_MapTracking from './screens/Screen_MapTracking';
-import Screen_FriendProfile from './screens/Screen_FriendProfile';
-import Screen_Maps from './screens/Screen_Maps';
-import Screen_MyFriends from './screens/Screen_MyFriends';
-import Screen_Friends from './screens/Screen_Friends';
+import {navigationRef} from './RootNavigation';
+
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+
 import fontFamily from '../assets/fontFamily/fontFamily';
 import colors from './utils/color';
-import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+} from 'react-native-responsive-dimensions';
+import StackNavigation from './navigation/Women/StackNavigation';
+import StackNavigation2 from './navigation/Contacts/StackNavigation2';
 
 
-const Stack = createStackNavigator();
-const Tab = createMaterialTopTabNavigator();
+
 
 export default function App() {
-
   useEffect(() => {
     getDeviceToken();
   }, []);
+
+  const a = useContext(UserIdContext);
+  console.log(a?.userId?.a)
 
   const getDeviceToken = async () => {
     await messaging().registerDeviceForRemoteMessages();
@@ -57,148 +50,30 @@ export default function App() {
       'c8KHnyMrRTyXNXB9tVglFM:APA91bGVoYH4vYpKUsETdY_RxbAMZ3vXe2u4wLWhDFrya87IyuTyyStgiaypiOCfZgO5HLuMSpnIvZ4LL7gcFzWfk5_zZbT-hodd-D6RMvtkJPKaSIytPKowKcI5HgO3viZWtHFNBlOX';
   };
 
-
-
-  const config = {
-    animation: 'spring',
-    config: {
-      stiffness: 1000,
-      damping: 500,
-      mass: 3,
-      overshootClamping: true,
-      restDisplacementThreshold: 0.01,
-      restSpeedThreshold: 0.01,
-    },
-  };
+  // const config = {
+  //   animation: 'spring',
+  //   config: {
+  //     stiffness: 1000,
+  //     damping: 500,
+  //     mass: 3,
+  //     overshootClamping: true,
+  //     restDisplacementThreshold: 0.01,
+  //     restSpeedThreshold: 0.01,
+  //   },
+  // };
 
   return (
     <>
-      {/* {isConnectedtoSocket? <Text>hey</Text>:  */}
+
       <UserIdProvider>
         <NavigationContainer ref={navigationRef}>
-          <Stack.Navigator
-          
-            initialRouteName="Screen_Splash"
-            
-            screenOptions={{
-            
-            headerTitleStyle: {fontFamily: fontFamily.Regular},
-              // headerBackTitleStyle: {fontFamily: fontFamily.Regular} ,
-              animationEnabled: true,
-              animationTypeForReplace: 'push',
-              ...TransitionPresets.RevealFromBottomAndroid,
-            }}>
-            <Stack.Screen
-              name="Screen_Splash"
-              component={Screen_Splash}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="Screen_Decider"
-              component={Screen_Decider}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="Screen_Login"
-              component={Screen_Login}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="Screen_NadraVerification"
-              component={Screen_NadraVerification}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="Screen_Registration"
-              component={Screen_Registration}
-              options={{
-                headerShown: false,
-                // ...TransitionPresets.RevealFromBottomAndroid
-              }}
-            />
-            <Stack.Screen
-              name="Screen_ForgotPassword"
-              component={Screen_ForgotPassword}
-              options={{headerShown: false}}
-            />
-
-            {/* <Stack.Screen
-              name="HomeTabs"
-              component={HomeTabs}
-              options={{
-                headerShown: false,
-              }}
-            /> */}
-            
-            
-
-      {/* <Stack.Navigator
-        // initialRouteName="Screen_Splash"
-        screenOptions={{
-          animationEnabled: true,
-          animationTypeForReplace: 'push',
-          ...TransitionPresets.RevealFromBottomAndroid,
-        }}> */}
-        <Stack.Screen
-          name="Screen_Friends"
-          component={Screen_Friends}
-          options={{
-            headerShown: true,
-            headerTitle: 'Friend Requests',
-          }}
-        />
-
-        <Stack.Screen
-          name="Screen_MyFriends"
-          component={Screen_MyFriends}
-          options={{
-            headerShown: true,
-            headerTitle: 'Friends',
-          }}
-        />
-
-        <Stack.Screen
-          name="Screen_FriendProfile"
-          component={Screen_FriendProfile}
-          options={{
-            headerShown: true,
-            headerTitle: 'Info',
-          }}
-        />
-
-        <Stack.Screen
-          name="Screen_MapTracking"
-          component={Screen_MapTracking}
-          options={{
-            headerShown: false,
-            headerTitle: '',
-          }}
-        />
-
-        <Stack.Screen
-          name="Screen_Maps"
-          component={Screen_Maps}
-          options={{
-            headerShown: false,
-            headerTitle: 'Maps',
-          }}
-        />
-      {/* </Stack.Navigator> */}
-          {/* <Stack.Screen name='HomeTabs' component={HomeTabs} options={{headerShown: false}}/> */}
-
-            <Stack.Screen options={{headerShown: false}} name='UserScreenNavigation' component={UserScreenNavigation} />
-          
-          </Stack.Navigator>
-          
-
-
-
+         {a?.userId?.a===null?
+         <StackNavigation2/>:
+          <StackNavigation/>
+    }
         </NavigationContainer>
       </UserIdProvider>
 
-      {/* }  */}
     </>
   );
 }
@@ -216,11 +91,11 @@ const styles = StyleSheet.create({
     color: colors.black,
     // fontFamily: fontFamily. Regular,
   },
-  headerTitleStyle:  {
+  headerTitleStyle: {
     fontFamily: fontFamily.Regular,
     lineHeight: responsiveHeight(7.25),
     fontSize: responsiveFontSize(1.7),
-  }
+  },
 });
 
 // export default App;
@@ -523,49 +398,3 @@ const styles = StyleSheet.create({
 //     );
 //   }
 
-//   const styles = StyleSheet.create({
-
-//     body: {
-//       flex: 1,
-//       backgroundColor: 'black',
-//       alignItems: 'center',
-//       // justifyContent: 'center'
-//       // marginBottom: "13%"
-//     },
-//     image: {
-//       width: 400,
-//       height: 400
-//     },
-
-//     input:{
-//       width: '80%',
-//       height: 50,
-//       borderWidth: 2,
-//       borderColor: 'red',
-//       color: 'white',
-//       fontSize: 25,
-//       textAlign: 'center',
-//     },
-
-//     view1: {
-//       // flex: 1,
-//       width: '100%',
-//       height: 100,
-//       justifyContent: 'center',
-//       alignItems: 'center',
-//       backgroundColor: 'cyan',
-//       margin: 10
-
-//     },
-
-//     text: {
-//       margin: 10,
-//       fontSize: 25,
-//       fontWeight: '600',
-//       color: 'white',
-//       // marginBottom: 20
-//     }
-
-//   });
-
-//   export default App;
