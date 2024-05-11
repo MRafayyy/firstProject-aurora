@@ -7,22 +7,19 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
-import Screen_Home from '../../screens/Screen_Home';
-import Screen_Home2 from '../../screens/Screen_Home2';
-import Screen_ReceiveNotifs from '../../screens/Screen_ReceiveNotifs';
 
 import Screen_SearchContacts from '../../screens/Screen_SearchContacts';
 
-import Screen_Settings from '../../screens/Screen_Settings';
 import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import colors from '../../utils/color';
+import Home from '../../ContactScreens/Home';
 
 const Tab = createMaterialTopTabNavigator();
 
-export default function UserScreenNavigation() {
+export default function BottomTabs() {
   return (
     <Tab.Navigator
       // initialRouteName="Screen_Home"
@@ -49,8 +46,8 @@ export default function UserScreenNavigation() {
       })}>
 
       <Tab.Screen
-        name="Screen_Home"
-        component={Screen_Home}
+        name="ContactScreen_Home"
+        component={Home}
         options={({ route }) => ({
           tabBarLabel: 'Home',
 
@@ -61,8 +58,8 @@ export default function UserScreenNavigation() {
       />
 
       <Tab.Screen
-        name="Screen_ReceiveNotifs"
-        component={Screen_ReceiveNotifs}
+        name="ContactScreen_ReceiveNotifs"
+        component={Home}
         options={{
           tabBarLabel: 'Notifs',
           tabBarIcon: ({ color }) => (
@@ -76,8 +73,8 @@ export default function UserScreenNavigation() {
       />
 
       <Tab.Screen
-        name="Screen_Home2"
-        component={Screen_Home2}
+        name="ContactScreen_Home2"
+        component={Home}
         options={({ navigation }) => ({
           tabBarLabel: 'Rescue',
           tabBarIcon: ({ color }) => (
@@ -87,8 +84,8 @@ export default function UserScreenNavigation() {
       />
 
       <Tab.Screen
-        name="Screen_SearchContacts"
-        component={Screen_SearchContacts}
+        name="ContactScreen_SearchContacts"
+        component={Home}
         onPress={({ navigation }) => {
           navigation.navigate(Screen_SearchContacts);
         }}
@@ -101,8 +98,8 @@ export default function UserScreenNavigation() {
       />
 
       <Tab.Screen
-        name="Settings"
-        component={Screen_Settings}
+        name="ContactScreen_Settings"
+        component={Home}
         options={{
           tabBarLabel: 'Settings',
           tabBarIcon: ({ color }) => (

@@ -28,7 +28,6 @@ import {
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
 import StackNavigation from './navigation/Women/StackNavigation';
-import StackNavigation2 from './navigation/Contacts/StackNavigation2';
 
 
 
@@ -38,8 +37,6 @@ export default function App() {
     getDeviceToken();
   }, []);
 
-  const a = useContext(UserIdContext);
-  console.log(a?.userId?.a)
 
   const getDeviceToken = async () => {
     await messaging().registerDeviceForRemoteMessages();
@@ -67,10 +64,9 @@ export default function App() {
 
       <UserIdProvider>
         <NavigationContainer ref={navigationRef}>
-         {a?.userId?.a===null?
-         <StackNavigation2/>:
+
           <StackNavigation/>
-    }
+    
         </NavigationContainer>
       </UserIdProvider>
 

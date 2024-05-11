@@ -1,4 +1,4 @@
-import React, {useState, PropsWithChildren, useEffect, useContext} from 'react';
+import React, { useState, PropsWithChildren, useEffect, useContext } from 'react';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {
   StyleSheet,
@@ -17,8 +17,8 @@ import {
   BackHandler,
   Alert,
 } from 'react-native';
-
-import Screen_Home from './Screen_Home';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Screen_Home from '../screens/Screen_Home';
 import {
   responsiveHeight,
   responsiveWidth,
@@ -26,19 +26,20 @@ import {
 } from 'react-native-responsive-dimensions';
 import PushNotification from 'react-native-push-notification';
 import messaging from '@react-native-firebase/messaging';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Keychain from 'react-native-keychain';
-import ip from './IPaddress';
-import {useConnectionStatus} from '../components/NoInternet';
+import ip from '../screens/IPaddress';
+import { useConnectionStatus } from '../components/NoInternet';
 import UserIdContext from '../UserIdContext';
-import {connectToSocket} from '../components/SocketService';
+import { connectToSocket, updateUserType } from '../components/SocketService';
 import fontFamily from '../../assets/fontFamily/fontFamily';
 import GlobalStyles from '../utils/GlobalStyles';
 import colors from '../utils/color';
-import UserScreenNavigation from '../navigation/Women/MaterialBottomTabsNavigation';
+import BottomTabs from '../navigation/Contacts/BottomTabs';
+import { connectToContactSocket } from '../components/SocketService2';
 
-export default function Screen_Login({navigation, route}) {
-  const {userId, setUserId} = useContext(UserIdContext);
+export default function Login({ navigation, route }) {
+  const { userId, setUserId } = useContext(UserIdContext);
   const isConnected = useConnectionStatus();
 
   function handleBackButtonClick() {
@@ -70,10 +71,10 @@ export default function Screen_Login({navigation, route}) {
   };
 
   const goToForgotPasswordScreen = () => {
-    navigation.navigate('Screen_ForgotPassword');
+    // navigation.navigate('Screen_ForgotPassword');
   };
   const GoToRegistrationPage = () => {
-    navigation.navigate('Screen_Registration');
+    navigation.navigate('ContactScreen_SignUp');
   };
 
   const createChannels = () => {
@@ -94,7 +95,7 @@ export default function Screen_Login({navigation, route}) {
           await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
           );
-        } catch (error) {}
+        } catch (error) { }
       }
     };
     checkApplicationPermission();
@@ -106,7 +107,7 @@ export default function Screen_Login({navigation, route}) {
     !isConnected
       ? Alert.alert('No Internet', 'Please connect to the internet')
       : // Keyboard.dismiss();
-        (arr = []);
+      (arr = []);
 
     if (UsernameText.trim().length === 0 && PasswordText.trim().length === 0) {
       setUsernameError_msg(['User Id field cannot be empty']);
@@ -132,7 +133,7 @@ export default function Screen_Login({navigation, route}) {
       const FcmDeviceToken = await messaging().getToken();
       // FcmDeviceToken = token
       // let url = 'http://192.168.0.103:3000/login'
-      let url = `${ip}/women/login`;
+      let url = `${ip}/contacts/login`;
       console.log(FcmDeviceToken);
 
       const LoginData = {
@@ -149,9 +150,8 @@ export default function Screen_Login({navigation, route}) {
         body: JSON.stringify(LoginData),
       });
 
-      console.log('response before jsoning : ' + response);
       response = await response.json();
-      console.log('response after jsoning : ' + response);
+
       // } catch (error) {
       //     setLoader(false)
       //     Alert.alert("Could not get device token Error", 'Error may be generated if you are not connected to the internet', [{ style: 'cancel' }])
@@ -163,12 +163,13 @@ export default function Screen_Login({navigation, route}) {
           const username = UsernameText.trim();
           const password = response.token.toString();
           console.info('token is:' + response.token);
-          await AsyncStorage.setItem('userType', 'Women');
+          // await AsyncStorage.setItem('Token', response.token)
           await Keychain.setGenericPassword(username, password);
+          await AsyncStorage.setItem('userType', 'Contact');
         } catch (error) {
           setLoader(false);
           console.info('ggggggggggggggggggggggggggaaaaaaaaaaaa' + error);
-          Alert.alert('Keychain Error', error.message, [{style: 'cancel'}]);
+          Alert.alert('Keychain Error', error.message, [{ style: 'cancel' }]);
         }
 
         try {
@@ -177,48 +178,45 @@ export default function Screen_Login({navigation, route}) {
 
             response.mongoId,
           );
-
-          // Congrats! You've just stored your first value!
         } catch (error) {
           console.log('Encryptes storage error: ' + error);
-          // There was an error on the native side
         }
-        setUserId({userId: UsernameText.trim(), mongoId: response.mongoId});
-        // navigation.navigate(Screen_Home,
-        //    {userId: UsernameText.trim()
-        // });
-        // navigation.navigate(HomeTabs, {
-        //   screen: Screen_Home,
-        //   params: {userId: UsernameText.trim()},
-        // });
-        navigation.navigate(UserScreenNavigation, {
-          screen: Screen_Home,
+        setUserId({ userId: UsernameText.trim(), mongoId: response.mongoId });
+
+        navigation.navigate(BottomTabs, {
+          screen: 'ContactScreen_Home',
           params: {userId: UsernameText.trim()},
         });
+        console.log("login done")
+
         setUsernameText('');
         setPasswordText('');
         setUsernameError_msg([]);
         setPasswordError_msg([]);
         setLoader(false);
-        const socket = connectToSocket(UsernameText.trim(), response.mongoId);
+
+       
+        const socket = connectToContactSocket(UsernameText.trim(), response.mongoId);
         socket.emit('LoggedIn', {
           userId: UsernameText.trim(),
           mongoId: response.mongoId,
         });
+
+
       } else if (response.success === false) {
-        Alert.alert('Invalid Error', response.reason, [{style: 'cancel'}]);
+        Alert.alert('Invalid Error', response.reason, [{ style: 'cancel' }]);
         setLoader(false);
       } else if (response.success === 'FCMTokenError') {
-        Alert.alert(response.success, response.reason, [{style: 'cancel'}]);
+        Alert.alert(response.success, response.reason, [{ style: 'cancel' }]);
         setLoader(false);
       } else if (response.success === 'SomeError') {
-        Alert.alert(response.success, response.reason, [{style: 'cancel'}]);
+        Alert.alert(response.success, response.reason, [{ style: 'cancel' }]);
         setLoader(false);
       }
 
       // console.log(response);
     } catch (error) {
-      Alert.alert('System Error', error.message, [{style: 'cancel'}]);
+      Alert.alert('System Error', error.message, [{ style: 'cancel' }]);
       setLoader(false);
       console.info('gggggggggggggggggggggggggg' + error);
     }
@@ -234,7 +232,7 @@ export default function Screen_Login({navigation, route}) {
       <KeyboardAvoidingView
         enabled
         behavior={Platform.OS === 'ios' ? 'padding' : 'null'}
-        style={{flex: 1}}>
+        style={{ flex: 1 }}>
         {/* <ScrollView> */}
         <View style={GlobalStyles.body}>
           <Image
@@ -260,7 +258,10 @@ export default function Screen_Login({navigation, route}) {
               onSubmitEditing={Keyboard.dismiss}></TextInput>
             {UsernameError_msg.map((value, index) => (
               <Text
-                style={[GlobalStyles.TextInputBelowErrorTextStyle, GlobalStyles.errorFont]}
+                style={[
+                  GlobalStyles.TextInputBelowErrorTextStyle,
+                  GlobalStyles.errorFont,
+                ]}
                 key={index}>
                 {value}
               </Text>
@@ -278,15 +279,18 @@ export default function Screen_Login({navigation, route}) {
               onSubmitEditing={Keyboard.dismiss}></TextInput>
             {PasswordError_msg.map((value, index) => (
               <Text
-                style={[GlobalStyles.TextInputBelowErrorTextStyle, GlobalStyles.errorFont]}
+                style={[
+                  GlobalStyles.TextInputBelowErrorTextStyle,
+                  GlobalStyles.errorFont,
+                ]}
                 key={index}>
                 {value}
               </Text>
             ))}
             <Pressable
               onPress={goToForgotPasswordScreen}
-              style={{marginTop: 10}}>
-              <Text style={[GlobalStyles.text, {textAlign: 'right'}]}>
+              style={{ marginTop: 10 }}>
+              <Text style={[GlobalStyles.text, { textAlign: 'right' }]}>
                 Forgot password?
               </Text>
             </Pressable>
@@ -294,20 +298,15 @@ export default function Screen_Login({navigation, route}) {
 
           <Pressable
             onPress={Login}
-            style={({pressed}) => [
-              pressed ? {opacity: 0.8} : {},
+            style={({ pressed }) => [
+              pressed ? { opacity: 0.8 } : {},
               GlobalStyles.loginBtn,
-              
-              
             ]}
             disabled={Loader}>
             {Loader ? (
               <ActivityIndicator size="large" color="#fff" />
             ) : (
-              <Text style={[GlobalStyles.btntext]}>
-                {' '}
-                Login
-              </Text>
+              <Text style={[GlobalStyles.btntext]}> Login</Text>
             )}
           </Pressable>
 
@@ -334,6 +333,4 @@ export default function Screen_Login({navigation, route}) {
   );
 }
 
-const styles = StyleSheet.create({
-
-});
+const styles = StyleSheet.create({});

@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import socketIOClient from 'socket.io-client';
 import ip from '../screens/IPaddress';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -10,19 +9,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const socket = socketIOClient(ip
     , {
     auth: {
-        userType: 'user',
+        userType: 'contact',
         // userId:
     },
 }
 );
 
 // Function to update the userType in the socket connection
-export const updateUserType = (newUserType) => {
-    socket.auth.userType = newUserType;
-  };
+// export const updateUserType = (newUserType) => {
+//     socket.auth.userType = newUserType;
+//   };
 
 
-export const connectToSocket = (userId, mongoId) => {
+export const connectToContactSocket = (userId, mongoId) => {
   
     // socket.io.opts.auth = {
     //     userType: 'user',
@@ -35,11 +34,11 @@ export const connectToSocket = (userId, mongoId) => {
 
 
     socket.on('connect', () => {
-        console.log('Connected to server');
+        console.log('Connected to serverS');
     });
 
     socket.on('disconnect', () => {
-        console.log('Disconnected from server');
+        console.log('Disconnected from serverS');
         
     });
 

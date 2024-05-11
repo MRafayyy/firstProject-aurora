@@ -113,7 +113,7 @@ export default function Screen_Registration({navigation, route}) {
       PasswordError_msg.length === 0 &&
       CPasswordError_msg.length === 0
     ) {
-      let url = `${ip}/register`;
+      let url = `${ip}/women/register`;
       setLoader(true);
 
       const SendRegistrationInfo = async () => {

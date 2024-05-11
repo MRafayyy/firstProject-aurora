@@ -13,7 +13,7 @@ import {
     ActivityIndicator,
     BackHandler
 } from 'react-native';
-import ip from './IPaddress';
+import ip from "../screens/IPaddress";
 
 import {
     responsiveHeight,
@@ -25,7 +25,7 @@ import { useConnectionStatus } from "../components/NoInternet";
 import GlobalStyles from "../utils/GlobalStyles";
 
 
-export default function Screen_NadraVerification({ navigation, route }) {
+export default function NadraVerify({ navigation, route }) {
 
     const isConnected = useConnectionStatus();
 
@@ -110,7 +110,7 @@ export default function Screen_NadraVerification({ navigation, route }) {
 
 
 
-        let url = `${ip}/women/VerifyNadraInfo`
+        let url = `${ip}/contacts/VerifyNadraInfo`
         setLoader(true)
         try {
 
@@ -119,7 +119,6 @@ export default function Screen_NadraVerification({ navigation, route }) {
                 name: nameText.trim(),
                 fathers_name: Fathers_nameText.trim(),
                 cnic: parseInt(cnicText.trim()),
-                gender: "female",
                 userId: hmm.userId
             }
             // console.log(NadraData)
@@ -135,7 +134,7 @@ export default function Screen_NadraVerification({ navigation, route }) {
             response = await response.json();
 
             if (response === true) {
-                navigation.navigate('Screen_Login')
+                navigation.navigate('ContactScreen_Login')
             }
             else {
                 setLoader(false)
