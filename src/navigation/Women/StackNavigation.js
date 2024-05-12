@@ -42,6 +42,7 @@ import SignUp from '../../ContactScreens/SignUp';
 import Login from '../../ContactScreens/Login';
 import NadraVerify from '../../ContactScreens/NadraVerify';
 import BottomTabs from '../Contacts/BottomTabs';
+import Screen_ShowContactsOnly from '../../screens/Screen_ShowContactsOnly';
 
 
 const Stack = createStackNavigator();
@@ -78,68 +79,69 @@ export default function StackNavigation() {
         options={{ headerShown: false }}
       />
 
-          <Stack.Screen
-            name="Screen_Login"
-            component={Screen_Login}
-            options={{
-              headerShown: false,
-            }}
-          />
+      <Stack.Screen
+        name="Screen_Login"
+        component={Screen_Login}
+        options={{
+          headerShown: false,
+        }}
+      />
 
-          <Stack.Screen
-            name="Screen_NadraVerification"
-            component={Screen_NadraVerification}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Screen_Registration"
-            component={Screen_Registration}
-            options={{
-              headerShown: false,
-              // ...TransitionPresets.RevealFromBottomAndroid
-            }}
-          />
-          <Stack.Screen
-            name="Screen_ForgotPassword"
-            component={Screen_ForgotPassword}
-            options={{ headerShown: false }}
-          />
-
-
-{/* ------------------------------------ */}
+      <Stack.Screen
+        name="Screen_NadraVerification"
+        component={Screen_NadraVerification}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Screen_Registration"
+        component={Screen_Registration}
+        options={{
+          headerShown: false,
+          // ...TransitionPresets.RevealFromBottomAndroid
+        }}
+      />
+      <Stack.Screen
+        name="Screen_ForgotPassword"
+        component={Screen_ForgotPassword}
+        options={{ headerShown: false }}
+      />
 
 
-          <Stack.Screen
-            name="ContactScreen_SignUp"
-            component={SignUp}
-            options={{ headerShown: false }}
-          />
+      {/* ------------------------------------ */}
 
-          <Stack.Screen
-            name="ContactScreen_Login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
-      
-          <Stack.Screen
-            name="ContactScreen_NadraVerify"
-            component={NadraVerify}
-            options={{ headerShown: false }}
-          />
-        
-        <Stack.Screen
-            options={{ headerShown: false }}
-            name="BottomTabs"
-            component={BottomTabs}
-          />
 
-        {userType === 'Contact' &&
-          <>
-            </>
-            }
+      <Stack.Screen
+        name="ContactScreen_SignUp"
+        component={SignUp}
+        options={{ headerShown: false }}
+      />
 
-{userType === 'Women' &&
-  <>
+      <Stack.Screen
+        name="ContactScreen_Login"
+        component={Login}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="ContactScreen_NadraVerify"
+        component={NadraVerify}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="BottomTabs"
+        component={BottomTabs}
+      />
+
+      {userType === 'Contact' &&
+        <>
+        </>
+      }
+
+      {userType === 'Women' &&
+        <>
+
 
           <Stack.Screen
             name="Screen_Friends"
@@ -191,6 +193,14 @@ export default function StackNavigation() {
 
         </>
       }
+<Stack.Screen
+  name="Screen_ShowContactsOnly"
+  component={Screen_ShowContactsOnly}
+  options={{
+    headerShown: true,
+    headerTitle: 'Might be Contacts',
+  }}
+/>
 
       <Stack.Screen
         options={{ headerShown: false }}

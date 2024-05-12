@@ -62,7 +62,7 @@ export default function Screen_Splash({ navigation, route }) {
                 if (response.success === true) {
                     const mongoId = await EncryptedStorage.getItem('user_session');
                     setUserId({ userId: credentials.username, mongoId });
-                    setUserType('contact')
+                    setUserType('Contact')
 
                     navigation.navigate(BottomTabs, {
                         screen: 'ContactScreen_Home',
@@ -108,7 +108,7 @@ export default function Screen_Splash({ navigation, route }) {
                     const mongoId = await EncryptedStorage.getItem('user_session');
                     // credentials = JSON.parse(credentials.username)
                     setUserId({ userId: credentials.username, mongoId });
-                    setUserType('user')
+                    setUserType('Women')
 
                     navigation.navigate(UserScreenNavigation, {
                         screen: 'Screen_Home',

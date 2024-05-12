@@ -19,20 +19,20 @@ import {
 
 import ip from './IPaddress';
 
-import UserDisplay from '../components/UserDisplay';
+import ContactDisplay from '../components/ContactDisplay'
 import UserIdContext from '../UserIdContext';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import fontFamily from '../../assets/fontFamily/fontFamily';
 import colors from '../utils/color';
 
-export default function Screen_SearchContacts({ navigation }) {
+export default function Screen_ShowContactsOnly({ navigation }) {
   const { userId } = useContext(UserIdContext);
   const [searchText, setSearchText] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const [AllUsers, setAllUsers] = useState([]);
   const [AllUsers2, setAllUsers2] = useState([]);
-  const [requestSent, setrequestSent] = useState({});
+  const [addedContact, setAddedContact] = useState({});
 
   const fetchUsers = async () => {
 
@@ -40,7 +40,7 @@ export default function Screen_SearchContacts({ navigation }) {
 
       const mongoId = userId.mongoId;
 
-      let response = await fetch(`${ip}/users/${mongoId}`, {
+      let response = await fetch(`${ip}/women/showAllContacts/${mongoId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ export default function Screen_SearchContacts({ navigation }) {
         if (item.name && typeof item.name === 'string') {
 
           return item.name.toLowerCase().startsWith(searchText);
-          
+
         }
 
         return false;
@@ -140,14 +140,7 @@ export default function Screen_SearchContacts({ navigation }) {
     <>
       <View style={styles.body}>
         <View style={styles.headerContainer}>
-          <MaterialCommunityIcons
-            name="contacts"
-            // name="chatbox-ellipses"
-            size={30}
-            color={colors.blue}
-            onPress={() => navigation.navigate('Screen_ShowContactsOnly')}
-          />
-          <Ionicons
+          {/* <Ionicons
             name="people-circle"
             // name="chatbox-ellipses"
             size={30}
@@ -160,7 +153,7 @@ export default function Screen_SearchContacts({ navigation }) {
             size={30}
             color={colors.blue}
             onPress={() => navigation.navigate('Screen_Friends')}
-          />
+          /> */}
 
         </View>
 
@@ -193,10 +186,10 @@ export default function Screen_SearchContacts({ navigation }) {
             data={AllUsers}
             renderItem={({ item }) => {
               return (
-                <UserDisplay
+                <ContactDisplay
                   item={item}
-                  requestSent={requestSent}
-                  setrequestSent={setrequestSent}
+                  addedContact={addedContact}
+                  setAddedContact={setAddedContact}
                 />
               );
             }}

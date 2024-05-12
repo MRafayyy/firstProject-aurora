@@ -13,7 +13,7 @@ const FriendRequests = ({ item, friendRequests, setFriendRequests, Accepted, set
 const acceptRequest = async(friendRequestSenderId)=>{
     const mongoId = userId.mongoId;
 try {
-    let response = await fetch(`${ip}/friend-request/accept`,{
+    let response = await fetch(`${ip}/women/friend-request/accept`,{
         method: "POST",
         headers:{
             'Content-Type': 'application/json'

@@ -20,7 +20,7 @@ const UsersShow = ({item, requestSent, setrequestSent}) => {
 
   const sendFriendRequest = async (currentUserId, selectedUserId) => {
     try {
-      let response = await fetch(`${ip}/friend-request`, {
+      let response = await fetch(`${ip}/women/friend-request`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

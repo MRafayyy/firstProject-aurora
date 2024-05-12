@@ -7,15 +7,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
-
-import Screen_SearchContacts from '../../screens/Screen_SearchContacts';
-
 import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import colors from '../../utils/color';
 import Home from '../../ContactScreens/Home';
+import Settingss from '../../ContactScreens/Settingss';
+// import Settings from '../../ContactScreens/Settings'
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -87,7 +86,7 @@ export default function BottomTabs() {
         name="ContactScreen_SearchContacts"
         component={Home}
         onPress={({ navigation }) => {
-          navigation.navigate(Screen_SearchContacts);
+          // navigation.navigate(Screen_SearchContacts);
         }}
         options={{
           tabBarLabel: 'Contacts',
@@ -99,7 +98,7 @@ export default function BottomTabs() {
 
       <Tab.Screen
         name="ContactScreen_Settings"
-        component={Home}
+        component={Settingss}
         options={{
           tabBarLabel: 'Settings',
           tabBarIcon: ({ color }) => (

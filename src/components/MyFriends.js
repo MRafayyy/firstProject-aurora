@@ -21,7 +21,7 @@ const MyFriends = ({item, friendRemoved, setfriendRemoved, navigation}) => {
 
   const removeFriend = async (currentUserId, selectedUserId) => {
     try {
-      let response = await fetch(`${ip}/remove-friend`, {
+      let response = await fetch(`${ip}/women/remove-friend`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

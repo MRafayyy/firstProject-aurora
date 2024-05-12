@@ -1,4 +1,4 @@
-import React, {useState, PropsWithChildren, useEffect, useContext} from 'react';
+import React, { useState, PropsWithChildren, useEffect, useContext } from 'react';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {
   StyleSheet,
@@ -29,16 +29,16 @@ import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Keychain from 'react-native-keychain';
 import ip from './IPaddress';
-import {useConnectionStatus} from '../components/NoInternet';
+import { useConnectionStatus } from '../components/NoInternet';
 import UserIdContext from '../UserIdContext';
-import {connectToSocket} from '../components/SocketService';
+import { connectToSocket } from '../components/SocketService';
 import fontFamily from '../../assets/fontFamily/fontFamily';
 import GlobalStyles from '../utils/GlobalStyles';
 import colors from '../utils/color';
 import UserScreenNavigation from '../navigation/Women/MaterialBottomTabsNavigation';
 
-export default function Screen_Login({navigation, route}) {
-  const {userId, setUserId} = useContext(UserIdContext);
+export default function Screen_Login({ navigation, route }) {
+  const { userId, setUserId } = useContext(UserIdContext);
   const isConnected = useConnectionStatus();
 
   function handleBackButtonClick() {
@@ -94,7 +94,7 @@ export default function Screen_Login({navigation, route}) {
           await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
           );
-        } catch (error) {}
+        } catch (error) { }
       }
     };
     checkApplicationPermission();
@@ -106,7 +106,7 @@ export default function Screen_Login({navigation, route}) {
     !isConnected
       ? Alert.alert('No Internet', 'Please connect to the internet')
       : // Keyboard.dismiss();
-        (arr = []);
+      (arr = []);
 
     if (UsernameText.trim().length === 0 && PasswordText.trim().length === 0) {
       setUsernameError_msg(['User Id field cannot be empty']);
@@ -149,9 +149,8 @@ export default function Screen_Login({navigation, route}) {
         body: JSON.stringify(LoginData),
       });
 
-      console.log('response before jsoning : ' + response);
       response = await response.json();
-      console.log('response after jsoning : ' + response);
+
       // } catch (error) {
       //     setLoader(false)
       //     Alert.alert("Could not get device token Error", 'Error may be generated if you are not connected to the internet', [{ style: 'cancel' }])
@@ -168,7 +167,7 @@ export default function Screen_Login({navigation, route}) {
         } catch (error) {
           setLoader(false);
           console.info('ggggggggggggggggggggggggggaaaaaaaaaaaa' + error);
-          Alert.alert('Keychain Error', error.message, [{style: 'cancel'}]);
+          Alert.alert('Keychain Error', error.message, [{ style: 'cancel' }]);
         }
 
         try {
@@ -183,7 +182,7 @@ export default function Screen_Login({navigation, route}) {
           console.log('Encryptes storage error: ' + error);
           // There was an error on the native side
         }
-        setUserId({userId: UsernameText.trim(), mongoId: response.mongoId});
+        setUserId({ userId: UsernameText.trim(), mongoId: response.mongoId });
         // navigation.navigate(Screen_Home,
         //    {userId: UsernameText.trim()
         // });
@@ -193,7 +192,7 @@ export default function Screen_Login({navigation, route}) {
         // });
         navigation.navigate(UserScreenNavigation, {
           screen: Screen_Home,
-          params: {userId: UsernameText.trim()},
+          params: { userId: UsernameText.trim() },
         });
         setUsernameText('');
         setPasswordText('');
@@ -206,19 +205,19 @@ export default function Screen_Login({navigation, route}) {
           mongoId: response.mongoId,
         });
       } else if (response.success === false) {
-        Alert.alert('Invalid Error', response.reason, [{style: 'cancel'}]);
+        Alert.alert('Invalid Error', response.reason, [{ style: 'cancel' }]);
         setLoader(false);
       } else if (response.success === 'FCMTokenError') {
-        Alert.alert(response.success, response.reason, [{style: 'cancel'}]);
+        Alert.alert(response.success, response.reason, [{ style: 'cancel' }]);
         setLoader(false);
       } else if (response.success === 'SomeError') {
-        Alert.alert(response.success, response.reason, [{style: 'cancel'}]);
+        Alert.alert(response.success, response.reason, [{ style: 'cancel' }]);
         setLoader(false);
       }
 
       // console.log(response);
     } catch (error) {
-      Alert.alert('System Error', error.message, [{style: 'cancel'}]);
+      Alert.alert('System Error', error.message, [{ style: 'cancel' }]);
       setLoader(false);
       console.info('gggggggggggggggggggggggggg' + error);
     }
@@ -234,7 +233,7 @@ export default function Screen_Login({navigation, route}) {
       <KeyboardAvoidingView
         enabled
         behavior={Platform.OS === 'ios' ? 'padding' : 'null'}
-        style={{flex: 1}}>
+        style={{ flex: 1 }}>
         {/* <ScrollView> */}
         <View style={GlobalStyles.body}>
           <Image
@@ -285,8 +284,8 @@ export default function Screen_Login({navigation, route}) {
             ))}
             <Pressable
               onPress={goToForgotPasswordScreen}
-              style={{marginTop: 10}}>
-              <Text style={[GlobalStyles.text, {textAlign: 'right'}]}>
+              style={{ marginTop: 10 }}>
+              <Text style={[GlobalStyles.text, { textAlign: 'right' }]}>
                 Forgot password?
               </Text>
             </Pressable>
@@ -294,11 +293,11 @@ export default function Screen_Login({navigation, route}) {
 
           <Pressable
             onPress={Login}
-            style={({pressed}) => [
-              pressed ? {opacity: 0.8} : {},
+            style={({ pressed }) => [
+              pressed ? { opacity: 0.8 } : {},
               GlobalStyles.loginBtn,
-              
-              
+
+
             ]}
             disabled={Loader}>
             {Loader ? (
