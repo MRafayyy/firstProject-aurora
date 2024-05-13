@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import {
   BackHandler,
@@ -18,9 +18,12 @@ import socket from '../components/SocketService2';
 import SettingsComponent from '../components/SettingsComponent';
 import imageNames from '../../assets/imageNames/imageNames';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserTypeContext } from '../UserIdContext';
 
 
 export default function Settingss({ navigation }) {
+
+  const {setUserType} = useContext(UserTypeContext);
 
   function handleBackButtonClick() {
     navigation.navigate('ContactScreen_Home');
@@ -39,7 +42,9 @@ export default function Settingss({ navigation }) {
 
   const Logout = async () => {
     await Keychain.resetGenericPassword();
-    await AsyncStorage.removeItem('userType')
+    // await AsyncStorage.removeItem('userType')
+    await AsyncStorage.clear();
+    setUserType(null)
     // const socket = getSocket();
     // socket.disconnect();
     socket.emit('Iamloggingout');

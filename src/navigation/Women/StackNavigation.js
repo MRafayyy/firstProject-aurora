@@ -43,6 +43,8 @@ import Login from '../../ContactScreens/Login';
 import NadraVerify from '../../ContactScreens/NadraVerify';
 import BottomTabs from '../Contacts/BottomTabs';
 import Screen_ShowContactsOnly from '../../screens/Screen_ShowContactsOnly';
+import Screen_ShowMyContacts from '../../screens/Screen_ShowMyAddedContacts';
+import Screen_ShowMyAddedContacts from '../../screens/Screen_ShowMyAddedContacts';
 
 
 const Stack = createStackNavigator();
@@ -128,14 +130,14 @@ export default function StackNavigation() {
         options={{ headerShown: false }}
       />
 
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name="BottomTabs"
-        component={BottomTabs}
-      />
 
       {userType === 'Contact' &&
         <>
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="BottomTabs"
+          component={BottomTabs}
+        />
         </>
       }
 
@@ -190,23 +192,34 @@ export default function StackNavigation() {
 
 
 
-
-        </>
-      }
 <Stack.Screen
   name="Screen_ShowContactsOnly"
   component={Screen_ShowContactsOnly}
   options={{
     headerShown: true,
-    headerTitle: 'Might be Contacts',
+    headerTitle: 'People You May Know',
   }}
 />
 
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name="UserScreenNavigation"
-        component={UserScreenNavigation}
-      />
+<Stack.Screen
+  name="Screen_ShowMyAddedContacts"
+  component={Screen_ShowMyAddedContacts}
+  options={{
+    headerShown: true,
+    headerTitle: 'My Contacts',
+  }}
+/>
+
+
+<Stack.Screen
+  options={{ headerShown: false }}
+  name="UserScreenNavigation"
+  component={UserScreenNavigation}
+/>
+
+        </>
+      }
+
 
     </Stack.Navigator>
   )

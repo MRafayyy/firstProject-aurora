@@ -34,11 +34,11 @@ export const connectToContactSocket = (userId, mongoId) => {
 
 
     socket.on('connect', () => {
-        console.log('Connected to serverS');
+        console.log('Connected to server (contact)');
     });
 
     socket.on('disconnect', () => {
-        console.log('Disconnected from serverS');
+        console.log('Disconnected from server (contact)');
         
     });
 

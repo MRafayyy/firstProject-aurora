@@ -14,6 +14,8 @@ import {
 import colors from '../../utils/color';
 import Home from '../../ContactScreens/Home';
 import Settingss from '../../ContactScreens/Settingss';
+import ShowMyAddedWomen from '../../ContactScreens/ShowMyAddedWomen';
+import AllNotifications from '../../ContactScreens/AllNotifications';
 // import Settings from '../../ContactScreens/Settings'
 
 const Tab = createMaterialTopTabNavigator();
@@ -57,10 +59,10 @@ export default function BottomTabs() {
       />
 
       <Tab.Screen
-        name="ContactScreen_ReceiveNotifs"
-        component={Home}
+        name="AllNotifications"
+        component={AllNotifications}
         options={{
-          tabBarLabel: 'Notifs',
+          tabBarLabel: 'AllNotifications',
           tabBarIcon: ({ color }) => (
             <Ionicons
               name="notifications-circle-outline"
@@ -83,8 +85,8 @@ export default function BottomTabs() {
       />
 
       <Tab.Screen
-        name="ContactScreen_SearchContacts"
-        component={Home}
+        name="ContactScreen_ShowMyAddedWomen"
+        component={ShowMyAddedWomen}
         onPress={({ navigation }) => {
           // navigation.navigate(Screen_SearchContacts);
         }}

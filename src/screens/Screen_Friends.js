@@ -33,7 +33,7 @@ export default function Screen_Friends() {
   const fetchFriendRequests = async () => {
     try {
       const mongoId = userId.mongoId;
-      let response = await fetch(`${ip}/friend-request/${mongoId}`, {
+      let response = await fetch(`${ip}/women/friend-request/${mongoId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

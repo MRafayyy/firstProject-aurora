@@ -35,11 +35,11 @@ export const connectToSocket = (userId, mongoId) => {
 
 
     socket.on('connect', () => {
-        console.log('Connected to server');
+        console.log('Connected to server (user)');
     });
 
     socket.on('disconnect', () => {
-        console.log('Disconnected from server');
+        console.log('Disconnected from server (user)');
         
     });
 

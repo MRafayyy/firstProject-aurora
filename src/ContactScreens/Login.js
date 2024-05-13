@@ -31,7 +31,6 @@ import * as Keychain from 'react-native-keychain';
 import ip from '../screens/IPaddress';
 import { useConnectionStatus } from '../components/NoInternet';
 import UserIdContext from '../UserIdContext';
-import { connectToSocket, updateUserType } from '../components/SocketService';
 import fontFamily from '../../assets/fontFamily/fontFamily';
 import GlobalStyles from '../utils/GlobalStyles';
 import colors from '../utils/color';
@@ -83,7 +82,7 @@ export default function Login({ navigation, route }) {
         channelId: 'test-channel',
         channelName: 'Test Channel',
       },
-      created => console.log('channel created'),
+      // created => console.log('Push notif channel created (login Screen)'),
     );
   };
 
@@ -134,7 +133,7 @@ export default function Login({ navigation, route }) {
       // FcmDeviceToken = token
       // let url = 'http://192.168.0.103:3000/login'
       let url = `${ip}/contacts/login`;
-      console.log(FcmDeviceToken);
+      // console.log("FcmDeviceToken: "+FcmDeviceToken);
 
       const LoginData = {
         userId: UsernameText.trim(),
@@ -162,9 +161,10 @@ export default function Login({ navigation, route }) {
         try {
           const username = UsernameText.trim();
           const password = response.token.toString();
-          console.info('token is:' + response.token);
+          // console.info('token is:' + response.token);
           // await AsyncStorage.setItem('Token', response.token)
           await Keychain.setGenericPassword(username, password);
+          await AsyncStorage.setItem('userInfo', JSON.stringify(response.userInfo));
           await AsyncStorage.setItem('userType', 'Contact');
         } catch (error) {
           setLoader(false);

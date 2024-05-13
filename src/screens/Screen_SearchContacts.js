@@ -40,7 +40,7 @@ export default function Screen_SearchContacts({ navigation }) {
 
       const mongoId = userId.mongoId;
 
-      let response = await fetch(`${ip}/users/${mongoId}`, {
+      let response = await fetch(`${ip}/women/users/${mongoId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -140,6 +140,13 @@ export default function Screen_SearchContacts({ navigation }) {
     <>
       <View style={styles.body}>
         <View style={styles.headerContainer}>
+          <MaterialCommunityIcons
+            name="account-child"
+            // name="chatbox-ellipses"
+            size={30}
+            color={colors.blue}
+            onPress={() => navigation.navigate('Screen_ShowMyAddedContacts')}
+          />
           <MaterialCommunityIcons
             name="contacts"
             // name="chatbox-ellipses"

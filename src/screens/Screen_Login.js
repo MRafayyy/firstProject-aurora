@@ -30,7 +30,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Keychain from 'react-native-keychain';
 import ip from './IPaddress';
 import { useConnectionStatus } from '../components/NoInternet';
-import UserIdContext from '../UserIdContext';
+import UserIdContext, { UserTypeContext } from '../UserIdContext';
 import { connectToSocket } from '../components/SocketService';
 import fontFamily from '../../assets/fontFamily/fontFamily';
 import GlobalStyles from '../utils/GlobalStyles';
@@ -39,6 +39,7 @@ import UserScreenNavigation from '../navigation/Women/MaterialBottomTabsNavigati
 
 export default function Screen_Login({ navigation, route }) {
   const { userId, setUserId } = useContext(UserIdContext);
+  const {userType, setUserType} =useContext(UserTypeContext);
   const isConnected = useConnectionStatus();
 
   function handleBackButtonClick() {
@@ -133,7 +134,7 @@ export default function Screen_Login({ navigation, route }) {
       // FcmDeviceToken = token
       // let url = 'http://192.168.0.103:3000/login'
       let url = `${ip}/women/login`;
-      console.log(FcmDeviceToken);
+      // console.log(FcmDeviceToken);
 
       const LoginData = {
         userId: UsernameText.trim(),
@@ -161,7 +162,8 @@ export default function Screen_Login({ navigation, route }) {
         try {
           const username = UsernameText.trim();
           const password = response.token.toString();
-          console.info('token is:' + response.token);
+          // console.info('token is:' + response.token);
+          await AsyncStorage.setItem('userInfo', JSON.stringify(response.userInfo));
           await AsyncStorage.setItem('userType', 'Women');
           await Keychain.setGenericPassword(username, password);
         } catch (error) {
@@ -183,17 +185,14 @@ export default function Screen_Login({ navigation, route }) {
           // There was an error on the native side
         }
         setUserId({ userId: UsernameText.trim(), mongoId: response.mongoId });
-        // navigation.navigate(Screen_Home,
-        //    {userId: UsernameText.trim()
-        // });
-        // navigation.navigate(HomeTabs, {
-        //   screen: Screen_Home,
-        //   params: {userId: UsernameText.trim()},
-        // });
+        setUserType('Women')
+      
         navigation.navigate(UserScreenNavigation, {
           screen: Screen_Home,
           params: { userId: UsernameText.trim() },
         });
+
+        console.log("login done")
         setUsernameText('');
         setPasswordText('');
         setUsernameError_msg([]);

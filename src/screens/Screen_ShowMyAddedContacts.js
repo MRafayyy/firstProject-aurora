@@ -1,3 +1,4 @@
+
 import React, { useContext, useEffect, useState } from "react";
 import {
     StyleSheet,
@@ -11,16 +12,17 @@ import FriendRequests from "../components/FriendRequests";
 import { responsiveWidth } from "react-native-responsive-dimensions";
 import MyFriends from "../components/MyFriends";
 import NothinToShow from "../components/NothinToShow";
+import MyAddedContactsComponent from "../components/MyAddedContactsComponent";
 
-export default function Screen_MyFriends({ navigation }) {
+export default function Screen_ShowMyAddedContacts({ navigation }) {
 
     const { userId } = useContext(UserIdContext)
-    const [friends, setFriends] = useState([])
+    const [contacts, setContacts] = useState([])
     const [refreshing, setRefreshing] = useState(false);
-    const [friendRemoved, setfriendRemoved] = useState({})
+    const [contactRemoved, setContactRemoved] = useState({})
 
     useEffect(() => {
-        fetchFriends();
+        fetchContacts();
     }, [])
 
     const onRefresh = React.useCallback(() => {
@@ -33,10 +35,10 @@ export default function Screen_MyFriends({ navigation }) {
     }, []);
 
 
-    const fetchFriends = async () => {
+    const fetchContacts = async () => {
         try {
             const mongoId = userId.mongoId;
-            let response = await fetch(`${ip}/women/my-friends/${mongoId}`, {
+            let response = await fetch(`${ip}/women/show-my-added-contacts/${mongoId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -53,15 +55,15 @@ export default function Screen_MyFriends({ navigation }) {
                     // console.log(response)
 
 
-                    const friendsData = response.map((friend) => ({
+                    const contactsData = response.map((contact) => ({
 
-                        _id: friend._id,
-                        name: friend.name,
-                        email: friend.email
+                        _id: contact._id,
+                        name: contact.name,
+                        email: contact.email
                     })
                     )
 
-                    setFriends(friendsData)
+                    setContacts(contactsData)
 
                 }
             }
@@ -80,17 +82,17 @@ export default function Screen_MyFriends({ navigation }) {
     // console.log(friendRequests[0].name)
     return (
         <View style={{ flex: 1, padding: responsiveWidth(5), backgroundColor: 'white' }} >
-            {friends.length > 0 ?
+            {contacts.length > 0 ?
 
 
                 <FlatList
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
-                    data={friends}
+                    data={contacts}
                     renderItem={({ item }) => {
                         return (
-                            <MyFriends navigation={navigation} item={item} friendRemoved={friendRemoved} setfriendRemoved={setfriendRemoved} />
+                            <MyAddedContactsComponent navigation={navigation} item={item} contactRemoved={contactRemoved} setContactRemoved={setContactRemoved} />
                         )
                     }}
                     keyExtractor={(item, index) => index}
@@ -98,7 +100,7 @@ export default function Screen_MyFriends({ navigation }) {
 
                 :
              
-                <NothinToShow msg={'No Friends'} />
+                <NothinToShow msg={'No Contacts'} />
             }
         </View>
     );

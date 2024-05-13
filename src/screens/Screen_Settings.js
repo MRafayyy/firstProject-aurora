@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 
 import {
   BackHandler,
@@ -20,8 +20,11 @@ import colors from '../utils/color';
 import fontFamily from '../../assets/fontFamily/fontFamily';
 import SettingsComponent from '../components/SettingsComponent';
 import imageNames from '../../assets/imageNames/imageNames';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserTypeContext } from '../UserIdContext';
 
 export default function Screen_Settings({navigation}) {
+  const{setUserType} = useContext(UserTypeContext)
   console.log('Screen_Settings rendered');
 
   function handleBackButtonClick() {
@@ -41,9 +44,13 @@ export default function Screen_Settings({navigation}) {
 
   const Logout = async () => {
     await Keychain.resetGenericPassword();
+    // await AsyncStorage.removeItem('userType');
+    await AsyncStorage.clear();
+    setUserType(null)
+    
     // const socket = getSocket();
-    // socket.disconnect();
     socket.emit('Iamloggingout');
+    
 
     navigation.navigate('Screen_Login');
   };
