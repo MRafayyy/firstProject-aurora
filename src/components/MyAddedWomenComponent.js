@@ -14,7 +14,7 @@ import colors from '../utils/color';
 const MyAddedWomenComponent = ({item, womenRemoved, setWomenRemoved, navigation}) => {
 
   const GoToContactProfilePage = () => {
-    // navigation.navigate('Screen_FriendProfile', {item: item});
+    navigation.navigate('ContactScreen_WomenProfile', {item: item});
   };
 
   const {userId} = useContext(UserIdContext);

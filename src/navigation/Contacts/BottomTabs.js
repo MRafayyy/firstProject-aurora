@@ -41,6 +41,7 @@ export default function BottomTabs() {
           borderColor: colors.red,
           justifyContent: 'space-evenly',
           padding: 0,
+          paddingVertical:2
         },
         tabBarIconStyle: { height: responsiveHeight(4), width: 'auto' },
         tabBarIndicator: () => null,

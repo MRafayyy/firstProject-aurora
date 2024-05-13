@@ -45,6 +45,8 @@ import BottomTabs from '../Contacts/BottomTabs';
 import Screen_ShowContactsOnly from '../../screens/Screen_ShowContactsOnly';
 import Screen_ShowMyContacts from '../../screens/Screen_ShowMyAddedContacts';
 import Screen_ShowMyAddedContacts from '../../screens/Screen_ShowMyAddedContacts';
+import WomenProfile from '../../ContactScreens/WomenProfile';
+import TrackAddedWomen from '../../ContactScreens/TrackAddedWomen';
 
 
 const Stack = createStackNavigator();
@@ -137,6 +139,18 @@ export default function StackNavigation() {
           options={{ headerShown: false }}
           name="BottomTabs"
           component={BottomTabs}
+        />
+       
+        <Stack.Screen
+          options={{ headerShown: true, title: 'Profile' }}
+          name="ContactScreen_WomenProfile"
+          component={WomenProfile}
+        />
+       
+        <Stack.Screen
+          options={{ headerShown: false, title: 'Profile' }}
+          name="ContactScreen_TrackAddedWomen"
+          component={TrackAddedWomen}
         />
         </>
       }
