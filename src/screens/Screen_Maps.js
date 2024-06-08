@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -16,26 +16,26 @@ import MapView, {
 } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 // import GetLocation from 'react-native-get-location'
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import {responsiveWidth} from 'react-native-responsive-dimensions';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { responsiveWidth } from 'react-native-responsive-dimensions';
 import MapViewDirections from 'react-native-maps-directions';
 import socket from '../components/SocketService';
 import UserIdContext, { LocationsContext } from '../UserIdContext';
 import useLocationUpdates from '../components/useLocationUpdates';
 
-export default function Screen_Maps({navigation}) {
+export default function Screen_Maps({ navigation }) {
 
-  const { myLocation, error, isActive, 
+  const { myLocation, error, isActive,
     startLocationUpdates,
-     stopLocationUpdates } = useLocationUpdates();
+    stopLocationUpdates } = useLocationUpdates();
 
-console.log("yuhu: "+myLocation)
+  console.log("yuhu: " + myLocation)
 
   const mapref = useRef(null);
   const markerref = useRef(null);
   const marker2ref = useRef(null);
-  const {userId} = useContext(UserIdContext);
-  const {mLocation, setmLocation} = useContext(LocationsContext)
+  const { userId } = useContext(UserIdContext);
+  const { mLocation, setmLocation } = useContext(LocationsContext)
   // const [userId.mLocation.loc, setuserId.mLocation.loc] = useState();
   // const [PermissionGranted, setPermissionGranted] = useState(false);
   const [origin, setOrigin] = useState();
@@ -57,31 +57,6 @@ console.log("yuhu: "+myLocation)
     };
   }, []);
 
-  // useEffect(()=>{
-
-  //   socket.on('bd', (data)=>{
-  //     console.log("nahh")
-  //     if (mapref.current != null) {
-  //       setAnotherUsersLocation(data)
-
-  //         console.log("entered: "+data.latitude)
-
-  //         marker2ref?.current.animateMarkerToCoordinate(
-  //           {
-  //             latitude: data.latlng.hey.latitude,
-  //             longitude: data.latlng.hey.longitude,
-  //           },
-  //           7000,
-  //           );
-
-  //       }
-  //   });
-
-  //   return(()=>{
-  //     socket.off('bd');
-  //   })
-  // },[])
-
 
 
   const animateTheMarker = async (lat, lng) => {
@@ -92,10 +67,8 @@ console.log("yuhu: "+myLocation)
           {
             latitude: lat,
             longitude: lng,
-            // latitude: position.coords.latitude,
-            // longitude: position.coords.longitude,
           },
-          10000,
+          1000,
         );
       }
     }
@@ -107,34 +80,6 @@ console.log("yuhu: "+myLocation)
 
     animateTheMarker(mLocation.loc.latitude, mLocation.loc.longitude);
     console.log(mLocation.loc);
-
-    // const watchId = Geolocation.watchPosition(
-    //   position => {
-    //     setuserId.mLocation.loc(position.coords);
-    //     socket.emit('shareCoordinates', {
-    //       userId: userId.userId,
-    //       mongoId: userId.mongoId,
-    //       Location: position.coords,
-    //     });
-       
-    //   },
-    //   error => {
-    //     console.log(error);
-    //   },
-    //   {
-    //     enableHighAccuracy: true,
-    //     // fastestInterval: 5000,
-    //     timeout: 20000,
-    //     maximumAge: 0,
-    //     // interval: 1000,
-    //     distanceFilter: 1,
-    //   },
-    // );
-
-
-    // return () => {
-    //   Geolocation.clearWatch(watchId);
-    // };
 
 
   }, [mLocation.loc]);
@@ -153,29 +98,11 @@ console.log("yuhu: "+myLocation)
   };
 
   const getCurrentLocation = (latitude, longitude) => {
-    // if (PermissionGranted) {
-      // Geolocation.getCurrentPosition(
-      //   position => {
-      //     console.log(position);
-      //     setuserId.mLocation.loc(position.coords);
-      //     moveToLocation(position.coords.latitude, position.coords.longitude);
-      //   },
-      //   error => {
-      //     console.log(error);
-      //   },
-      //   {
-      //     enableHighAccuracy: true,
-      //     timeout: 15000,
-      //     maximumAge: 1000,
-      //   },
-      // );
 
-      // console.log('entered get location method');
-      moveToLocation(latitude, longitude);
+    moveToLocation(latitude, longitude);
     // }
   };
 
-  // if (!PermissionGranted) { return <View><Text style={{ color: 'black' }}>Please allow location permissions</Text></View> }
 
   return (
     <>
@@ -189,10 +116,10 @@ console.log("yuhu: "+myLocation)
             marginHorizontal: responsiveWidth(2),
             color: 'black',
           }}>
-          <View style={{flex: 0.5}}>
+          <View style={{ flex: 0.5 }}>
             <GooglePlacesAutocomplete
               styles={{
-                description: {color: 'black'},
+                description: { color: 'black' },
                 textInput: {
                   color: 'black',
                   borderRadius: 0,
@@ -200,7 +127,7 @@ console.log("yuhu: "+myLocation)
                 },
                 // poweredContainer: { display: 'none' },
                 // separator: { height: 4, borderColor: 'blue', backgroundColor: 'transparent'},
-                row: {borderRadius: 0},
+                row: { borderRadius: 0 },
               }}
               textInputProps={{
                 placeholderTextColor: 'black',
@@ -220,9 +147,9 @@ console.log("yuhu: "+myLocation)
                 console.log(
                   JSON.stringify(
                     'Latitude: ' +
-                      details.geometry.location.lat +
-                      ' Longitude: ' +
-                      details.geometry.location.lng,
+                    details.geometry.location.lat +
+                    ' Longitude: ' +
+                    details.geometry.location.lng,
                   ),
                 );
                 moveToLocation(origin.latitude, origin.longitude);
@@ -238,10 +165,10 @@ console.log("yuhu: "+myLocation)
             />
           </View>
 
-          <View style={{flex: 0.5}}>
+          <View style={{ flex: 0.5 }}>
             <GooglePlacesAutocomplete
               styles={{
-                description: {color: 'black'},
+                description: { color: 'black' },
                 textInput: {
                   color: 'black',
                   borderRadius: 0,
@@ -249,7 +176,7 @@ console.log("yuhu: "+myLocation)
                 },
                 // poweredContainer: { display: 'none' },
                 // separator: { height: 4, borderColor: 'blue', backgroundColor: 'transparent'},
-                row: {borderRadius: 0},
+                row: { borderRadius: 0 },
               }}
               textInputProps={{
                 placeholderTextColor: 'black',
@@ -269,9 +196,9 @@ console.log("yuhu: "+myLocation)
                 console.log(
                   JSON.stringify(
                     'Latitude: ' +
-                      details.geometry.location.lat +
-                      ' Longitude: ' +
-                      details.geometry.location.lng,
+                    details.geometry.location.lat +
+                    ' Longitude: ' +
+                    details.geometry.location.lng,
                   ),
                 );
                 moveToLocation(destination.latitude, destination.longitude);
@@ -306,8 +233,8 @@ console.log("yuhu: "+myLocation)
           onRegionChange={x => {
             // console.log(x)
           }}
-          // showsUserLocation={true}
-          // showsuserId.mLocation.locButton={true}
+        // showsUserLocation={true}
+        // showsuserId.mLocation.locButton={true}
         >
           {/* ------------------------------------------------ */}
           <MarkerAnimated
@@ -321,8 +248,8 @@ console.log("yuhu: "+myLocation)
                 longitudeDelta: 0.1,
               })
             }
-            // title={value.title}
-            // description={value.description}
+          // title={value.title}
+          // description={value.description}
           />
           {/* ------------------------------------------------ */}
           <MarkerAnimated
@@ -336,8 +263,8 @@ console.log("yuhu: "+myLocation)
                 longitudeDelta: 0.1,
               })
             }
-            // title={"hey"}
-            // description={"hey there"}
+          // title={"hey"}
+          // description={"hey there"}
           />
           {/* ------------------------------------------------ */}
 
@@ -347,8 +274,8 @@ console.log("yuhu: "+myLocation)
                 latitude: origin.latitude,
                 longitude: origin.longitude,
               }}
-              // title={value.title}
-              // description={value.description}
+            // title={value.title}
+            // description={value.description}
             />
           ) : null}
 
@@ -358,8 +285,8 @@ console.log("yuhu: "+myLocation)
                 latitude: destination.latitude,
                 longitude: destination.longitude,
               }}
-              // title={value.title}
-              // description={value.description}
+            // title={value.title}
+            // description={value.description}
             />
           ) : null}
 
@@ -433,7 +360,7 @@ console.log("yuhu: "+myLocation)
             borderRadius: 50,
           }}>
           {/* {userId.mLocation.loc == undefined ? <ActivityIndicator size='large' color="#fff" /> : */}
-          <Text style={{color: 'white'}}>My Location</Text>
+          <Text style={{ color: 'white' }}>My Location</Text>
           {/* } */}
         </Pressable>
 
@@ -463,7 +390,7 @@ console.log("yuhu: "+myLocation)
           {mLocation.loc == undefined || null ? (
             <ActivityIndicator size="large" color="#fff" />
           ) : (
-            <Text style={{color: 'white'}}>Status</Text>
+            <Text style={{ color: 'white' }}>Status</Text>
           )}
         </Pressable>
       </View>
