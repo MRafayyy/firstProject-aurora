@@ -42,6 +42,8 @@ export default function Screen_Maps({ navigation }) {
   const [destination, setDestination] = useState();
   const [AnotherUsersLocation, setAnotherUsersLocation] = useState();
 
+  const [PoliceMarkers, setPoliceMarkers] = useState([])
+
   function handleBackButtonClick() {
     navigation.navigate('Screen_Home2');
     return true;
@@ -97,7 +99,21 @@ export default function Screen_Maps({ navigation }) {
     );
   };
 
-  const getCurrentLocation = (latitude, longitude) => {
+  const getCurrentLocation = async(latitude, longitude) => {
+
+
+    const apiKey = 'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4';
+    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=1500&type=police&key=${apiKey}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      setPoliceMarkers(data.results);
+      console.log(data.results)
+    } catch (error) {
+      console.log(error);
+    }
+  
 
     moveToLocation(latitude, longitude);
     // }
@@ -236,6 +252,23 @@ export default function Screen_Maps({ navigation }) {
         // showsUserLocation={true}
         // showsuserId.mLocation.locButton={true}
         >
+
+{/* Police */}
+{
+(PoliceMarkers===null || PoliceMarkers.length!==0) &&
+PoliceMarkers.map((marker, index) => (
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: marker.geometry.location.lat,
+                longitude: marker.geometry.location.lng,
+              }}
+              title={marker.name}
+            />
+          ))}
+{/* Police */}
+
+
           {/* ------------------------------------------------ */}
           <MarkerAnimated
             pinColor={'blue'}
