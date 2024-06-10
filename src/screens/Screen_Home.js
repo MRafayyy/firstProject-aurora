@@ -1,44 +1,27 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect} from 'react';
 
 import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
   BackHandler,
-  Alert,
-  ScrollView,
-  FlatList,
-  RefreshControl,
-  Refreshing,
-  onRefreshHandler,
-  AppState,
 } from 'react-native';
-import ip from './IPaddress';
-import BackgroundService from 'react-native-background-actions';
 
-import PushNotification from 'react-native-push-notification';
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import { useConnectionStatus } from '../components/NoInternet';
-import UserIdContext from '../UserIdContext';
-import Geolocation from 'react-native-geolocation-service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import fontFamily from '../../assets/fontFamily/fontFamily';
 
-const sleep = time => new Promise(resolve => setTimeout(() => resolve(), time));
 
 export default function Screen_Home({ navigation, route }) {
+
+
   console.log('Screen_Home rendered');
   const isConnected = useConnectionStatus();
-  const [seeColor, setSeeColor] = useState('red');
-
-  const appState = useRef(AppState.currentState);
-  const [appStateVisible, setAppStateVisible] = useState(appState.current);
-
   const [userInfo, setUserInfo] = useState('')
 
 
@@ -51,65 +34,6 @@ export default function Screen_Home({ navigation, route }) {
 
     getUserInfo();
   }, [])
-
-
-
-  const veryIntensiveTask = async taskDataArguments => {
-    // Example of an infinite loop task
-    const { delay } = taskDataArguments;
-    await new Promise(async resolve => {
-      for (let i = 0; BackgroundService.isRunning(); i++) {
-        // console.log(i)
-        Geolocation.getCurrentPosition(
-          async position => {
-            console.log(
-              position.coords.latitude + '  ' + position.coords.longitude,
-            );
-            await BackgroundService.updateNotification({
-              taskDesc:
-                'New ExampleTask description ' + position.coords.latitude,
-            });
-          },
-          error => {
-            console.log(error);
-          },
-          {
-            enableHighAccuracy: true,
-            timeout: 15000,
-            maximumAge: 0,
-          },
-        );
-        await sleep(delay);
-      }
-
-      await sleep(delay);
-      //   }
-    });
-  };
-
-  const options = {
-    taskName: 'Example',
-    taskTitle: 'ExampleTask title',
-    taskDesc: 'ExampleTask description',
-    taskIcon: {
-      name: 'ic_launcher',
-      type: 'mipmap',
-    },
-    color: '#ff00ff',
-    linkingURI: 'yourSchemeHere://chat/jane', // See Deep Linking for more info
-    parameters: {
-      delay: 5000,
-    },
-  };
-
-  const startBackgroundService = async () => {
-    await BackgroundService.start(veryIntensiveTask, options);
-    // await BackgroundService.updateNotification({taskDesc: 'New ExampleTask description'}); // Only Android, iOS will ignore this call
-  };
-
-  const stopBackgroiundService = async () => {
-    await BackgroundService.stop();
-  };
 
   // ---------------------------------------------------------------------
 
@@ -138,7 +62,6 @@ export default function Screen_Home({ navigation, route }) {
 
   return (
     <>
-      {/* <ScrollView> */}
 
       <View style={styles.body}>
         <Text
@@ -183,26 +106,8 @@ export default function Screen_Home({ navigation, route }) {
             </Text>
           </View>
 
-          <TouchableOpacity
-            onPress={async () => await startBackgroundService()}
-            style={{ backgroundColor: 'orange', marginTop: 30 }}>
-            <Text style={(styles.text, { margin: 10 })}>Start bgs</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={stopBackgroiundService}
-            style={{ backgroundColor: 'orange', marginTop: 30 }}>
-            <Text style={(styles.text, { margin: 10 })}>Stop bg</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={{ backgroundColor: 'orange', marginTop: 30 }}>
-            <Text style={(styles.text, { margin: 10 })}>{seeColor}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={{ backgroundColor: 'orange', marginTop: 30 }}>
-            <Text style={(styles.text, { margin: 10 })}>{appStateVisible}</Text>
-          </TouchableOpacity>
         </View>
       </View>
-
-      {/* </ScrollView> */}
     </>
   );
 }
@@ -211,13 +116,10 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     backgroundColor: 'white',
-    // alignItems: 'center',
-    // justifyContent: 'center'
   },
   text: {
     margin: 10,
     fontSize: 20,
-    // fontWeight: '600',
     color: 'black',
     textAlign: 'left',
   },

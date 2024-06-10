@@ -109,7 +109,7 @@ export default function Screen_Maps({ navigation }) {
       const response = await fetch(url);
       const data = await response.json();
       setPoliceMarkers(data.results);
-      console.log(data.results)
+     // console.log(data.results)
     } catch (error) {
       console.log(error);
     }

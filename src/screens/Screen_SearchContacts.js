@@ -90,7 +90,7 @@ export default function Screen_SearchContacts({ navigation }) {
 
 
   function handleBackButtonClick() {
-    navigation.navigate('Screen_Home');
+    navigation.navigate('Screen_Home2');
     return true;
   }
 
@@ -124,7 +124,7 @@ export default function Screen_SearchContacts({ navigation }) {
         if (item.name && typeof item.name === 'string') {
 
           return item.name.toLowerCase().startsWith(searchText);
-          
+
         }
 
         return false;
@@ -140,34 +140,43 @@ export default function Screen_SearchContacts({ navigation }) {
     <>
       <View style={styles.body}>
         <View style={styles.headerContainer}>
-          <MaterialCommunityIcons
-            name="account-child"
-            // name="chatbox-ellipses"
-            size={30}
-            color={colors.blue}
-            onPress={() => navigation.navigate('Screen_ShowMyAddedContacts')}
-          />
-          <MaterialCommunityIcons
-            name="contacts"
-            // name="chatbox-ellipses"
-            size={30}
-            color={colors.blue}
-            onPress={() => navigation.navigate('Screen_ShowContactsOnly')}
-          />
-          <Ionicons
-            name="people-circle"
-            // name="chatbox-ellipses"
-            size={30}
-            color={colors.blue}
-            onPress={() => navigation.navigate('Screen_MyFriends')}
-          />
-          <Ionicons
 
-            name="person-add"
-            size={30}
-            color={colors.blue}
-            onPress={() => navigation.navigate('Screen_Friends')}
-          />
+          <View style={styles.row}>
+
+            <MaterialCommunityIcons
+              name="account-child"
+              // name="chatbox-ellipses"
+              size={30}
+              color={colors.blue}
+              onPress={() => navigation.navigate('Screen_ShowMyAddedContacts')}
+            />
+            <MaterialCommunityIcons
+              name="contacts"
+              // name="chatbox-ellipses"
+              size={30}
+              color={colors.blue}
+              onPress={() => navigation.navigate('Screen_ShowContactsOnly')}
+            />
+          </View>
+
+          <View style={styles.row}>
+
+            <Ionicons
+              name="people-circle"
+              // name="chatbox-ellipses"
+              size={30}
+              color={colors.blue}
+              onPress={() => navigation.navigate('Screen_MyFriends')}
+            />
+            <Ionicons
+
+              name="person-add"
+              size={30}
+              color={colors.blue}
+              onPress={() => navigation.navigate('Screen_Friends')}
+            />
+
+          </View>
 
         </View>
 
@@ -232,9 +241,10 @@ const styles = StyleSheet.create({
 
   headerContainer: {
     marginTop: responsiveHeight(2),
-    alignSelf: 'flex-end',
+    // alignSelf: 'flex-end',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     gap: responsiveWidth(7),
     paddingHorizontal: 9,
     paddingRight: responsiveWidth(6),
@@ -265,6 +275,10 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(2),
     fontFamily: fontFamily.Regular,
     lineHeight: responsiveHeight(2.6),
-
   },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: responsiveWidth(7),
+  }
 });

@@ -18,7 +18,8 @@ import {
   Alert,
 } from 'react-native';
 
-import Screen_Home from './Screen_Home';
+//import Screen_Home from './Screen_Home';
+import Screen_Home from './Screen_Home2';
 import {
   responsiveHeight,
   responsiveWidth,

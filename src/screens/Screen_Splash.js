@@ -111,7 +111,7 @@ export default function Screen_Splash({ navigation, route }) {
                     setUserType('Women')
 
                     navigation.navigate(UserScreenNavigation, {
-                        screen: 'Screen_Home',
+                        screen: 'Screen_Home2',
                         params: { userId: credentials.username },
                     });
 

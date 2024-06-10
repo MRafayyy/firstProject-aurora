@@ -24,10 +24,10 @@ import {
   useCameraDevice,
   useCameraFormat,
 } from 'react-native-vision-camera';
-import {ActivityIndicator} from 'react-native-paper';
+import { ActivityIndicator } from 'react-native-paper';
 import storage from '@react-native-firebase/storage';
-import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import UserIdContext, {LocationsContext} from '../UserIdContext';
+import { CameraRoll } from '@react-native-camera-roll/camera-roll';
+import UserIdContext, { LocationsContext } from '../UserIdContext';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -42,9 +42,24 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import fontFamily from '../../assets/fontFamily/fontFamily';
 import colors from '../utils/color';
 import CustomBtn from '../components/CustomBtn';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Screen_Home({navigation, route}) {
-  const {userId, setUserId} = useContext(UserIdContext);
+export default function Screen_Home({ navigation, route }) {
+  const { userId, setUserId } = useContext(UserIdContext);
+
+  const [userInfo, setUserInfo] = useState('')
+
+
+  useEffect(() => {
+
+    const getUserInfo = async () => {
+      const info = await AsyncStorage.getItem('userInfo')
+      setUserInfo(JSON.parse(info));
+    }
+
+    getUserInfo();
+  }, [])
+
 
   let intervalId;
   const [UploadStatus, setUploadStatus] = useState('Rescue');
@@ -77,7 +92,7 @@ export default function Screen_Home({navigation, route}) {
     Geolocation.getCurrentPosition(
       async position => {
         try {
-          const {formattedTime, formattedDay} = getFormattedTimeandDay();
+          const { formattedTime, formattedDay } = getFormattedTimeandDay();
 
           const object = {
             timeWhenRescueButtonPressed: formattedTime,
@@ -128,7 +143,7 @@ export default function Screen_Home({navigation, route}) {
     Geolocation.getCurrentPosition(
       async position => {
         try {
-          const {formattedTime, formattedDay} = getFormattedTimeandDay();
+          const { formattedTime, formattedDay } = getFormattedTimeandDay();
           const object = {
             safeButtonPressed: true,
             timeWhenSafeButtonPressed: formattedTime,
@@ -189,7 +204,7 @@ export default function Screen_Home({navigation, route}) {
       .toString()
       .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
 
-    return {formattedTime, formattedDay};
+    return { formattedTime, formattedDay };
   };
 
   const getAllpermissions = async () => {
@@ -242,11 +257,11 @@ export default function Screen_Home({navigation, route}) {
   const device = useCameraDevice('back');
   const format = useCameraFormat(device, [
     {
-      videoResolution: {width: 1280, height: 720},
+      videoResolution: { width: 1280, height: 720 },
       // { videoResolution: { width: 3048, height: 2160 },
       pixelFormat: 'native',
     }, // if i dont specify vidresol then Error retrieving camcorder profile params
-    {fps: 30},
+    { fps: 30 },
   ]);
 
   // width: 3048, height: 2160
@@ -285,9 +300,9 @@ export default function Screen_Home({navigation, route}) {
         ]).then(
           statuses =>
             statuses[PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES] ===
-              PermissionsAndroid.RESULTS.GRANTED &&
+            PermissionsAndroid.RESULTS.GRANTED &&
             statuses[PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO] ===
-              PermissionsAndroid.RESULTS.GRANTED,
+            PermissionsAndroid.RESULTS.GRANTED,
         );
       } else {
         return PermissionsAndroid.request(
@@ -304,7 +319,7 @@ export default function Screen_Home({navigation, route}) {
       return;
     }
 
-    CameraRoll.saveAsset(tag, {type, album});
+    CameraRoll.saveAsset(tag, { type, album });
   }
 
   const checkPermission = async () => {
@@ -378,8 +393,8 @@ export default function Screen_Home({navigation, route}) {
     const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
       .toString()
       .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${hours
-      .toString()
-      .padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+        .toString()
+        .padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
 
     const reference = storage().ref(
       `${userId.userId}/video-${formattedDate}.mov`,
@@ -412,7 +427,7 @@ export default function Screen_Home({navigation, route}) {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({downloadUrl: url}),
+            body: JSON.stringify({ downloadUrl: url }),
           },
         );
         response = await response.json();
@@ -465,7 +480,7 @@ export default function Screen_Home({navigation, route}) {
     <>
       <View style={styles.container}>
         {RescueButtonClicked ? (
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <Camera
               onInitialized={() => {
                 console.log('initialized cam');
@@ -487,6 +502,7 @@ export default function Screen_Home({navigation, route}) {
                 stopRecording();
               }}
               btnStyle={styles.stopRecordingBtn}
+              btnText={'Stop'}
             />
           </View>
         ) : (
@@ -503,20 +519,48 @@ export default function Screen_Home({navigation, route}) {
             />
 
             <View style={styles.customHeaderStyle}>
-              <TouchableOpacity onPress={() => {}} style={styles.openmapBtn}>
-                <MaterialCommunityIcons
-                  name="map"
-                  size={32}
-                  color={isActive === false ? 'red' : 'green'}
-                  onPress={() => {
-                    if (isActive === true) {
-                      navigation.navigate('Screen_Maps');
-                    } else {
-                      setModalVisible(true);
-                    }
-                  }}
-                />
-              </TouchableOpacity>
+
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+
+                <View>
+                  <Text
+                    style={{
+                      textAlign: 'left',
+                      color: '#0662bf',
+                      fontSize: responsiveFontSize(4),
+                      margin: responsiveWidth(3),
+                      fontFamily: fontFamily.Bold
+                    }}>
+                    Aurora
+                  </Text>
+                </View>
+
+                <TouchableOpacity onPress={() => { }} style={styles.openmapBtn}>
+                  <MaterialCommunityIcons
+                    name="map"
+                    size={32}
+                    color={isActive === false ? 'red' : 'green'}
+                    onPress={() => {
+                      if (isActive === true) {
+                        navigation.navigate('Screen_Maps');
+                      } else {
+                        setModalVisible(true);
+                      }
+                    }}
+                  />
+                </TouchableOpacity>
+
+              </View>
+
+              <Text style={{
+                textAlign: 'center',
+                color: '#0662bf',
+                fontSize: responsiveFontSize(3),
+                margin: responsiveWidth(3),
+                fontFamily: fontFamily.Regular
+              }}>Welcome {userInfo.name}</Text>
+
+
 
               <Text style={styles.guidelineText}>
                 Tap the Rescue Button when you need urgent help.
@@ -524,21 +568,14 @@ export default function Screen_Home({navigation, route}) {
                 {'\n'}
                 Here's what it does:
                 {'\n'}
-                {/* {'\n'}- Record Video & Sound: */}
+                {'\n'}- Records Video & Sound
                 {'\n'}
-                - Starts recording what's happening around you.
+                {'\n'}- Shares Your Location
                 {'\n'}
-                {/* {'\n'}- Share Your Location: */}
+                {'\n'}- Alerts Close Contacts
                 {'\n'}
-                - Sends your location to security agencies and trusted contacts.
-                {'\n'}
-                {/* {'\n'}- Alerts Close Contacts: */}
-                {'\n'}
-                - Tells your close contacts about the emergency and where you are.
-                {'\n'}
-                {/* {'\n'}- Stay Connected: */}
-                {'\n'}
-                - Keeps sharing updates until you confirm you're safe.
+
+
               </Text>
               {/* <Video resizeMode={'cover'} source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/aurora-51db1.appspot.com/o/Rafay%2Fvideo-2024-01-29%2009%3A16%20AM.mov?alt=media&token=57793d02-6512-4eec-a440-772e37917d9c'}} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "30%" }} /> */}
               <Progress.Bar progress={progress} width={200} />
@@ -549,19 +586,19 @@ export default function Screen_Home({navigation, route}) {
                 onPress={async () => {
                   setDone(true);
                   await StartMyLocation();
-                  // RecordingInitiation();
+                  RecordingInitiation();
                 }}
                 disabled={
                   isActive === true
                     ? true
                     : UploadinProgress === true
-                    ? true
-                    : false
+                      ? true
+                      : false
                 }
                 btnStyle={[
                   {
                     backgroundColor:
-                      isActive === false ? colors.red : colors.green,
+                      isActive === false ? colors.blue : colors.darksilver,
                   },
                   styles.rescueBtn,
                 ]}
@@ -578,7 +615,7 @@ export default function Screen_Home({navigation, route}) {
                 btnStyle={[
                   {
                     backgroundColor:
-                      isActive === true ? colors.red : colors.green,
+                      isActive === true ? colors.blue : colors.darksilver,
                   },
                   styles.rescueBtn,
                 ]}
@@ -593,7 +630,7 @@ export default function Screen_Home({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
-  container: {flex: 1, justifyContent: 'center', backgroundColor: 'white'},
+  container: { flex: 1, justifyContent: 'center', backgroundColor: 'white' },
   body: {
     flex: 1,
     backgroundColor: 'white',
@@ -608,9 +645,9 @@ const styles = StyleSheet.create({
   },
   stopRecordingBtn: {
     width: responsiveWidth(20),
-    height: responsiveHeight(20 / 2),
+    height: responsiveWidth(20),
     position: 'absolute',
-    backgroundColor: 'yellow',
+    backgroundColor: colors.blue,
     borderRadius: 100,
     bottom: 25,
     alignSelf: 'center',
@@ -624,7 +661,7 @@ const styles = StyleSheet.create({
     marginTop: responsiveHeight(2),
   },
   openmapBtn: {
-    alignSelf: 'flex-end',
+    // alignSelf: 'flex-end',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -635,23 +672,24 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontSize: responsiveFontSize(2.1),
     paddingHorizontal: responsiveWidth(8),
-    fontFamily: fontFamily.Regular,
+    fontFamily: fontFamily.Light,
     color: 'black',
   },
   rescueBtn: {
     width: '75%',
-    height: 50,
-    borderWidth: 1,
+    height: 55,
+    borderWidth: 0,
+    borderColor: 'transparent',
     marginTop: responsiveHeight(1),
     borderRadius: 30,
     alignSelf: 'center',
     justifyContent: 'center',
   },
   rescueBtnText: {
+    fontFamily: fontFamily.Regular,
     fontSize: responsiveFontSize(2.1),
-    color: 'white',
+    color: colors.white,
     textAlign: 'center',
-    fontFamily: fontFamily.SemiBold,
-    lineHeight: responsiveHeight(3),
+    lineHeight: responsiveHeight(2.7),
   },
 });

@@ -25,7 +25,7 @@ const Tab = createMaterialTopTabNavigator();
 export default function UserScreenNavigation() {
   return (
     <Tab.Navigator
-      // initialRouteName="Screen_Home"
+       initialRouteName="Screen_Home2"
       //  sceneAnimationEnabled
       tabBarPosition="bottom"
       initialLayout={{
@@ -49,7 +49,7 @@ export default function UserScreenNavigation() {
         tabBarIndicator: () => null,
       })}>
 
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Screen_Home"
         component={Screen_Home}
         options={({ route }) => ({
@@ -59,7 +59,7 @@ export default function UserScreenNavigation() {
             <Ionicons name="home-outline" color={color} size={30} />
           ),
         })}
-      />
+      /> */}
 
       <Tab.Screen
         name="Screen_ReceiveNotifs"
@@ -73,19 +73,19 @@ export default function UserScreenNavigation() {
               size={33}
             />
           ),
-        }}
+          }}
       />
 
-      <Tab.Screen
-        name="Screen_Home2"
-        component={Screen_Home2}
-        options={({ navigation }) => ({
-          tabBarLabel: 'Rescue',
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="shield-half-outline" color={color} size={30} />
-          ),
-        })}
-      />
+          <Tab.Screen
+            name="Screen_Home2"
+            component={Screen_Home2}
+            options={({ navigation }) => ({
+              tabBarLabel: 'Rescue',
+              tabBarIcon: ({ color }) => (
+                <Ionicons name="shield-half-outline" color={color} size={30} />
+              ),
+            })}
+          />
 
       <Tab.Screen
         name="Screen_SearchContacts"

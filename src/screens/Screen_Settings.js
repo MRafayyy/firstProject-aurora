@@ -28,7 +28,7 @@ export default function Screen_Settings({navigation}) {
   console.log('Screen_Settings rendered');
 
   function handleBackButtonClick() {
-    navigation.navigate('Screen_Home');
+    navigation.navigate('Screen_Home2');
     return true;
   }
 
@@ -63,7 +63,7 @@ export default function Screen_Settings({navigation}) {
           justifyContent: 'flex-start',
           backgroundColor: 'white',
         }}>
-        <View style={{alignItems: 'center', marginTop: responsiveHeight(5)}}>
+        <View style={{alignItems: 'center', marginTop: responsiveHeight(2)}}>
           <Image
             style={{
               width: responsiveWidth(80),
