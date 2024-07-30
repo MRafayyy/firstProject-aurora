@@ -2,6 +2,7 @@
 /keys.xml
 /.keystore
 /gradle.properties
+/google-services.json
 
 
 # OSX
