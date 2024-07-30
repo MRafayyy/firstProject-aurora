@@ -77,14 +77,10 @@
             </intent-filter>
         </service>
 
-             <!-- <meta-data
-                android:name="com.google.android.geo.API_KEY"
-                android:value="AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY"/>  -->
-
                 <!-- for real devices below api key -->
              <meta-data
                 android:name="com.google.android.geo.API_KEY"
-                android:value="AIzaSyA4HHx45fBoFy2TahURORLc5bdIyQ4pR9o"/>
+                      android:value="@string/google_maps_api_key"/>
 
 
 
