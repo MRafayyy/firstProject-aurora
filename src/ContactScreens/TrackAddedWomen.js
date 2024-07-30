@@ -24,6 +24,7 @@ import { responsiveWidth } from 'react-native-responsive-dimensions';
 import MapViewDirections from 'react-native-maps-directions';
 
 import socket from '../components/SocketService2';
+import 'dotenv/config'
 
 export default function TrackAddedWomen({ navigation, route }) {
 
@@ -117,19 +118,6 @@ export default function TrackAddedWomen({ navigation, route }) {
         }
     };
 
-    // if (showMap === false) {
-    //   console.log('why shomap false');
-
-    //   return (
-    //     <View style={styles.body}>
-    //       <ActivityIndicator
-    //         size="large"
-    //         color="#00000"
-    //         style={{justifyContent: 'center', alignItems: 'center'}}
-    //       />
-    //     </View>
-    //   );
-    // } else
     return (
         <>
             <View style={styles.container}>
@@ -179,8 +167,8 @@ export default function TrackAddedWomen({ navigation, route }) {
                                 moveToLocation(origin.latitude, origin.longitude);
                             }}
                             query={{
-                                // key: 'AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY',
-                                key: 'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4',
+                            
+                                key: process.env.PLACES_API_KEY,
                                 language: 'en',
                             }}
                             onFail={error => {
@@ -227,8 +215,8 @@ export default function TrackAddedWomen({ navigation, route }) {
                                 moveToLocation(destination.latitude, destination.longitude);
                             }}
                             query={{
-                                // key: 'AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY',
-                                key: 'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4',
+                                
+                                key: process.env.PLACES_API_KEY,
                                 language: 'en',
                             }}
                             onFail={error => {
@@ -295,7 +283,7 @@ export default function TrackAddedWomen({ navigation, route }) {
                             strokeColor="blue"
                             strokeWidth={3}
                             destination={destination}
-                            apikey={'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4'}
+                            apikey={process.env.PLACES_API_KEY}
                         />
                     ) : null}
                 </MapView>

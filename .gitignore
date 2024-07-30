@@ -1,3 +1,9 @@
+/.env
+/keys.xml
+/.keystore
+/gradle.properties
+
+
 # OSX
 #
 .DS_Store
@@ -31,7 +37,7 @@ local.properties
 *.iml
 *.hprof
 .cxx/
-# *.keystore
+*.keystore
 !debug.keystore
 
 # node.js

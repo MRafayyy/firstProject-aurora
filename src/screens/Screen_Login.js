@@ -132,8 +132,7 @@ export default function Screen_Login({ navigation, route }) {
       setLoader(true);
       await messaging().registerDeviceForRemoteMessages();
       const FcmDeviceToken = await messaging().getToken();
-      // FcmDeviceToken = token
-      // let url = 'http://192.168.0.103:3000/login'
+      
       let url = `${ip}/women/login`;
       // console.log(FcmDeviceToken);
 

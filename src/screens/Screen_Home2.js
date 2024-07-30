@@ -577,11 +577,8 @@ export default function Screen_Home({ navigation, route }) {
 
 
               </Text>
-              {/* <Video resizeMode={'cover'} source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/aurora-51db1.appspot.com/o/Rafay%2Fvideo-2024-01-29%2009%3A16%20AM.mov?alt=media&token=57793d02-6512-4eec-a440-772e37917d9c'}} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "30%" }} /> */}
+            
               <Progress.Bar progress={progress} width={200} />
-              {/* {ImageData !== '' && <Image source={{ uri: 'file://' + ImageData }} style={{ width: '90%', height: '10%' }} />} */}
-              {/* <Video resizeMode={'cover'} source={{ uri: 'file://' + VideoData }} style={{ borderWidth: 0, borderColor: 'red', width: "100%", height: "90%" }} /> */}
-
               <CustomBtn
                 onPress={async () => {
                   setDone(true);

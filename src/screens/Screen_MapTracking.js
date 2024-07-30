@@ -178,8 +178,8 @@ export default function Screen_MapTracking({navigation, route}) {
                 moveToLocation(origin.latitude, origin.longitude);
               }}
               query={{
-                // key: 'AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY',
-                key: 'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4',
+                
+                key: process.env.PLACES_API_KEY,
                 language: 'en',
               }}
               onFail={error => {
@@ -226,8 +226,8 @@ export default function Screen_MapTracking({navigation, route}) {
                 moveToLocation(destination.latitude, destination.longitude);
               }}
               query={{
-                // key: 'AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY',
-                key: 'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4',
+             
+                key: process.env.PLACES_API_KEY,
                 language: 'en',
               }}
               onFail={error => {
@@ -294,7 +294,7 @@ export default function Screen_MapTracking({navigation, route}) {
               strokeColor="blue"
               strokeWidth={3}
               destination={destination}
-              apikey={'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4'}
+              apikey={process.env.PLACES_API_KEY}
             />
           ) : null}
         </MapView>

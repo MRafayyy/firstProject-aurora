@@ -14,6 +14,7 @@ import MapView, {
   MarkerAnimated,
   AnimatedRegion,
 } from 'react-native-maps';
+import {PLACES_API_KEY} from '@env'
 import Geolocation from 'react-native-geolocation-service';
 // import GetLocation from 'react-native-get-location'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -102,7 +103,7 @@ export default function Screen_Maps({ navigation }) {
   const getCurrentLocation = async(latitude, longitude) => {
 
 
-    const apiKey = 'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4';
+    const apiKey = PLACES_API_KEY;
     const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=1500&type=police&key=${apiKey}`;
 
     try {
@@ -171,8 +172,8 @@ export default function Screen_Maps({ navigation }) {
                 moveToLocation(origin.latitude, origin.longitude);
               }}
               query={{
-                // key: 'AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY',
-                key: 'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4',
+              
+                key: process.env.PLACES_API_KEY,
                 language: 'en',
               }}
               onFail={error => {
@@ -220,8 +221,8 @@ export default function Screen_Maps({ navigation }) {
                 moveToLocation(destination.latitude, destination.longitude);
               }}
               query={{
-                // key: 'AIzaSyBuCOu5bLUlVJmvxxGBFqDjvcsu5VeUyHY',
-                key: 'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4',
+                
+                key: process.env.PLACES_API_KEY,
                 language: 'en',
               }}
               onFail={error => {
@@ -365,7 +366,7 @@ PoliceMarkers.map((marker, index) => (
               strokeColor="blue"
               strokeWidth={3}
               destination={destination}
-              apikey={'AIzaSyCjfsbNmLKpqGnXwVZAxNRTSWyR357T2n4'}
+              apikey={process.env.PLACES_API_KEY}
             />
           ) : null}
         </MapView>

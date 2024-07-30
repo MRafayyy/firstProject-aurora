@@ -130,10 +130,8 @@ export default function Login({ navigation, route }) {
       setLoader(true);
       await messaging().registerDeviceForRemoteMessages();
       const FcmDeviceToken = await messaging().getToken();
-      // FcmDeviceToken = token
-      // let url = 'http://192.168.0.103:3000/login'
       let url = `${ip}/contacts/login`;
-      // console.log("FcmDeviceToken: "+FcmDeviceToken);
+
 
       const LoginData = {
         userId: UsernameText.trim(),
@@ -151,18 +149,13 @@ export default function Login({ navigation, route }) {
 
       response = await response.json();
 
-      // } catch (error) {
-      //     setLoader(false)
-      //     Alert.alert("Could not get device token Error", 'Error may be generated if you are not connected to the internet', [{ style: 'cancel' }])
-      // }
 
       if (response.success === true) {
         setLoader(true);
         try {
           const username = UsernameText.trim();
           const password = response.token.toString();
-          // console.info('token is:' + response.token);
-          // await AsyncStorage.setItem('Token', response.token)
+       
           await Keychain.setGenericPassword(username, password);
           await AsyncStorage.setItem('userInfo', JSON.stringify(response.userInfo));
           await AsyncStorage.setItem('userType', 'Contact');

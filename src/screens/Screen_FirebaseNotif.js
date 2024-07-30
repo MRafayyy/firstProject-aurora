@@ -78,35 +78,6 @@ export default function Screen_FirebaseNotif({ navigation, route }) {
         } catch (error) {
             
         }
-        
-            //     try {
-                    
-                   
-            //         // POST https://fcm.googleapis.com/v1/projects/myproject-b5ae1/messages:send HTTP/1.1
-            //         let url = 'https://fcm.googleapis.com/fcm/send'
-            //         let response = await fetch(url, {
-            //             method: 'POST',
-            //         headers: {
-            //             'Content-Type': 'application/json',
-            //             'Authorization': 'Bearer AAAADz1-KfI:APA91bGJ-sKa3F15DexhEXHxHp_XWl4dEoC6HChxD6cJF42ad9RzvTj0K0KfxwCLLeAA54nWSGHwxN8ZYd2EIbBHztsXGu57ZG7jt-QKT8peIQYvyhMEWj03oX1kO2I0AYR8KVbs09gO'
-            //         },
-            //         body: JSON.stringify({
-                      
-            //             "data": {},
-            //             "notification": {
-            //                 "body": "This is an FCM notification message!",
-            //                 "title": "FCM Message"
-            //             },
-            //             "to": "c8KHnyMrRTyXNXB9tVglFM:APA91bGVoYH4vYpKUsETdY_RxbAMZ3vXe2u4wLWhDFrya87IyuTyyStgiaypiOCfZgO5HLuMSpnIvZ4LL7gcFzWfk5_zZbT-hodd-D6RMvtkJPKaSIytPKowKcI5HgO3viZWtHFNBlOX",
-            //         }
-                    
-            //         )
-            //     })
-            //     response  = response.json()
-            // } catch (error) {
-            //     console.log(error)
-            // }
-
             }
         
         
